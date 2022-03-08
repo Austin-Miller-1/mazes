@@ -1,4 +1,4 @@
-package com.amw.mazes;
+package com.amw.mazes.util;
 
 import java.util.Random;
 

@@ -1,4 +1,4 @@
-package com.amw.mazes;
+package com.amw.mazes.grid;
 
 import java.util.ArrayList;
 import java.util.List;

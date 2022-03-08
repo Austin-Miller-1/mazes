@@ -1,4 +1,4 @@
-package com.amw.mazes;
+package com.amw.mazes.grid;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

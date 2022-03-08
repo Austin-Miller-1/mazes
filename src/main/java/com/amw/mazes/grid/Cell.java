@@ -1,4 +1,4 @@
-package com.amw.mazes;
+package com.amw.mazes.grid;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -163,7 +163,7 @@ public class Cell {
      * @return Optional containing the northern neighboring cell 
      * if one exists. If no such neighbor exists, an empty optional is returned.
      */
-    Optional<Cell> getNorth(){
+    public Optional<Cell> getNorth(){
         return this.north;
     }
 
@@ -172,7 +172,7 @@ public class Cell {
      * @return Optional containing the eastern neighboring cell 
      * if one exists. If no such neighbor exists, an empty optional is returned.
      */
-    Optional<Cell> getEast(){
+    public Optional<Cell> getEast(){
         return this.east;
     }
 
@@ -181,7 +181,7 @@ public class Cell {
      * @return Optional containing the southern neighboring cell 
      * if one exists. If no such neighbor exists, an empty optional is returned.
      */
-    Optional<Cell> getSouth(){
+    public Optional<Cell> getSouth(){
         return this.south;
     }
 
@@ -190,7 +190,7 @@ public class Cell {
      * @return Optional containing the western neighboring cell 
      * if one exists. If no such neighbor exists, an empty optional is returned.
      */
-    Optional<Cell> getWest(){
+    public Optional<Cell> getWest(){
         return this.west;
     }
 

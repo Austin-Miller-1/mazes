@@ -1,5 +1,8 @@
 package com.amw.mazes;
 
+import com.amw.mazes.algorithms.generation.Sidewinder;
+import com.amw.mazes.grid.Grid;
+
 import ij.IJ;
 
 /**

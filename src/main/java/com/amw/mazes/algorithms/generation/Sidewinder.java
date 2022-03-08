@@ -1,8 +1,12 @@
-package com.amw.mazes;
+package com.amw.mazes.algorithms.generation;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import com.amw.mazes.grid.Cell;
+import com.amw.mazes.grid.Grid;
+import com.amw.mazes.util.CoinFlip;
 
 /**
  * 
