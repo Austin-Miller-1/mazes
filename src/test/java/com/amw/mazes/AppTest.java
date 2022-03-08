@@ -1,4 +1,4 @@
-package com.amw.example;
+package com.amw.mazes;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
