@@ -6,11 +6,23 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * Class representing cell within a Grid.
+ * Each cell can be linked to any number of other cells. These links 
+ * indicate that there is a path between the cells allowing for traversal from one
+ * to the other. A cell also can have neighbors in any of the cardinal directions, but
+ * these may not exist, e.g. when the cell is at the edge of the grid.
+ */
 public class Cell {
     private final int rowPos, colPos;
     private final Set<Cell> links;
     private Optional<Cell> north, east, south, west;
 
+    /**
+     * Constructs new cell with the provided position in the containing grid.
+     * @param row The row at which this cell is located at in the grid.
+     * @param column The column at which this cell is located at in the grid.
+     */
     public Cell(int row, int column){
         this.rowPos = row;
         this.colPos = column;
@@ -24,7 +36,7 @@ public class Cell {
     }
 
     /**
-     * Link the provided cell to this one. Updates both Cells such that they are linked bidirectionally.
+     * Links the provided cell to this one. Updates both cells such that they are linked bidirectionally.
      * @param cell Cell to link
      */
     public void link(Cell cell){
@@ -32,7 +44,7 @@ public class Cell {
     }
 
     /**
-     * Link the provided cell to this one. Can be used to update only one of the two Cells 
+     * Links the provided cell to this one. Can be used to update only one of the two Cells 
      * or to update both to link bidirectionally.
      * @param cell Cell to link
      * @param bidi Flag that determines whether cells are linked bidirectionally or not. If true,
@@ -50,7 +62,7 @@ public class Cell {
     }
 
     /**
-     * Unlink the provided cell to this one. Removes links from both Cells. 
+     * Unlinks the provided cell to this one. Removes links from both Cells. 
      * @param cell Cell to unlink.
      */
     public void unlink(Cell cell){
@@ -58,7 +70,7 @@ public class Cell {
     }
 
     /**
-     * Unlink the provided cell to this one. Can be used to update only one of the two Cells 
+     * Unlinks the provided cell to this one. Can be used to update only one of the two Cells 
      * or to update both.
      * @param cell Cell to link
      * @param bidi Flag that determines whether cells are unlinked bidirectionally or not. If true,
@@ -76,10 +88,10 @@ public class Cell {
     }
 
     /**
-     * Get Collection of all of the Cells that this Cell is linked to.
-     * @return Collection of linked Cells.
+     * Returns set of all of the cells that this cell is linked to.
+     * @return Set of linked Cells.
      */
-    public Collection<Cell> getLinks(){
+    public Set<Cell> getLinks(){
         return this.links;
     }
 
@@ -110,42 +122,90 @@ public class Cell {
         return neighbors;
     }
 
+    /**
+     * Set's northern neighbor.
+     * @param cell Northern neighboring cell. Such a cell may not 
+     * exist, in which case, an empty Optional should be provided.
+     */
     void setNorth(Optional<Cell> cell){
         this.north = cell;
     }
 
+    /**
+     * Set's eastern neighbor.
+     * @param cell Eastern neighboring cell. Such a cell may not 
+     * exist, in which case, an empty Optional should be provided.
+     */
     void setEast(Optional<Cell> cell){
         this.east = cell;
     }
 
+    /**
+     * Set's southern neighbor.
+     * @param cell Southern neighboring cell. Such a cell may not 
+     * exist, in which case, an empty Optional should be provided.
+     */
     void setSouth(Optional<Cell> cell){
         this.south = cell;
     }
 
+    /**
+     * Set's western neighbor.
+     * @param cell Western neighboring cell. Such a cell may not 
+     * exist, in which case, an empty Optional should be provided.
+     */
     void setWest(Optional<Cell> cell){
         this.west = cell;
     }
 
+    /**
+     * Returns northern neighbor.
+     * @return Optional containing the northern neighboring cell 
+     * if one exists. If no such neighbor exists, an empty optional is returned.
+     */
     Optional<Cell> getNorth(){
         return this.north;
     }
 
+    /**
+     * Returns eastern neighbor.
+     * @return Optional containing the eastern neighboring cell 
+     * if one exists. If no such neighbor exists, an empty optional is returned.
+     */
     Optional<Cell> getEast(){
         return this.east;
     }
 
+    /**
+     * Returns southern neighbor.
+     * @return Optional containing the southern neighboring cell 
+     * if one exists. If no such neighbor exists, an empty optional is returned.
+     */
     Optional<Cell> getSouth(){
         return this.south;
     }
 
+    /**
+     * Returns western neighbor.
+     * @return Optional containing the western neighboring cell 
+     * if one exists. If no such neighbor exists, an empty optional is returned.
+     */
     Optional<Cell> getWest(){
         return this.west;
     }
 
+    /**
+     * Returns the column position of the cell.
+     * @return The column number at which this cell is located at within the grid.
+     */
     public int getColumnPosition() {
         return colPos;
     }
 
+    /**
+     * Returns the row position of the cell.
+     * @return The row number at which this cell is located at within the grid.
+     */
     public int getRowPosition() {
         return rowPos;
     }

@@ -3,8 +3,10 @@ package com.amw.mazes;
 import ij.IJ;
 
 /**
- * Hello world!
- *
+ * Application class. 
+ * Creates a maze using one of the implemented maze-generation algorithms, 
+ * prints it to the console, displays it as an image and saves that image
+ * to the folder containing the application.
  */
 public class App 
 {

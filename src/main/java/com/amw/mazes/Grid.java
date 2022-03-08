@@ -11,17 +11,35 @@ import ij.gui.Line;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 
+/**
+ * Grid class. Used to represent mazes as a group of cells connected to eachother.
+ * Provides methods for traversing and manipulating the cells and getting different
+ * representations of the grid.
+ */
 public class Grid {
     private final int rowCount, colCount;
     private final List<List<Cell>> grid;
+    private final Random rng;
 
+    /**
+     * Constructs a grid with the provided number of rows and columns.
+     * Initializes grid with all unlinked cells with the appropriate neighbors set. 
+     * @param rowCount Number of rows in the grid.
+     * @param colCount Number of columns in the grid.
+     */
     public Grid(int rowCount, int colCount){
         this.rowCount = rowCount;
         this.colCount = colCount;
         this.grid = this.createInitialGrid();
         this.configureCells();
+        rng = new Random();
     }
 
+    /**
+     * Creates the initial grid. Neighbors are not set within this method.
+     * @return List of List of Cells representing the grid. This is the list of 
+     * rows, which in turn are lists of cells.
+     */
     private List<List<Cell>> createInitialGrid(){
         final var grid = new ArrayList<List<Cell>>();
 
@@ -40,6 +58,9 @@ public class Grid {
         return grid;
     }
 
+    /**
+     * Configures the cells in the initial grid to have the correct neighbors set.
+     */
     private void configureCells(){
         this.getCells().forEach((final var currentCell) -> {
             final var rowIndex = currentCell.getRowPosition();
@@ -52,32 +73,54 @@ public class Grid {
         });
     }
 
+    /**
+     * Returns the cell at the provided row and column. It is possible that
+     * such a cell doesn't exist, in which case an empty Optional will be returned.
+     * @param row Row that contains the cell
+     * @param column Column that contains the cell
+     * @return Optional containing the cell at the provided position if it exists. Returns
+     * an empty Optional if no such cell exists. This can happen if the provided position is
+     * outside of the grid.
+     */
     public Optional<Cell> getCell(int row, int column){
         if(row < 0 || row >= this.rowCount)         return Optional.empty();
         if(column < 0 || column >= this.colCount)   return Optional.empty();
         return Optional.of(this.grid.get(row).get(column));
     }
 
-    public void setCell(Cell cell, int row, int column){
-        this.grid.get(row).set(column, cell);
-    }
-
+    /**
+     * Returns a random cell from the grid.
+     * @return Random cell from the grid.
+     */
     public Cell getRandomCell(){
-        final var rng = new Random();
         return this.grid
             .get(rng.nextInt(this.rowCount))
             .get(rng.nextInt(this.colCount));
     }
 
+    /**
+     * Returns the total number of cells within the grid.
+     * @return The number of cells in the grid.
+     */
     public int getCellCount(){
         return this.rowCount * this.colCount;
     }
 
+    /**
+     * Returns the grid's rows.
+     * @return List of rows. Each row is itself a list of cells.
+     */
     public List<List<Cell>> getRows(){
         return this.grid;
     }
 
+    /**
+     * Returns the grid's columns.
+     * @return List of columns. Each column is itself a list of cells.
+     */
     public List<List<Cell>> getColumns(){
+        //Since the grid's implementation is row-based, returning the columns requires
+        //recreating the grid using columns.
         final var columns = new ArrayList<List<Cell>>();
 
         for(var colIndex = 0; colIndex < this.colCount; colIndex++){
@@ -92,6 +135,10 @@ public class Grid {
         return columns;
      }
 
+    /**
+     * Returns a list of all of the grid's cells. No order is guaranteed.
+     * @return List of the grid's cells.
+     */
     public List<Cell> getCells(){
         return this
             .getRows()
@@ -100,15 +147,28 @@ public class Grid {
             .toList();
     }
 
+    /**
+     * Returns the number of rows in the grid.
+     * @return The number of rows in the grid.
+     */
     public int getRowCount(){
         return this.rowCount;
     }
 
+    /**
+     * Returns the number of columns in the grid.
+     * @return The number of columns in the grid.
+     */
     public int getColumnCount(){
         return this.colCount;
     }
     
+    /**
+     * Returns string representation of the grid.
+     * @return String representation of the grid.
+     */
     public String toString(){
+        //Top of the grid. The rest of the grid will be done row-by-row.
         final var output = "+" + "---+".repeat(this.colCount) + "\n";
 
         return this.getRows()
@@ -118,60 +178,89 @@ public class Grid {
                 .reduce(output, String::concat);
     }
 
+    /**
+     * Returns the string representation of a given row of cells. This excludes the top of the row,
+     * since each row's bottom will act as the top of the following row. 
+     * @param row Row of cells.
+     * @return String representation of the row, excluding the top of the row.
+     */
     private String rowToString(List<Cell> row){
-        final var LINE_ONE_START = "|";
-        final var LINE_ONE_BODY = "   ";
-        final var LINE_TWO_START = "+";
-        final var LINE_TWO_CORNER = "+";
+        final var MIDDLE_START = "|";
+        final var MIDDLE_BODY = "   ";
+        final var BOTTOM_START = "+";
+        final var BOTTOM_CORNER = "+";
 
-        final Function<Cell, String> fromCellToLineOneText = (var cell) -> {
+        //Each row will be 3 lines - top, middle and bottom. Since the bottom
+        //of each row is the top of the following row, only the middle and bottom
+        //of each row needs to be created. 
+
+        //Create the string rep of a cell's middle section.
+        final Function<Cell, String> fromCellToMiddleStr = (var cell) -> {
             final var eastBound = cell.getEast().isPresent() 
                 && cell.getEast().get().isLinkedTo(cell)
                     ?   " "
                     :   "|";
-            return LINE_ONE_BODY + eastBound;
+            return MIDDLE_BODY + eastBound;
         };
 
-        final Function<Cell, String> fromCellToLineTwoText = (var cell) -> {
+        //Create the string rep of a cell's bottom section
+        final Function<Cell, String> fromCellToBottomStr = (var cell) -> {
             final var southBound = cell.getSouth().isPresent() 
                 && cell.getSouth().get().isLinkedTo(cell)
                     ?   "   "
                     :   "---";
-            return  southBound + LINE_TWO_CORNER;
+            return  southBound + BOTTOM_CORNER;
         };
 
-        final var lineOne = LINE_ONE_START + row.stream()
-            .map(fromCellToLineOneText)
+        final var middleLine = MIDDLE_START + row.stream()
+            .map(fromCellToMiddleStr)
             .reduce(String::concat)
             .get();
 
-        final var lineTwo = LINE_TWO_START + row.stream()
-            .map(fromCellToLineTwoText)
+        final var bottomLine = BOTTOM_START + row.stream()
+            .map(fromCellToBottomStr)
             .reduce(String::concat)
             .get();
 
-        return lineOne + "\n" + lineTwo;
+        return middleLine + "\n" + bottomLine;
     }
 
+    /**
+     * Returns an image of the grid. Cell size will be 10 pixels.
+     * @param title Title to be used by the image.
+     * @return Image of the grid.
+     */
     public ImagePlus toImage(String title){
         return this.toImage(title, 10);
     }
 
+    /**
+     * Returns an image of the grid.
+     * @param title Title to be used by the image.
+     * @param cellSize The number of pixels each cell will take up.
+     * @return Image of the grid.
+     */
     public ImagePlus toImage(String title, int cellSize){
-        final var OFFSET = 30;
+        //Number of pixels of whitespace to place on each side of the grid
+        //This is to show the full grid, including it's boundaries, in the image. 
+        final var OFFSET = 30;  
+        final var BACKGROUND_COLOR = 255;   //white
+        final var WALL_COLOR = 0;           //black
+
         final var imageWidth = (cellSize * this.colCount) + 2*OFFSET;
         final var imageHeight = (cellSize * this.rowCount) + 2*OFFSET;
         ImageProcessor ip = new ByteProcessor(imageWidth, imageHeight);
 
         //Background
-        ip.setValue(255);
+        ip.setValue(BACKGROUND_COLOR);
         ip.fill();
 
         //Draw maze
-        ip.setValue(0);
+        ip.setValue(WALL_COLOR);
         this.getCells()
             .stream()
             .forEach((var cell) -> {
+                //Cell coords
                 final var x1 = (cell.getColumnPosition() * cellSize) + OFFSET;
                 final var y1 = (cell.getRowPosition() * cellSize) + OFFSET;
                 final var x2 = ((cell.getColumnPosition()+1) * cellSize) + OFFSET;
@@ -198,7 +287,7 @@ public class Grid {
     /**
      * IDEAS, transposition & rotation
      */
-    private Grid transpose(Grid grid){
+    /* private Grid transpose(Grid grid){
         //Would need to also update all of the neighbors appropriately.... That's why it doesn't work as is
         final var transposedGrid = new Grid(grid.getColumnCount(), grid.getRowCount());
 
@@ -207,7 +296,6 @@ public class Grid {
                 transposedGrid.setCell(grid.getCell(x, y).get(), y, x);
             }
         }
-        
 
         //Maybe like this?
         this.getCells().forEach((final var currentCell) -> {
@@ -222,4 +310,8 @@ public class Grid {
 
         return transposedGrid;
     }
+
+    public void setCell(Cell cell, int row, int column){
+        this.grid.get(row).set(column, cell);
+    } */
 }

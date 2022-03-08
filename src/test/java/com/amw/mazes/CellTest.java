@@ -6,12 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
 
-import com.amw.mazes.Cell;
-
 import org.junit.jupiter.api.Test;
 
 /**
- * Test Cell class
+ * Test Cell class.
  */
 public class CellTest {
     @Test

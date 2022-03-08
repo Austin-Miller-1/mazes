@@ -3,8 +3,6 @@ package com.amw.mazes;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.amw.mazes.Grid;
-
 import org.junit.jupiter.api.Test;
 
 public class GridTest {
