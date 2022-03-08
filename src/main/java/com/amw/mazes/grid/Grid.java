@@ -273,6 +273,7 @@ public class Grid {
         final var OFFSET = 30;  
         final var BACKGROUND_COLOR = 255;   //white
         final var WALL_COLOR = 0;           //black
+        final var LINE_WIDTH = 3;
 
         final var imageWidth = (cellSize * this.colCount) + 2*OFFSET;
         final var imageHeight = (cellSize * this.rowCount) + 2*OFFSET;
@@ -284,6 +285,7 @@ public class Grid {
 
         //Draw maze
         ip.setValue(WALL_COLOR);
+        ip.setLineWidth(LINE_WIDTH);
         this.getCells()
             .stream()
             .forEach((var cell) -> {
@@ -294,17 +296,17 @@ public class Grid {
                 final var y2 = ((cell.getRowPosition()+1) * cellSize + OFFSET);
 
                 //Northern & Western walls only if there are no neighbors
-                if(cell.getNorth().isEmpty())   ip.draw(new Line(x1, y1, x2, y1));
-                if(cell.getWest().isEmpty())    ip.draw(new Line(x1, y1, x1, y2));
+                if(cell.getNorth().isEmpty())   ip.drawLine(x1, y1, x2, y1);
+                if(cell.getWest().isEmpty())    ip.drawLine(x1, y1, x1, y2);
                 
                 //Eastern wall if no neighbor or unlinked to cell
                 if(cell.getEast().isEmpty() || !cell.getEast().get().isLinkedTo(cell)){
-                    ip.draw(new Line(x2, y1, x2, y2));
+                    ip.drawLine(x2, y1, x2, y2);
                 }
 
                 //Southern wall if no neighbor or unlinked to cell
                 if(cell.getSouth().isEmpty() || !cell.getSouth().get().isLinkedTo(cell)){
-                    ip.draw(new Line(x1, y2, x2, y2));    
+                    ip.drawLine(x1, y2, x2, y2);    
                 }                
             });
 
