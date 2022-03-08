@@ -179,6 +179,7 @@ public class Grid {
     }
 
     /**
+     * TODO - move all string logic to separate class, then bring it in here
      * Returns the string representation of a given row of cells. This excludes the top of the row,
      * since each row's bottom will act as the top of the following row. 
      * @param row Row of cells.
@@ -196,20 +197,46 @@ public class Grid {
 
         //Create the string rep of a cell's middle section.
         final Function<Cell, String> fromCellToMiddleStr = (var cell) -> {
-            final var eastBound = cell.getEast().isPresent() 
+            final var eastChars = cell.getEast().isPresent() 
                 && cell.getEast().get().isLinkedTo(cell)
                     ?   " "
                     :   "|";
-            return MIDDLE_BODY + eastBound;
+            return MIDDLE_BODY + eastChars;
         };
 
         //Create the string rep of a cell's bottom section
         final Function<Cell, String> fromCellToBottomStr = (var cell) -> {
-            final var southBound = cell.getSouth().isPresent() 
+            final var southChars = cell.getSouth().isPresent() 
                 && cell.getSouth().get().isLinkedTo(cell)
                     ?   "   "
                     :   "---";
-            return  southBound + BOTTOM_CORNER;
+
+
+            //Corner character logic
+            final var eastCell = cell.getEast();
+            final var southCell = cell.getSouth();
+            final Optional<Cell> southEastCell = cell.getEast().isPresent()
+                ?   cell.getEast().get().getSouth()
+                :   Optional.empty();
+            
+            //Check walls surrounding corner
+            var horizontalWalls = 0;
+            var verticalWalls = 0;
+            if(!eastCell.isPresent() || !cell.isLinkedTo(eastCell.get())) verticalWalls++;
+            if(!southCell.isPresent() || !cell.isLinkedTo(southCell.get())) horizontalWalls++;
+            if(eastCell.isPresent() && southEastCell.isPresent() && !eastCell.get().isLinkedTo(southEastCell.get())) horizontalWalls++;
+            if(southCell.isPresent() && southEastCell.isPresent() && !southCell.get().isLinkedTo(southEastCell.get())) verticalWalls++;
+
+            //Choose corner character based on what walls exist
+            String cornerChar = "?";
+            if(horizontalWalls + verticalWalls == 4)                cornerChar = "+";
+            else if(horizontalWalls == 2)                           cornerChar = "-";
+            else if(verticalWalls == 2)                             cornerChar = "|";
+            else if(horizontalWalls == 1 && verticalWalls == 1)     cornerChar = "+";   //This can become mega complex if a better character is wanted
+            else if(horizontalWalls > 0)                            cornerChar = "-";
+            else if(verticalWalls > 0)                              cornerChar = "|";
+             
+            return  southChars + cornerChar;
         };
 
         final var middleLine = MIDDLE_START + row.stream()
