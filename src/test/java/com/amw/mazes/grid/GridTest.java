@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 public class GridTest {
     @Test
-    void testConstructor_usingGetCell_assertInnerCellsAreGivenExpectedNeighbors(){
+    void testConstructor_usingGetCell_innerCellsAreGivenExpectedNeighbors(){
         final var grid = new Grid(10, 10);
 
         final var rowPos = 4;
@@ -25,7 +25,7 @@ public class GridTest {
     }
 
     @Test
-    void testConstructor_usingGetCell_assertFirstOuterCellIsGivenExpectedNeighbors(){
+    void testConstructor_usingGetCell_firstOuterCellIsGivenExpectedNeighbors(){
         final var grid = new Grid(10, 10);
 
         final var rowPos = 0;
@@ -41,7 +41,7 @@ public class GridTest {
     }
 
     @Test
-    void testConstructor_usingGetCell_assertLastOuterCellIsGivenExpectedNeighbors(){
+    void testConstructor_usingGetCell_lastOuterCellIsGivenExpectedNeighbors(){
         final var grid = new Grid(10, 10);
 
         final var rowPos = 9;
@@ -57,7 +57,7 @@ public class GridTest {
     }
 
     @Test
-    void testGetCell_whenValidRowAndColumn_assertReturnsExpectedCell(){
+    void testGetCell_whenValidRowAndColumn_returnsExpectedCell(){
         final var grid = new Grid(10, 10);
 
         final var cell = grid.getCell(4, 6);
@@ -68,7 +68,7 @@ public class GridTest {
     }
 
     @Test
-    void testGetCell_whenFirstCell_assertReturnsExpectedCell(){
+    void testGetCell_whenFirstCell_returnsExpectedCell(){
         final var grid = new Grid(10, 10);
 
         final var cell = grid.getCell(0, 0);
@@ -79,7 +79,7 @@ public class GridTest {
     }
 
     @Test
-    void testGetCell_whenLastCell_assertReturnsExpectedCell(){
+    void testGetCell_whenLastCell_returnsExpectedCell(){
         final var grid = new Grid(10, 10);
 
         final var cell = grid.getCell(9, 9);
@@ -90,35 +90,35 @@ public class GridTest {
     }
 
     @Test
-    void testGetCell_whenRowPosNegative_assertReturnsEmptyOptional(){
+    void testGetCell_whenRowPosNegative_returnsEmptyOptional(){
         final var grid = new Grid(10, 10);
 
         assertTrue(grid.getCell(-1, 6).isEmpty());
     }
 
     @Test
-    void testGetCell_whenRowPosTooLarge_assertReturnsEmptyOptional(){
+    void testGetCell_whenRowPosTooLarge_returnsEmptyOptional(){
         final var grid = new Grid(10, 10);
 
         assertTrue(grid.getCell(10, 6).isEmpty());
     }
 
     @Test
-    void testGetCell_whenColPosNegative_assertReturnsEmptyOptional(){
+    void testGetCell_whenColPosNegative_returnsEmptyOptional(){
         final var grid = new Grid(10, 10);
 
         assertTrue(grid.getCell(4, -1).isEmpty());
     }
 
     @Test
-    void testGetCell_whenColPosTooLarge_assertReturnsEmptyOptional(){
+    void testGetCell_whenColPosTooLarge_returnsEmptyOptional(){
         final var grid = new Grid(10, 10);
 
         assertTrue(grid.getCell(4, 10).isEmpty());
     }
 
     @Test
-    void testGetRandomCell_usingGetCells_assertReturnsCellFromGrid(){
+    void testGetRandomCell_usingGetCells_returnsCellFromGrid(){
         final var grid = new Grid(10, 10);
 
         assertTrue(grid.getCells().contains(grid.getRandomCell()));
@@ -126,7 +126,7 @@ public class GridTest {
 
 
     @Test
-    void testGetRandomCell_assertReturnsRandomCellEachTime(){
+    void testGetRandomCell_returnsRandomCellEachTime(){
         //Get 3 random cells. Assert that at least one of them is different ((1/200)^3 chance of failure)
         final var grid = new Grid(10, 20);
         final var cell1 = grid.getRandomCell();
@@ -137,13 +137,13 @@ public class GridTest {
     }
 
     @Test
-    void testGetCellCount_assertReturnsCorrectCount(){
+    void testGetCellCount_returnsCorrectCount(){
         assertEquals(4*15, (new Grid(4, 15)).getCellCount());
         assertEquals(9*7, (new Grid(9, 7)).getCellCount());
     }
 
     @Test
-    void testGetRows_assertReturnsListOfRows(){
+    void testGetRows_returnsListOfRows(){
         final var grid = new Grid(9, 10);
 
         final var rows = grid.getRows();
@@ -154,7 +154,7 @@ public class GridTest {
     }
 
     @Test
-    void testGetCells_assertReturnsListOfAllCells(){
+    void testGetCells_returnsListOfAllCells(){
         final var grid = new Grid(9, 10);
 
         final var cells = grid.getCells();

@@ -3,7 +3,9 @@ package com.amw.mazes.grid;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Optional;
+import java.util.PriorityQueue;
 import java.util.Set;
 
 /**
@@ -208,5 +210,38 @@ public class Cell {
      */
     public int getRowPosition() {
         return rowPos;
+    }
+
+    /**
+     * TODO - does it make more sense to have this outside of the implementation of Cell?
+     * Seems like questionable design adding it to Cell directly when it's to be used by the
+     * maze solving algorithms.
+     *  
+     * Returns distances between this cell and every other cell on the grid.
+     * @return Distances between this cell and every other cell on the grid.
+     */
+    public Distances getDistances(){
+        final var distances = new Distances(this);
+        final var frontier = new LinkedList<Cell>();    //Frontier will contain all remaining cells to check
+        frontier.add(this);                             //Start frontier with root
+
+        //Go through all frontier cells. 
+        //1. Index distances between root and all of the frontier cell's links.
+        //2. Add linked cells to frontier if they have not been indexed yet.
+        while(!frontier.isEmpty()){
+            var frontierCell = frontier.remove();
+
+            frontierCell.getLinks()
+                .stream()
+                .forEach((var linkedCell) -> {
+                    //Skip if already indexed (imperfect mazes)
+                    if(distances.getDistance(linkedCell) >= 0) return;
+                    
+                    distances.addCell(linkedCell, distances.getDistance(frontierCell)+1);
+                    frontier.add(linkedCell);
+                });
+        }
+
+        return distances;
     }
 }
