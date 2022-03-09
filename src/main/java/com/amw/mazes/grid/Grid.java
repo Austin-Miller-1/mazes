@@ -7,7 +7,6 @@ import java.util.Random;
 import java.util.function.Function;
 
 import ij.ImagePlus;
-import ij.gui.Line;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 
@@ -189,7 +188,6 @@ public class Grid {
         final var MIDDLE_START = "|";
         final var MIDDLE_BODY = "   ";
         final var BOTTOM_START = "+";
-        final var BOTTOM_CORNER = "+";
 
         //Each row will be 3 lines - top, middle and bottom. Since the bottom
         //of each row is the top of the following row, only the middle and bottom

@@ -1,16 +1,5 @@
 package com.amw.mazes.grid;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.function.Function;
-
-import ij.ImagePlus;
-import ij.gui.Line;
-import ij.process.ByteProcessor;
-import ij.process.ImageProcessor;
-
 /**
  * BitfieldGrid class. TODO
  * 
