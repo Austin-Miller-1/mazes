@@ -167,6 +167,8 @@ public class Grid {
      * @return String representation of the grid.
      */
     public String toString(){
+
+        
         //Top of the grid. The rest of the grid will be done row-by-row.
         final var output = "+" + "---+".repeat(this.colCount) + "\n";
 
@@ -186,7 +188,7 @@ public class Grid {
      */
     private String rowToString(List<Cell> row){
         final var MIDDLE_START = "|";
-        final var MIDDLE_BODY = "   ";
+        final var MIDDLE_BODY = " %s ";
         final var BOTTOM_START = "+";
 
         //Each row will be 3 lines - top, middle and bottom. Since the bottom
@@ -199,7 +201,7 @@ public class Grid {
                 && cell.getEast().get().isLinkedTo(cell)
                     ?   " "
                     :   "|";
-            return MIDDLE_BODY + eastChars;
+            return MIDDLE_BODY.formatted(this.contentsOf(cell)) + eastChars;
         };
 
         //Create the string rep of a cell's bottom section
@@ -248,6 +250,17 @@ public class Grid {
             .get();
 
         return middleLine + "\n" + bottomLine;
+    }
+
+    /**
+     * Returns string representation of a cell's contents. Used when displaying the grids cells in its
+     * different representations. 
+     * Default implementation returns a whitespace character.
+     * @param cell Cell to get the contents of
+     * @return The contents of the cell as a string.
+     */
+    public String contentsOf(Cell cell){
+        return " ";
     }
 
     /**

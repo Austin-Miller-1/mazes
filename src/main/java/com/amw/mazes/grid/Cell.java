@@ -215,8 +215,19 @@ public class Cell {
      * TODO - does it make more sense to have this outside of the implementation of Cell?
      * Seems like questionable design adding it to Cell directly when it's to be used by the
      * maze solving algorithms.
+     * --> Current idea: Create Algorithm interface with methods "solve" and "apply".
+     * - solve(Grid) -> Returns ordered list of cells from entrance to exit
+     * - apply(Grid) -> No return, updates the Grid cell's interal values with an appropriate value for the algorithm. So for Dijktra, with would be the distance between that node and everything else.
+     * Wait until more things are implemented before trying to refactor to this. I'm probably not considering something that'll make this design poor.
+     * 
+     * Also TODO - We have this getDistances method... but would it make more sense to have each Cell maintain it's own generic Value?
+     * Then we could set the value from an external algorithm, get the value from the Cell itself instead of a separate Distances class (solves design problem with toString)
+     * and in general makes more sense (the Cell's data belongs to the Cell instance, not external). The only problem I see with this is that this value wouldn't be generic
+     * and would be algorithm specific or have algorithm specific meanings. For instance, would an integer value always be defined as "distance from a root node"?
+     * I'm not sure how true that thought actually is. If it's optional, then isn't that fine?
      *  
-     * Returns distances between this cell and every other cell on the grid.
+     * Returns distances between this cell and every other cell on the grid. 
+     * Uses Dijkstra's algorithm
      * @return Distances between this cell and every other cell on the grid.
      */
     public Distances getDistances(){

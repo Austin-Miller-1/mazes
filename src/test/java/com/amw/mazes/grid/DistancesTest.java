@@ -3,6 +3,9 @@ package com.amw.mazes.grid;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -73,5 +76,63 @@ public class DistancesTest {
         distances.getCells()
             .stream()
             .forEach((var cell) -> assertTrue(distances.getDistance(cell) >= 0));
+    }
+
+    @Test
+    void testPathToGoal_whenNoPath_returnsEmptyList(){
+        final var path = distances.pathToGoal(cell1);
+        assertTrue(path.isEmpty());
+    }
+
+    @Test
+    void testPathToGoal_whenTwoCellPath_returnsExpectedPathBetweenTwoCells(){
+        root.link(cell1);
+        root.setEast(Optional.of(cell1));
+        distances.addCell(cell1, 1);
+
+        final var expectedPath = Arrays.asList(root, cell1);
+        assertEquals(expectedPath, distances.pathToGoal(cell1));
+    }
+
+    @Test
+    void testPathToGoal_whenThreeCellPath_returnsExpectedPathBetweenThreeCells(){
+        root.link(cell1);
+        root.setEast(Optional.of(cell1));
+
+        cell1.link(cell2);
+        cell1.setSouth(Optional.of(cell2));
+
+        distances.addCell(cell1, 1);
+        distances.addCell(cell2, 2);
+
+        final var expectedPath = Arrays.asList(root, cell1, cell2);
+        assertEquals(expectedPath, distances.pathToGoal(cell2));
+    }
+
+    @Test
+    void testPathToGoal_whenMutliplePathsToSameCell_returnsExpectedSmallestPath(){
+        //Create simple square grid, 3 paths to same cell, 1 shorter than others
+        final var cell3 = new Cell(4, 4);
+      
+        root.link(cell1);
+        root.setEast(Optional.of(cell1));
+        distances.addCell(cell1, 1);
+
+        root.link(cell2);
+        root.setEast(Optional.of(cell2));
+        distances.addCell(cell2, 1);
+
+        root.link(cell3);
+        root.setEast(Optional.of(cell3));
+        distances.addCell(cell3, 1);
+
+        cell1.link(cell3);
+        cell1.setSouth(Optional.of(cell3));
+
+        cell2.link(cell3);
+        cell2.setEast(Optional.of(cell3));
+
+        final var expectedPath = Arrays.asList(root, cell3);
+        assertEquals(expectedPath, distances.pathToGoal(cell3));
     }
 }

@@ -1,6 +1,8 @@
 package com.amw.mazes.grid;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -11,6 +13,7 @@ import java.util.Set;
  */
 public class Distances {
     private final Map<Cell, Integer> distanceMap;
+    private final Cell rootCell;
 
     /**
      * Constructs a new distances instance using the provided cell as the root.
@@ -18,8 +21,19 @@ public class Distances {
      * within the grid will be put inside this instance.
      */
     public Distances(Cell rootCell){
-        distanceMap = new HashMap<>();
-        distanceMap.put(rootCell, 0);
+        this.distanceMap = new HashMap<>();
+        this.distanceMap.put(rootCell, 0);
+        this.rootCell = rootCell;
+    }
+
+    public Distances(Cell rootCell, Cell endCell, Distances distances){
+        this(rootCell);
+
+        final var path = distances.pathToGoal(endCell);
+        path.stream()
+            .forEach((var cell) -> {
+                this.distanceMap.put(cell, distances.getDistance(cell));
+            });
     }
 
     /**
@@ -51,5 +65,36 @@ public class Distances {
      */
     public Set<Cell> getCells(){
         return distanceMap.keySet();
+    }
+
+    /**
+     * Returns a path from the root node to the provided cell.
+     * @param cell Cell to get the path to.
+     * @return Ordered list of cells representing the path between the root node and the provided cell.
+     * Contains both the root node as the first element and the provided cell as the last element, given that
+     * a path exists. If not path between the two cells exists, an empty list is returned. 
+     * There is no guarantee that this path is the shortest. 
+     */
+    public List<Cell> pathToGoal(final Cell cell){
+        final var path = new LinkedList<Cell>();
+        path.add(cell);
+
+        var currentCell = cell;
+        while(currentCell != this.rootCell){
+            final var cellDistance = this.getDistance(currentCell);
+            final var nextCell = currentCell.getLinks()
+                .stream()
+                .filter((var neighbor) -> this.getDistance(neighbor) < cellDistance)
+                .findFirst();
+
+            //NO PATH FROM ROOT TO CELL
+            if(nextCell.isEmpty()){
+                return new LinkedList<Cell>();
+            }
+
+            path.push(currentCell = nextCell.get());
+        }
+
+        return path;
     }
 }
