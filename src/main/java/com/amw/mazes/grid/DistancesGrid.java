@@ -27,6 +27,10 @@ public class DistancesGrid extends Grid{
         return super.toString();
     }
 
+    public final Optional<Distances> getDistances(){
+        return this.distances;
+    }
+
     public final void setDistances(final Distances distances){
         this.distances = Optional.of(distances);
     }

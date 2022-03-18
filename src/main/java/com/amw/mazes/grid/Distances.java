@@ -1,11 +1,13 @@
 package com.amw.mazes.grid;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.Map.Entry;
 
 /**
  * Distances is used to manage the distances between a specific root cell
@@ -21,11 +23,43 @@ public class Distances {
      * within the grid will be put inside this instance.
      */
     public Distances(Cell rootCell){
+        this.rootCell = rootCell;
         this.distanceMap = new HashMap<>();
         this.distanceMap.put(rootCell, 0);
-        this.rootCell = rootCell;
     }
 
+    //TODO refactor to GridContent interface (or something similar to handle displaying cell contents)
+
+    public Distances(List<Cell> path, Optional<Distances> knownDistances){
+        //TODO - do we care if path is empty? .. probably right? This means we need to take an optional....
+        //Or what if path doesn't start with root cell?
+        if(path.isEmpty()){
+            throw new RuntimeException(); //TODO careless exception handling
+        }
+
+        this.rootCell = path.get(0);
+        this.distanceMap = new HashMap<>();
+        this.distanceMap.put(rootCell, 0);
+
+        //Use all known distances (if any) for path cells
+        path.stream()
+            .forEach((var cell) -> {
+                final var distance = knownDistances.isPresent()
+                    ? knownDistances.get().getDistance(cell)
+                    : 1;  
+                this.distanceMap.put(cell, distance);
+            });
+    }
+
+    //TODO refactor to GridContent interface (or something similar to handle displaying cell contents)
+    //Or update Distances with new "displayPath" or "usePath" method (would require multiple maps maintained in this instance)
+    /**
+     * Create new distances based on existing distances instance
+     * @deprecated
+     * @param rootCell
+     * @param endCell
+     * @param distances
+     */
     public Distances(Cell rootCell, Cell endCell, Distances distances){
         this(rootCell);
 
@@ -44,7 +78,7 @@ public class Distances {
      * @return The distance between the provided cell and the root cell. -1 if no such distance has been defined yet.
      */
     public int getDistance(Cell cell){
-        final var distance = Optional.ofNullable(distanceMap.get(cell));
+        final var distance = Optional.ofNullable(this.distanceMap.get(cell));
         return distance.isPresent()
             ? distance.get()
             : -1;
@@ -59,12 +93,16 @@ public class Distances {
         distanceMap.put(cell, distance);
     }
 
+    public Cell getRootCell(){
+        return this.rootCell;
+    }
+
     /**
      * Returns all of the cells that have been indexed within this distances index.
      * @return Set of all of the cells that have a known distance from the root cell.
      */
     public Set<Cell> getCells(){
-        return distanceMap.keySet();
+        return this.distanceMap.keySet();
     }
 
     /**
@@ -96,5 +134,13 @@ public class Distances {
         }
 
         return path;
+    }
+
+    //TODO - move from Map specific Entry to some other generic Pair class
+    public Entry<Cell, Integer> getMax(){
+        return this.distanceMap.entrySet()
+            .stream()
+            .max((var entry1, var entry2) -> entry1.getValue() - entry2.getValue())
+            .get();
     }
 }
