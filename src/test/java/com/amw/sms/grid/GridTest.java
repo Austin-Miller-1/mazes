@@ -1,7 +1,9 @@
-package com.amw.mazes.grid;
+package com.amw.sms.grid;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import com.amw.sms.grid.Grid;
 
 import org.junit.jupiter.api.Test;
 

@@ -1,11 +1,11 @@
-package com.amw.mazes.algorithms.generation;
+package com.amw.sms.algorithms.generation;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import com.amw.mazes.grid.Cell;
-import com.amw.mazes.grid.Grid;
+import com.amw.sms.grid.Cell;
+import com.amw.sms.grid.Grid;
 
 public class BinaryTree implements MazeGenAlgorithm{
     private final Random rng;

@@ -1,4 +1,4 @@
-package com.amw.mazes.util;
+package com.amw.sms.util;
 
 import java.util.Random;
 

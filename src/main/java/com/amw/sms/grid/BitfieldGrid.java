@@ -1,4 +1,4 @@
-package com.amw.mazes.grid;
+package com.amw.sms.grid;
 
 /**
  * BitfieldGrid class. TODO

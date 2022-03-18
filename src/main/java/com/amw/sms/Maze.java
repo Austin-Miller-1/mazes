@@ -1,12 +1,12 @@
-package com.amw.mazes;
+package com.amw.sms;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Map.Entry;
 
-import com.amw.mazes.grid.Cell;
-import com.amw.mazes.grid.Distances;
-import com.amw.mazes.grid.DistancesGrid;
+import com.amw.sms.grid.Cell;
+import com.amw.sms.grid.Distances;
+import com.amw.sms.grid.DistancesGrid;
 
 /**
  * High-level class representing a maze. Mazes consist of a grid of cells and 

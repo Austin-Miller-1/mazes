@@ -1,13 +1,13 @@
-package com.amw.mazes.algorithms;
+package com.amw.sms.algorithms;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import com.amw.mazes.Maze;
-import com.amw.mazes.algorithms.solving.MazeSolveAlgorithm;
-import com.amw.mazes.grid.Cell;
-import com.amw.mazes.grid.Distances;
-import com.amw.mazes.grid.Grid;
+import com.amw.sms.Maze;
+import com.amw.sms.algorithms.solving.MazeSolveAlgorithm;
+import com.amw.sms.grid.Cell;
+import com.amw.sms.grid.Distances;
+import com.amw.sms.grid.Grid;
 
 //TODO SHOULD HAVE CACHING BECAUSE ITS USED MULTIPLE TIMES FOR SAME CELL
 public class Dijkstra extends MazeSolveAlgorithm {

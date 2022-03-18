@@ -1,14 +1,14 @@
-package com.amw.mazes;
+package com.amw.sms;
 
 import java.util.AbstractMap;
 import java.util.Map.Entry;
 
-import com.amw.mazes.algorithms.Dijkstra;
-import com.amw.mazes.algorithms.generation.MazeGenAlgorithm;
-import com.amw.mazes.algorithms.generation.Sidewinder;
-import com.amw.mazes.grid.Cell;
-import com.amw.mazes.grid.DistancesGrid;
-import com.amw.mazes.grid.Grid;
+import com.amw.sms.algorithms.Dijkstra;
+import com.amw.sms.algorithms.generation.MazeGenAlgorithm;
+import com.amw.sms.algorithms.generation.Sidewinder;
+import com.amw.sms.grid.Cell;
+import com.amw.sms.grid.DistancesGrid;
+import com.amw.sms.grid.Grid;
 
 public class MazeBuilder {
     private final Dijkstra dijk;    //Used for maze generation

@@ -1,7 +1,7 @@
-package com.amw.mazes;
+package com.amw.sms;
 
-import com.amw.mazes.algorithms.Dijkstra;
-import com.amw.mazes.algorithms.generation.Sidewinder;
+import com.amw.sms.algorithms.Dijkstra;
+import com.amw.sms.algorithms.generation.Sidewinder;
 
 import ij.IJ;
 
