@@ -17,7 +17,8 @@ import com.amw.mazes.grid.DistancesGrid;
  * An unsolvable maze is one without entrances OR one that has entrances for which no path exists between them.
  * A solvable maze can be made insolvable and vice versa by setting its entrances at runtime.
  * 
- * Mazes should not be created directly using this class and should instead be built using the MazeBuilder class.
+ * Mazes should not be created directly using this class and should instead be built using the MazeBuilder class. 
+ * TODO - if that's the case, then Maze should be made an innerclass and follow the builder pattern more standardly, right?
  * @see MazeBuilder
  */
 public class Maze {

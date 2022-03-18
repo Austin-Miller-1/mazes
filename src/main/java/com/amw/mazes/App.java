@@ -13,7 +13,7 @@ import ij.IJ;
  */
 public class App 
 {
-    public static void main(final String[] args)
+    public static void main(final String[] args) throws InvalidMazeException
     {
         final var maze = new MazeBuilder()
             .withSize(10, 10)
