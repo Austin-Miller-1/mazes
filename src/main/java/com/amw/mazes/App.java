@@ -1,7 +1,6 @@
 package com.amw.mazes;
 
 import com.amw.mazes.algorithms.Dijkstra;
-import com.amw.mazes.algorithms.generation.MazeBuilder;
 import com.amw.mazes.algorithms.generation.Sidewinder;
 
 import ij.IJ;

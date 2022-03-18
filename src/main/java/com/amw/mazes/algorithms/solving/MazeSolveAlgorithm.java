@@ -2,8 +2,8 @@ package com.amw.mazes.algorithms.solving;
 
 import java.util.List;
 
+import com.amw.mazes.Maze;
 import com.amw.mazes.grid.Cell;
-import com.amw.mazes.grid.Maze;
 
 /**
  * Interface for all maze-solving algorithms.

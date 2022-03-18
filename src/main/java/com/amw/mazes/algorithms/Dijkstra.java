@@ -3,11 +3,11 @@ package com.amw.mazes.algorithms;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.amw.mazes.Maze;
 import com.amw.mazes.algorithms.solving.MazeSolveAlgorithm;
 import com.amw.mazes.grid.Cell;
 import com.amw.mazes.grid.Distances;
 import com.amw.mazes.grid.Grid;
-import com.amw.mazes.grid.Maze;
 
 //TODO SHOULD HAVE CACHING BECAUSE ITS USED MULTIPLE TIMES FOR SAME CELL
 public class Dijkstra extends MazeSolveAlgorithm {
