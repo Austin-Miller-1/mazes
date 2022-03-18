@@ -2,6 +2,8 @@ package com.amw.sms;
 
 import com.amw.sms.algorithms.Dijkstra;
 import com.amw.sms.algorithms.generation.Sidewinder;
+import com.amw.sms.mazes.InvalidMazeException;
+import com.amw.sms.mazes.MazeBuilder;
 
 import ij.IJ;
 

@@ -1,4 +1,4 @@
-package com.amw.sms;
+package com.amw.sms.mazes;
 
 import java.util.List;
 import java.util.Optional;

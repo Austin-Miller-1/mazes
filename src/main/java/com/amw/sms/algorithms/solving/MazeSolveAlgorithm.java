@@ -2,8 +2,8 @@ package com.amw.sms.algorithms.solving;
 
 import java.util.List;
 
-import com.amw.sms.Maze;
 import com.amw.sms.grid.Cell;
+import com.amw.sms.mazes.Maze;
 
 /**
  * Interface for all maze-solving algorithms.

@@ -1,8 +1,8 @@
-package com.amw.sms;
+package com.amw.sms.mazes;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.amw.sms.InvalidMazeException;
+import com.amw.sms.mazes.InvalidMazeException;
 
 import org.junit.jupiter.api.Test;
 

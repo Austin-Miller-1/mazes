@@ -1,4 +1,4 @@
-package com.amw.sms;
+package com.amw.sms.mazes;
 
 /**
  * Exception that is thrown when client attempts to construct a maze via MazeBuilder
