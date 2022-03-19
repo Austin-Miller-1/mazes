@@ -97,6 +97,14 @@ public class Grid {
             .get(rng.nextInt(this.colCount));
     }
 
+    public Cell getFirstCell(){
+        return this.grid.get(0).get(0);
+    }
+
+    public Cell getLastCell(){
+        return this.grid.get(this.rowCount-1).get(this.colCount-1);
+    }
+
     /**
      * Returns the total number of cells within the grid.
      * @return The number of cells in the grid.

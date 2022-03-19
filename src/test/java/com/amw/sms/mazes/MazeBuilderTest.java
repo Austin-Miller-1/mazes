@@ -8,9 +8,6 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import java.util.stream.Stream;
 
-import com.amw.sms.mazes.InvalidMazeException;
-import com.amw.sms.mazes.MazeBuilder;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

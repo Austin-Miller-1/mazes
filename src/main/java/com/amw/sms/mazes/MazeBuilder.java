@@ -9,6 +9,8 @@ import com.amw.sms.algorithms.generation.Sidewinder;
 import com.amw.sms.grid.Cell;
 import com.amw.sms.grid.DistancesGrid;
 import com.amw.sms.grid.Grid;
+import com.amw.sms.mazes.goals.MazeGoal;
+import com.amw.sms.mazes.goals.MazeGoalBuilder;
 
 public class MazeBuilder {
     private final String INVALID_SIZE_MESSAGE = "Maze cannot be created with %s %s";
@@ -147,64 +149,43 @@ public class MazeBuilder {
         System.out.println("-- START MAZE BUILDER -- \n Empty grid"); //TODO - Temp print
         System.out.println(grid); //todo Temp
 
-        //Build it out
+        //Build pathing
         this.genAlgorithm.apply(grid);
-        final Entry<Cell, Cell> entrances = this.getEntrances(grid);
+
+        //Goals
+        final var startCell = this.getEntrance(grid);
+        final var endCell = this.getExit(grid, startCell);
+        final var entrances = new AbstractMap.SimpleEntry<Cell,Cell>(startCell, endCell); //TODO - rename
 
         //Show it
         if(showDistances){
-            grid.setDistances(dijk.getDistances(grid, entrances.getKey()));
+            grid.setDistances(dijk.getDistances(grid, startCell));
         }
 
         return new Maze(grid, entrances);
     }
 
-    /**
-     * Get the entrances of the maze.
-     * TODO - rename and clean-up
-     * @param grid
-     * @return
-     * @throws InvalidMazeException
-     */
-    private Entry<Cell, Cell> getEntrances(Grid grid) throws InvalidMazeException{
-        Cell startCell, endCell;
+    private Cell getEntrance(Grid grid) throws InvalidMazeException {
+        final var entranceBuilder = new MazeGoalBuilder(grid).entrance();
 
-        //Longest path requires we get end first, then start
-        if(this.useLongestPath){
-            endCell = this.dijk.getDistances(grid, grid.getRandomCell()).getMax().getKey();
-            startCell = this.dijk.getDistances(grid, endCell).getMax().getKey();
-            return new AbstractMap.SimpleEntry<Cell,Cell>(startCell, endCell);
-        }
-        
-        //If not longest path, get start and end individually
-        //Start cell
-        if(this.useRandomStart)     startCell = grid.getRandomCell();
-        else if(this.startAtFirst)  startCell = grid.getCell(0, 0).get();
-        else {
-            final var chosenCell = grid.getCell(this.startRow, this.startColumn);
-            if(chosenCell.isEmpty()){
-                final var message = "Starting cell at row %s, column %s does not exist within grid of size %sx%s"
-                    .formatted(this.startRow, this.startColumn, this.rowCount, this.colCount);
-                throw new InvalidMazeException(message);
-            }
-    
-            startCell = chosenCell.get();
-        }
+        MazeGoal entrance;
+        if(this.useLongestPath)         entrance = entranceBuilder.farthestFrom(grid.getRandomCell());
+        else if(this.useRandomStart)    entrance = entranceBuilder.atRandom();
+        else if(this.startAtFirst)      entrance = entranceBuilder.atStart();
+        else entrance = entranceBuilder.atPosition(this.startRow, this.startColumn);
 
-        //End cell
-        if(this.useRandomEnd)   endCell = grid.getRandomCell();
-        else if(this.endAtLast) endCell = grid.getCell(grid.getRowCount()-1, grid.getColumnCount()-1).get();
-        else {
-            final var chosenCell = grid.getCell(this.endRow, this.endColumn);
-            if(chosenCell.isEmpty()){
-                final var message = "Ending cell at row %s, column %s does not exist within grid of size %sx%s"
-                    .formatted(this.endRow, this.endColumn, this.rowCount, this.colCount);
-                throw new InvalidMazeException(message);
-            }
-    
-            endCell = chosenCell.get();
-        }
+        return entrance.getCell();
+    }
 
-        return new AbstractMap.SimpleEntry<Cell,Cell>(startCell, endCell);
+    private Cell getExit(Grid grid, Cell startCell) throws InvalidMazeException {
+        final var exitBuilder = new MazeGoalBuilder(grid).exit();
+
+        MazeGoal exit;
+        if(this.useLongestPath)     exit = exitBuilder.farthestFrom(startCell);
+        else if(this.useRandomEnd)  exit = exitBuilder.atRandom();
+        else if(this.endAtLast)     exit = exitBuilder.atEnd();
+        else exit = exitBuilder.atPosition(this.endRow, this.endColumn);
+
+        return exit.getCell();
     }
 }
