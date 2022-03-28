@@ -5,6 +5,12 @@ import com.amw.sms.algorithms.generation.Sidewinder;
 import com.amw.sms.mazes.InvalidMazeException;
 import com.amw.sms.mazes.MazeBuilder;
 
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+
 import ij.IJ;
 
 /**
@@ -13,25 +19,35 @@ import ij.IJ;
  * prints it to the console, displays it as an image and saves that image
  * to the folder containing the application.
  */
+@SpringBootApplication
 public class App 
 {
-    public static void main(final String[] args) throws InvalidMazeException
-    {
-        final var maze = new MazeBuilder()
+    
+    public static void main(final String[] args) throws InvalidMazeException {
+		  new SpringApplicationBuilder(App.class)
+        .headless(false)
+        .run(args);
+    }
+
+    @Bean
+	public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
+		return args -> {
+            final var maze = new MazeBuilder()
             .withSize(10, 10)
             .usingLongestPath()
             .usingAlgorithm(new Sidewinder())
             .showDistances()
             .build();
 
-        System.out.println(maze);
+            System.out.println(maze);
 
-        final var solveAlgorithm = new Dijkstra();
-        solveAlgorithm.solve(maze);
-        System.out.println(maze);
+            final var solveAlgorithm = new Dijkstra();
+            solveAlgorithm.solve(maze);
+            System.out.println(maze);
 
-        /* final var mazeImg = grid.toImage("Sidewinder", 30);
-        mazeImg.show();
-        IJ.save(mazeImg, "maze.tif"); */
-    }
+            final var mazeImg = maze.getGrid().toImage("Sidewinder", 30);
+            mazeImg.show();
+            IJ.save(mazeImg, "maze.tif");
+		};
+	}
 }
