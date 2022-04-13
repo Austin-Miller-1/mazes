@@ -8,16 +8,26 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import java.util.stream.Stream;
 
+import com.amw.sms.grid.GridFactory;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 public class MazeBuilderTest {
+    private GridFactory gridFactory;
+
+    @BeforeEach
+    void beforeEach(){
+        this.gridFactory = new GridFactory();
+    }
+
     /*Size tests */
     @Test
     void testWithSize_returnsMazeWithExpectedRowAndColumnCount() throws InvalidMazeException {
-        final var maze = new MazeBuilder()
+        final var maze = new MazeBuilder(this.gridFactory)
             .withSize(5, 6)
             .build();
 
@@ -30,7 +40,7 @@ public class MazeBuilderTest {
     @MethodSource("invalidRowAndColProvider")
     void testWithSize_whenZeroRows_throwsInvalidMazeException(int rows, int columns) throws InvalidMazeException {
         final var exception = assertThrows(InvalidMazeException.class, () -> {
-            new MazeBuilder()
+            new MazeBuilder(this.gridFactory)
                 .withSize(rows, columns)
                 .build();
         });
@@ -50,7 +60,7 @@ public class MazeBuilderTest {
     @Test
     void testBuild_whenNoSizeProvided_throwsInvalidMazeException() {
         final var exception = assertThrows(InvalidMazeException.class, () -> {
-            new MazeBuilder()
+            new MazeBuilder(this.gridFactory)
                 .build();
         });
         assertNotNull(exception.getMessage());
@@ -59,7 +69,7 @@ public class MazeBuilderTest {
     /* Setting entrances and exits */
     @Test
     void testStartFrom_andTestWithSize_returnsMazeThatStartsWithSpecifiedCell() throws InvalidMazeException {
-        final var maze = new MazeBuilder()
+        final var maze = new MazeBuilder(this.gridFactory)
             .withSize(5, 5)
             .startFrom(1, 3)
             .build();
@@ -72,7 +82,7 @@ public class MazeBuilderTest {
 
     @Test
     void testEndAt_andTestWithSize_returnsMazeThatEndsWithSpecifiedCell() throws InvalidMazeException {
-        final var maze = new MazeBuilder()
+        final var maze = new MazeBuilder(this.gridFactory)
             .withSize(5, 5)
             .endAt(1, 3)
             .build();
@@ -86,7 +96,7 @@ public class MazeBuilderTest {
     /* Non-set entrances and exits */
     @Test
     void testBuild_whenNoStartProvided_returnsMazeThatStartsWithFirstCell() throws InvalidMazeException {
-        final var maze = new MazeBuilder()
+        final var maze = new MazeBuilder(this.gridFactory)
             .withSize(5, 5)
             .build();
 
@@ -102,7 +112,7 @@ public class MazeBuilderTest {
         final var rowCount = 4;
         final var colCount = 5;
         
-        final var maze = new MazeBuilder()
+        final var maze = new MazeBuilder(this.gridFactory)
             .withSize(rowCount, colCount)
             .build();
 

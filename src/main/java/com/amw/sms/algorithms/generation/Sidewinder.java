@@ -9,7 +9,7 @@ import com.amw.sms.grid.Grid;
 import com.amw.sms.util.CoinFlip;
 
 /**
- * 
+ * Sidewinder maze-generation algorithm.
  * 
  * The Sidewinder algorithm can be updated to generate a maze towards a specific direction,
  * that is, such that it's biases end up in that direction. These two factors control this directional bias:

@@ -1,6 +1,5 @@
 package com.amw.sms.grid;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -93,6 +92,11 @@ public class Distances {
         distanceMap.put(cell, distance);
     }
 
+    /**
+     * Returns the root cell used by this Distances instance. All distances set 
+     * within this instance are from this cell.
+     * @return Root cell.
+     */
     public Cell getRootCell(){
         return this.rootCell;
     }

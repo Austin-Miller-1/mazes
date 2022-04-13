@@ -1,20 +1,21 @@
 package com.amw.sms.mazes;
 
 import java.util.AbstractMap;
-import java.util.Map.Entry;
 
 import com.amw.sms.algorithms.Dijkstra;
 import com.amw.sms.algorithms.generation.MazeGenAlgorithm;
 import com.amw.sms.algorithms.generation.Sidewinder;
 import com.amw.sms.grid.Cell;
-import com.amw.sms.grid.DistancesGrid;
 import com.amw.sms.grid.Grid;
+import com.amw.sms.grid.GridFactory;
 import com.amw.sms.mazes.goals.MazeGoal;
 import com.amw.sms.mazes.goals.MazeGoalBuilder;
 
 public class MazeBuilder {
-    private final String INVALID_SIZE_MESSAGE = "Maze cannot be created with %s %s";
-    private final String NO_GRID_SIZE = "No grid size specified.";
+    private final static String INVALID_SIZE_MESSAGE = "Maze cannot be created with %s %s";
+    private final static String NO_GRID_SIZE = "No grid size specified.";
+
+    private final GridFactory gridFactory;
 
     private final Dijkstra dijk;    //Used for maze generation
     private int rowCount = 0, colCount = 0;
@@ -31,7 +32,9 @@ public class MazeBuilder {
     /**
      * Constructs new MazeBuilder.
      */
-    public MazeBuilder(){
+    public MazeBuilder(GridFactory gridFactory){
+        this.gridFactory = gridFactory;
+        
         dijk = new Dijkstra();
         genAlgorithm = new Sidewinder();
     }
@@ -145,7 +148,7 @@ public class MazeBuilder {
         if(this.rowCount == 0) throw new InvalidMazeException(NO_GRID_SIZE);    //TODO - if grid size is required, does it make sense to require it as part of constructor? See builder pattern conventions
 
         //Initial grid
-        final var grid = new DistancesGrid(this.rowCount, this.colCount); //TODO - move to factory for dependency injection??
+        final var grid = gridFactory.createDistancesGrid(this.rowCount, this.colCount);
         System.out.println("-- START MAZE BUILDER -- \n Empty grid"); //TODO - Temp print
         System.out.println(grid); //todo Temp
 

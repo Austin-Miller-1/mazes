@@ -7,6 +7,9 @@ import java.util.Random;
 import com.amw.sms.grid.Cell;
 import com.amw.sms.grid.Grid;
 
+/**
+ * Binary tree maze-generation algorithm.
+ */
 public class BinaryTree implements MazeGenAlgorithm{
     private final Random rng;
 

@@ -1,4 +1,4 @@
-package com.amw.sms.grid;
+package com.amw.sms.ideas;
 
 /**
  * BitfieldGrid class. TODO
