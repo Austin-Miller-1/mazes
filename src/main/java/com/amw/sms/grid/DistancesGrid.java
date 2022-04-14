@@ -2,6 +2,7 @@ package com.amw.sms.grid;
 
 import java.util.Optional;
 
+@Deprecated
 /**
  * Grid class with distances assigned to each cell.
  */

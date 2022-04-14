@@ -211,6 +211,7 @@ public class Cell {
         return rowPos;
     }
 
+    @Deprecated
     /**
      * TODO - does it make more sense to have this outside of the implementation of Cell?
      * Seems like questionable design adding it to Cell directly when it's to be used by the

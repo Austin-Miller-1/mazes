@@ -17,7 +17,7 @@ public class MazeBuilder {
 
     private final GridFactory gridFactory;
 
-    private final Dijkstra dijk;    //Used for maze generation
+    private final Dijkstra dijk;    //Used for maze generation TODO get single Dijkstra instance from IoC container
     private int rowCount = 0, colCount = 0;
     private int startRow = 0, startColumn = 0; //TODO do we use defaults still? We shouldn't leave them uninitialized but we also will never use the default values...
     private int endRow = 0, endColumn = 0;
@@ -172,7 +172,7 @@ public class MazeBuilder {
         final var entranceBuilder = new MazeGoalBuilder(grid).entrance();
 
         MazeGoal entrance;
-        if(this.useLongestPath)         entrance = entranceBuilder.farthestFrom(grid.getRandomCell());
+        if(this.useLongestPath)         entrance = entranceBuilder.farthestFrom(grid.getRandomCell()); //TODO - always use same cell instead of random
         else if(this.useRandomStart)    entrance = entranceBuilder.atRandom();
         else if(this.startAtFirst)      entrance = entranceBuilder.atStart();
         else entrance = entranceBuilder.atPosition(this.startRow, this.startColumn);

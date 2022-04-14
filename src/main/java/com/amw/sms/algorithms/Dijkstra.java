@@ -9,7 +9,7 @@ import com.amw.sms.grid.Distances;
 import com.amw.sms.grid.Grid;
 import com.amw.sms.mazes.Maze;
 
-//TODO SHOULD HAVE CACHING BECAUSE ITS USED MULTIPLE TIMES FOR SAME CELL
+//TODO - upgrade with caching mode to reduce number of calls to algorithm.
 public class Dijkstra extends MazeSolveAlgorithm {
     public List<Cell> getSolution(Maze maze){
         if(maze.getEntrances().isEmpty()){
@@ -21,6 +21,7 @@ public class Dijkstra extends MazeSolveAlgorithm {
         return this.getPath(maze.getGrid(), startCell, endCell, this.getDistances(maze.getGrid(), startCell));
     }
 
+    @Deprecated
     public Distances getDistances(Grid grid, Cell cell){
         final var distances = new Distances(cell);
         final var frontier = new LinkedList<Cell>();    //Frontier will contain all remaining cells to check
@@ -46,6 +47,7 @@ public class Dijkstra extends MazeSolveAlgorithm {
         return distances;
     }
 
+    @Deprecated
     public List<Cell> getPath(Grid grid, Cell startCell, Cell endCell, Distances distancesFromStart){
         final var path = new LinkedList<Cell>();
         path.add(endCell);

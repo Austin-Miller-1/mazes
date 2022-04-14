@@ -25,6 +25,7 @@ public class Maze {
     private final DistancesGrid grid;
     private final Optional<Entry<Cell, Cell>> entrances;
 
+    @Deprecated
     /**
      * Construct maze without entrances using provided grid.
      * @param grid Grid of cells representing maze.
@@ -34,6 +35,7 @@ public class Maze {
         this.entrances = Optional.empty();
     }
 
+    @Deprecated
     /**
      * Construct maze using provided grid and the specified entrances.
      * @param grid Grid of cells representing maze.
@@ -72,6 +74,7 @@ public class Maze {
         : Optional.empty();
     }
 
+    @Deprecated
     /**
      * Returns the grid used internally by the maze. This should be used only when classes need to work
      * with the maze a low level, such as for solving the maze.
@@ -81,6 +84,7 @@ public class Maze {
         return this.grid;
     }
 
+    @Deprecated
     /**
      * TODO - "display" is not very accurate.. It's more like applying a path? Or setting a path? But both of those are 
      * also strange...

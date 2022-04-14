@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.Map.Entry;
 
+@Deprecated
 /**
  * Distances is used to manage the distances between a specific root cell
  * and all other cells on a grid.

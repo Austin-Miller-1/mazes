@@ -14,6 +14,7 @@ public class GridFactory {
      */
     public GridFactory(){}
 
+    @Deprecated
     /**
      * Constructs new DistancesGrid instance
      * @param rowCount Number of rows in grid
