@@ -8,6 +8,8 @@ import com.amw.sms.grid.Cell;
 import com.amw.sms.grid.Grid;
 import com.amw.sms.util.CoinFlip;
 
+import org.springframework.stereotype.Component;
+
 /**
  * Sidewinder maze-generation algorithm.
  * 
@@ -26,6 +28,7 @@ import com.amw.sms.util.CoinFlip;
  * and instead, handle the directional change via redirection through a grid-rotation algorithm. 
  * 
  */
+@Component
 public class Sidewinder implements MazeGenAlgorithm{
     private final Random rng;
     private final CoinFlip coinFlip;

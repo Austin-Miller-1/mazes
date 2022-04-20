@@ -9,7 +9,10 @@ import com.amw.sms.grid.Distances;
 import com.amw.sms.grid.Grid;
 import com.amw.sms.mazes.Maze;
 
+import org.springframework.stereotype.Component;
+
 //TODO - upgrade with caching mode to reduce number of calls to algorithm.
+@Component
 public class Dijkstra extends MazeSolveAlgorithm {
     public List<Cell> getSolution(Maze maze){
         if(maze.getEntrances().isEmpty()){
