@@ -1,0 +1,1 @@
+- MazeBuilder will ALWAYS provide an exit and entrance to the move. If that's the case, then Maze shouldn't have optionals for entrances or exits.

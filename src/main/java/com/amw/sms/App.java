@@ -1,13 +1,13 @@
 package com.amw.sms;
 
+import com.amw.sms.algorithms.AlgorithmFactory;
 import com.amw.sms.algorithms.Dijkstra;
+import com.amw.sms.algorithms.generation.MazeGenAlgorithmType;
 import com.amw.sms.algorithms.generation.Sidewinder;
 import com.amw.sms.mazes.InvalidMazeException;
-import com.amw.sms.mazes.MazeBuilder;
 import com.amw.sms.mazes.MazeBuilderFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -27,6 +27,9 @@ public class App
 {
     @Autowired
     private MazeBuilderFactory mazeBuilderFactory;
+
+    @Autowired
+    private AlgorithmFactory algorithmFactory;
     
     public static void main(final String[] args) throws InvalidMazeException {
         new SpringApplicationBuilder(App.class)
@@ -40,14 +43,14 @@ public class App
             final var maze = mazeBuilderFactory.create()
                 .withSize(10, 10)
                 .usingLongestPath()
-                .usingAlgorithm(new Sidewinder())
+                .usingAlgorithm(algorithmFactory.getGenerationAlgorithm(MazeGenAlgorithmType.SIDEWINDER)) //TODO - should "usingAlgorithm" just take the enum? Let the builder handle the actual algorithm creation?
                 .showDistances()
                 .build();
 
             System.out.println(maze);
 
-            final var solveAlgorithm = new Dijkstra();
-            solveAlgorithm.solve(maze);
+            algorithmFactory.getSolvingAlgorithm()
+                .solve(maze);
             System.out.println(maze);
 
             final var mazeImg = maze.getGrid().toImage("Sidewinder", 30);

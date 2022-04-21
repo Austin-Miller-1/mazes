@@ -1,6 +1,8 @@
 package com.amw.sms.algorithms;
 
+import com.amw.sms.algorithms.generation.BinaryTree;
 import com.amw.sms.algorithms.generation.MazeGenAlgorithm;
+import com.amw.sms.algorithms.generation.MazeGenAlgorithmType;
 import com.amw.sms.algorithms.generation.Sidewinder;
 import com.amw.sms.algorithms.solving.MazeSolveAlgorithm;
 
@@ -13,17 +15,33 @@ import org.springframework.stereotype.Component;
 @Component
 public class AlgorithmFactory {
     @Autowired
-    Sidewinder sidewinder;
+    private BinaryTree binaryTree;
 
     @Autowired
-    Dijkstra dijk;
+    private Sidewinder sidewinder;
+
+    @Autowired
+    private Dijkstra dijk;
 
     /**
      * Returns some maze-generation algorithm.  
      * @return A maze-generation algorithm. The exact algorithm returned is not specified. 
      */
     public MazeGenAlgorithm getGenerationAlgorithm(){
-        return sidewinder;
+        return this.getGenerationAlgorithm(MazeGenAlgorithmType.SIDEWINDER);
+    }
+
+    /**
+     * Returns the specified maze-generation algorithm.
+     * @param type The exact type of the algorithm.
+     * @return The maze-generation algorithm.
+     */
+    public MazeGenAlgorithm getGenerationAlgorithm(MazeGenAlgorithmType type){
+        return switch(type){
+            case BINARY_TREE -> binaryTree;
+            case SIDEWINDER -> sidewinder;
+            default -> sidewinder;  //TODO - should throw exception as invalid type is provided...
+        };
     }
 
     /**

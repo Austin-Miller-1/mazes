@@ -7,9 +7,12 @@ import java.util.Random;
 import com.amw.sms.grid.Cell;
 import com.amw.sms.grid.Grid;
 
+import org.springframework.stereotype.Component;
+
 /**
  * Binary tree maze-generation algorithm.
  */
+@Component
 public class BinaryTree implements MazeGenAlgorithm{
     private final Random rng;
 

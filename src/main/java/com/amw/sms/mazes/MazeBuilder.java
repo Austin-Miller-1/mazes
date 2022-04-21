@@ -2,6 +2,7 @@ package com.amw.sms.mazes;
 
 import java.util.AbstractMap;
 
+import com.amw.sms.algorithms.AlgorithmFactory;
 import com.amw.sms.algorithms.Dijkstra;
 import com.amw.sms.algorithms.generation.MazeGenAlgorithm;
 import com.amw.sms.algorithms.generation.Sidewinder;
@@ -10,14 +11,16 @@ import com.amw.sms.grid.Grid;
 import com.amw.sms.grid.GridFactory;
 import com.amw.sms.mazes.goals.MazeGoal;
 import com.amw.sms.mazes.goals.MazeGoalBuilder;
+import com.amw.sms.mazes.goals.MazeGoalBuilderFactory;
 
 public class MazeBuilder {
     private final static String INVALID_SIZE_MESSAGE = "Maze cannot be created with %s %s";
     private final static String NO_GRID_SIZE = "No grid size specified.";
 
     private final GridFactory gridFactory;
+    private final MazeGoalBuilderFactory goalBuilderFactory;
+    private final AlgorithmFactory algorithmFactory;
 
-    private final Dijkstra dijk;    //Used for maze generation TODO get single Dijkstra instance from IoC container
     private int rowCount = 0, colCount = 0;
     private int startRow = 0, startColumn = 0; //TODO do we use defaults still? We shouldn't leave them uninitialized but we also will never use the default values...
     private int endRow = 0, endColumn = 0;
@@ -31,12 +34,15 @@ public class MazeBuilder {
 
     /**
      * Constructs new MazeBuilder.
+     * @param gridFactory Grid factory to be used by builder.
+     * @param goalBuilderFactory Maze-goal builder factory to be used by builder.
+     * @param algorithmFactory Algorithm factory to be used by builder.
      */
-    public MazeBuilder(GridFactory gridFactory){
+    public MazeBuilder(GridFactory gridFactory, MazeGoalBuilderFactory goalBuilderFactory, AlgorithmFactory algorithmFactory){
         this.gridFactory = gridFactory;
-        
-        dijk = new Dijkstra();
-        genAlgorithm = new Sidewinder();
+        this.goalBuilderFactory = goalBuilderFactory;
+        this.algorithmFactory = algorithmFactory;
+        genAlgorithm = algorithmFactory.getGenerationAlgorithm();
     }
 
     /**
@@ -68,7 +74,6 @@ public class MazeBuilder {
 
     /**
      * Sets starting point of maze.
-     * TODO - rename.
      * @param row Row of entrance.
      * @param column Column of entrance.
      * @return Builder instance.
@@ -83,7 +88,6 @@ public class MazeBuilder {
 
     /**
      * Sets ending point of maze.
-     * TODO - rename.
      * @param row Row of exit.
      * @param column Column of exit.
      * @return Builder instance.
@@ -130,7 +134,7 @@ public class MazeBuilder {
     }
 
     /**
-     * TODO
+     * TODO remove
      * @return
      */
     public MazeBuilder showDistances(){
@@ -162,14 +166,21 @@ public class MazeBuilder {
 
         //Show it
         if(showDistances){
-            grid.setDistances(dijk.getDistances(grid, startCell));
+            grid.setDistances(algorithmFactory.getDijkstra().getDistances(grid, startCell));
         }
 
         return new Maze(grid, entrances);
     }
 
+    /**
+     * Get entrance cell of grid depending on internal configuration of builder.
+     * @param grid The grid.
+     * @return The cell that the builder has determined to be the start of the maze based on the 
+     * configuration of the builder.
+     * @throws InvalidMazeException If the start cell that was determined does not actually exist in the grid.
+     */
     private Cell getEntrance(Grid grid) throws InvalidMazeException {
-        final var entranceBuilder = new MazeGoalBuilder(grid).entrance();
+        final var entranceBuilder = goalBuilderFactory.create(grid).entrance();
 
         MazeGoal entrance;
         if(this.useLongestPath)         entrance = entranceBuilder.farthestFrom(grid.getRandomCell()); //TODO - always use same cell instead of random
@@ -180,8 +191,15 @@ public class MazeBuilder {
         return entrance.getCell();
     }
 
+    /**
+     * Get exit cell of grid depending on internal configuration of builder.
+     * @param grid The grid.
+     * @return The cell that the builder has determined to be the end/exit of the maze based on the 
+     * configuration of the builder.
+     * @throws InvalidMazeException If the end cell that was determined does not actually exist in the grid.
+     */
     private Cell getExit(Grid grid, Cell startCell) throws InvalidMazeException {
-        final var exitBuilder = new MazeGoalBuilder(grid).exit();
+        final var exitBuilder = goalBuilderFactory.create(grid).exit();
 
         MazeGoal exit;
         if(this.useLongestPath)     exit = exitBuilder.farthestFrom(startCell);
@@ -190,5 +208,29 @@ public class MazeBuilder {
         else exit = exitBuilder.atPosition(this.endRow, this.endColumn);
 
         return exit.getCell();
+    }
+
+    /**
+     * Get the grid factory used by this MazeBuilder.
+     * @return The grid factory used.
+     */
+    GridFactory getGridFactory(){
+        return this.gridFactory;
+    }
+
+    /**
+     * Get the maze-goal builder factory used by this MazeBuilder.
+     * @return The maze-goal builder factory used.
+     */
+    MazeGoalBuilderFactory getGoalBuilderFactory(){
+        return this.goalBuilderFactory;
+    }
+
+    /**
+     * Get the algorithm factory used by this MazeBuilder.
+     * @return The algorithm factory used.
+     */
+    AlgorithmFactory getAlgorithmFactory(){
+        return this.algorithmFactory;
     }
 }
