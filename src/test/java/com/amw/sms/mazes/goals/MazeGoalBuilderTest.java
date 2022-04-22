@@ -3,20 +3,16 @@ package com.amw.sms.mazes.goals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyInt;
 
-import java.util.AbstractMap;
-import java.util.Map;
 import java.util.Optional;
 
 import com.amw.sms.algorithms.AlgorithmFactory;
 import com.amw.sms.algorithms.Dijkstra;
 import com.amw.sms.grid.Cell;
-import com.amw.sms.grid.Distances;
+import com.amw.sms.grid.CellDistances;
 import com.amw.sms.grid.Grid;
 import com.amw.sms.mazes.InvalidMazeException;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -35,7 +31,7 @@ public class MazeGoalBuilderTest {
     private Dijkstra mockDijkstra;
 
     @Mock 
-    private Distances mockCellDistances;
+    private CellDistances mockCellDistances;
 
     @Mock
     private Grid mockGrid;
@@ -131,8 +127,8 @@ public class MazeGoalBuilderTest {
             .thenReturn(mockCellDistances);
 
         //Mock CellDistances such that mockFurthestCell is actually considered the furthest cell.
-        Mockito.when(mockCellDistances.getMax())
-            .thenReturn(new AbstractMap.SimpleEntry<Cell,Integer>(mockFurthestCell, 1));
+        Mockito.when(mockCellDistances.getFurthestCell())
+            .thenReturn(mockFurthestCell);
 
         final var mazeGoal = new MazeGoalBuilder(mockAlgorithmFactory, mockGrid)
             .farthestFrom(mockCell);

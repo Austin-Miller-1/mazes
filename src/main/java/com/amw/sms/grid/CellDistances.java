@@ -95,7 +95,7 @@ public class CellDistances extends GridData {
     @Override
     public String getCellContents(Cell cell){
         return this.isDistanceSet(cell)
-            ?   this.distances.get(cell).toString()
+            ?   Integer.toString(this.distances.get(cell), 32).toUpperCase()
             :   super.getCellContents(cell);
     }
 }

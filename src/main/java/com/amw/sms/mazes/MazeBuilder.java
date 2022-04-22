@@ -1,17 +1,13 @@
 package com.amw.sms.mazes;
 
-import java.util.AbstractMap;
-
 import com.amw.sms.algorithms.AlgorithmFactory;
-import com.amw.sms.algorithms.Dijkstra;
 import com.amw.sms.algorithms.generation.MazeGenAlgorithm;
-import com.amw.sms.algorithms.generation.Sidewinder;
 import com.amw.sms.grid.Cell;
 import com.amw.sms.grid.Grid;
 import com.amw.sms.grid.GridFactory;
 import com.amw.sms.mazes.goals.MazeGoal;
-import com.amw.sms.mazes.goals.MazeGoalBuilder;
 import com.amw.sms.mazes.goals.MazeGoalBuilderFactory;
+import com.amw.sms.util.Pair;
 
 public class MazeBuilder {
     private final static String INVALID_SIZE_MESSAGE = "Maze cannot be created with %s %s";
@@ -152,7 +148,7 @@ public class MazeBuilder {
         if(this.rowCount == 0) throw new InvalidMazeException(NO_GRID_SIZE);    //TODO - if grid size is required, does it make sense to require it as part of constructor? See builder pattern conventions
 
         //Initial grid
-        final var grid = gridFactory.createDistancesGrid(this.rowCount, this.colCount);
+        final var grid = gridFactory.createGrid(this.rowCount, this.colCount);
         System.out.println("-- START MAZE BUILDER -- \n Empty grid"); //TODO - Temp print
         System.out.println(grid); //todo Temp
 
@@ -160,16 +156,15 @@ public class MazeBuilder {
         this.genAlgorithm.apply(grid);
 
         //Goals
-        final var startCell = this.getEntrance(grid);
-        final var endCell = this.getExit(grid, startCell);
-        final var entrances = new AbstractMap.SimpleEntry<Cell,Cell>(startCell, endCell); //TODO - rename
+        final var start = this.getEntrance(grid);
+        final var end = this.getExit(grid, start.getCell());
 
         //Show it
         if(showDistances){
-            grid.setDistances(algorithmFactory.getDijkstra().getDistances(grid, startCell));
+            grid.setGridData(algorithmFactory.getDijkstra().getDistances(grid, start.getCell()));
         }
 
-        return new Maze(grid, entrances);
+        return new Maze(grid, new Pair<MazeGoal, MazeGoal>(start, end));
     }
 
     /**
@@ -179,7 +174,7 @@ public class MazeBuilder {
      * configuration of the builder.
      * @throws InvalidMazeException If the start cell that was determined does not actually exist in the grid.
      */
-    private Cell getEntrance(Grid grid) throws InvalidMazeException {
+    private MazeGoal getEntrance(Grid grid) throws InvalidMazeException {
         final var entranceBuilder = goalBuilderFactory.create(grid).entrance();
 
         MazeGoal entrance;
@@ -188,7 +183,7 @@ public class MazeBuilder {
         else if(this.startAtFirst)      entrance = entranceBuilder.atStart();
         else entrance = entranceBuilder.atPosition(this.startRow, this.startColumn);
 
-        return entrance.getCell();
+        return entrance;
     }
 
     /**
@@ -198,7 +193,7 @@ public class MazeBuilder {
      * configuration of the builder.
      * @throws InvalidMazeException If the end cell that was determined does not actually exist in the grid.
      */
-    private Cell getExit(Grid grid, Cell startCell) throws InvalidMazeException {
+    private MazeGoal getExit(Grid grid, Cell startCell) throws InvalidMazeException {
         final var exitBuilder = goalBuilderFactory.create(grid).exit();
 
         MazeGoal exit;
@@ -207,7 +202,7 @@ public class MazeBuilder {
         else if(this.endAtLast)     exit = exitBuilder.atEnd();
         else exit = exitBuilder.atPosition(this.endRow, this.endColumn);
 
-        return exit.getCell();
+        return exit;
     }
 
     /**

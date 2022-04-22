@@ -2,10 +2,39 @@ package com.amw.sms.grid;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+/**
+ * Tests for Grid.
+ */
+@ExtendWith(MockitoExtension.class)
 public class GridTest {
+    @Mock
+    private GridData mockGridData;
+
+    @Mock private Cell mockCell1;
+    @Mock private Cell mockCell2;
+    @Mock private Cell mockCell3;
+    @Mock private Cell mockCellOffPath;
+
+    private List<Cell> samplePath;
+    private String sampleCellDataContents = "A";
+
+    @BeforeEach
+    void beforeEach(){
+        samplePath = Arrays.asList(mockCell1, mockCell2, mockCell3);
+    }
+
     @Test
     void testConstructor_usingGetCell_innerCellsAreGivenExpectedNeighbors(){
         final var grid = new Grid(10, 10);
@@ -161,5 +190,256 @@ public class GridTest {
 
         assertEquals(9*10, cells.size());
         assertTrue(cells.contains(grid.getCell(5, 9).get()));
+    }
+
+    @Test
+    void testGetRowCount_returnsRowCount(){
+        final var grid = new Grid(9, 10);
+        assertEquals(9, grid.getRowCount());
+    }
+
+    @Test
+    void testGetColumnCount_returnsColumnCount(){
+        final var grid = new Grid(9, 10);
+        assertEquals(10, grid.getColumnCount());
+    }
+
+    @Test
+    void testSetGridData_andGetGridData_setsGridDataAsExpected(){
+        final var grid = new Grid(9, 10);
+        grid.setGridData(mockGridData);
+
+        assertTrue(grid.getGridData().isPresent());
+        assertEquals(mockGridData, grid.getGridData().get());
+    }
+
+    @Test
+    void testClearGridData_andGetGridData_removesExistingGridDataAsExpected(){
+        final var grid = new Grid(9, 10);
+        grid.setGridData(mockGridData);
+        grid.clearGridData();
+
+        assertTrue(grid.getGridData().isEmpty());
+    }
+
+
+    @Test
+    void testClearGridData_whenNoDataExists_doesNotCauseException(){
+        final var grid = new Grid(9, 10);
+        
+        //Call before any data is set - shouldn't cause problems
+        grid.clearGridData();
+        assertTrue(grid.getGridData().isEmpty());
+        
+        //Set data
+        grid.setGridData(mockGridData);
+
+        //Double clear - second call shouldn't cause problems
+        grid.clearGridData();
+        grid.clearGridData();
+        assertTrue(grid.getGridData().isEmpty());
+    }
+
+    @Test
+    void testGetGridData_whenNotSet_returnsEmptyOptional(){
+        final var grid = new Grid(9, 10);
+        assertTrue(grid.getGridData().isEmpty());
+    }
+
+    @Test
+    void testShowGridData_andGetCellDataDisplayString_whenGridDataNotSet_returnsWhitespace(){
+        //Grid fixture
+        final var grid = new Grid(9, 10);
+
+        //Test method
+        grid.showGridData();
+
+        //Assert
+        assertEquals("", grid.getCellDataDisplayString(mockCell1).trim());
+    }
+
+    @Test
+    void testShowGridData_andGetCellDataDisplayString_whenGridDataSet_cellDataIsDisplayed(){
+        //Grid fixture
+        final var grid = new Grid(9, 10);
+        grid.setGridData(mockGridData);
+        Mockito.when(mockGridData.getCellContents(mockCell1))
+            .thenReturn(sampleCellDataContents);
+
+        //Test method
+        grid.showGridData();
+
+        //Assert
+        assertEquals(sampleCellDataContents, grid.getCellDataDisplayString(mockCell1));
+    }
+
+
+    @Test
+    void testHideGridData_andGetCellDataDisplayString_whitespaceIsDisplayed(){
+        //Grid fixture
+        final var grid = new Grid(9, 10);
+        grid.setGridData(mockGridData);
+
+        //Test method
+        grid.hideGridData();
+
+        //Assert
+        assertEquals("", grid.getCellDataDisplayString(mockCell1).trim());
+    }
+
+    @Test
+    void testHideGridData_whenNoDataSet_doesNotCauseException(){
+        final var grid = new Grid(9, 10);
+        grid.hideGridData();
+        grid.getCellDataDisplayString(mockCell1);
+    }
+
+    @Test
+    void testHideGridData_whenDataAlreadyHidden_doesNotCauseException(){
+        //Grid fixture
+        final var grid = new Grid(9, 10);
+        grid.setGridData(mockGridData);
+
+        //Test method --> We care about second call
+        grid.hideGridData();
+        grid.hideGridData();
+
+        //Assert
+        grid.getCellDataDisplayString(mockCell1);
+    }
+
+    @Test
+    void testSetPath_andGetPath_setsPathAsExpected(){
+        final var grid = new Grid(9, 10);
+        grid.setPath(samplePath);
+        assertEquals(samplePath, grid.getPath().get());
+    }
+
+    @Test
+    void testGetPath_whenNoPathSet_returnsEmptyOptional(){
+        final var path = new Grid(9, 10).getPath();
+        assertTrue(path.isEmpty());
+    }
+
+    @Test
+    void testClearPath_andSetPath_andGetPath_clearsGridsPathAsExpected(){
+        final var grid = new Grid(9, 10);
+        grid.setPath(samplePath);
+
+        grid.clearPath();
+
+        assertTrue(grid.getPath().isEmpty());
+    }
+
+    @Test
+    void testClearPath_whenNoPathSet_doesNotCauseException(){
+        final var grid = new Grid(9, 10);
+
+        //Call before path is set - shouldn't cause problems
+        grid.clearPath();
+
+        //Set path
+        grid.setPath(samplePath);
+
+        //Double clear, second call shouldn't cause problems
+        grid.clearPath();
+        grid.clearPath();
+    }
+
+    @Test
+    void testDisplayPathExclusively_andGetCellDataDisplayString_gridDataOffThePathIsReplacedWithWhitespace(){
+        final var grid = new Grid(9, 10);
+        grid.setGridData(mockGridData);
+        Mockito.lenient()
+            .when(mockGridData.getCellContents(any()))
+            .thenReturn("AAA");
+        grid.setPath(samplePath);
+
+        grid.displayPathExclusively();
+
+        assertEquals("", grid.getCellDataDisplayString(mockCellOffPath).trim());       
+    }
+
+    @Test
+    void testDisplayPathExclusively_andGetCellDataDisplayString_gridDataOnThePathIsDisplayedAsString(){
+        final var grid = new Grid(9, 10);
+        grid.setGridData(mockGridData);
+        Mockito.when(mockGridData.getCellContents(any()))
+            .thenReturn(sampleCellDataContents);
+        grid.setPath(samplePath);
+
+        grid.displayPathExclusively();
+
+        assertEquals(sampleCellDataContents, grid.getCellDataDisplayString(samplePath.get(0)));       
+    }
+
+    @Test
+    void testDisplayAllCells_andGetCellDataDisplayString_gridDataOffThePathIsDisplayedAsString(){
+        final var grid = new Grid(9, 10);
+        grid.setGridData(mockGridData);
+        Mockito.when(mockGridData.getCellContents(any()))
+            .thenReturn(sampleCellDataContents);
+        grid.setPath(samplePath);
+
+        grid.displayAllCells();
+
+        assertEquals(sampleCellDataContents, grid.getCellDataDisplayString(mockCellOffPath));       
+    }
+
+    @Test
+    void testDisplayAllCells_andGetCellDataDisplayString__gridDataOnThePathIsDisplayedAsString(){
+        final var grid = new Grid(9, 10);
+        grid.setGridData(mockGridData);
+        Mockito.when(mockGridData.getCellContents(any()))
+            .thenReturn(sampleCellDataContents);
+        grid.setPath(samplePath);
+
+        grid.displayAllCells();
+
+        assertEquals(sampleCellDataContents, grid.getCellDataDisplayString(samplePath.get(0)));     
+    }
+
+    @Test
+    void testShowGridData_andToString_gridDataDisplayedInGridString(){
+        //TODO
+                // //Grid fixture
+                // final var grid = new Grid(9, 10);
+                // grid.setGridData(mockGridData);
+        
+                // //Mock setup - integration with Cell class
+                // final var someCell = grid.getFirstCell();
+                // final var sampleData = "10";
+                // Mockito.when(mockGridData.getCellContents(someCell))
+                //     .thenReturn(sampleData);
+    }
+
+    @Test
+    void testHideGridData_andToString_gridDataNotDisplayedInGridString(){
+        //TODO
+    }
+
+    
+    @Test
+    void testDisplayPathOnly_andToString_whenDisplayingPathOnly_gridDataOffThePathIsNotDisplayedInGridString(){
+        //TODO
+
+    }
+
+    @Test
+    void testDisplayPathOnly_andToString_whenDisplayingPathOnly_gridDataOnThePathIsDisplayedInGridString(){
+        //TODO
+
+    }
+
+    @Test
+    void testDisplayPathOnly_andToString_whenDisplayingAllGridData_gridDataOffThePathIsDisplayedInGridString(){
+        //TODO
+
+    }
+
+    @Test
+    void testDisplayPathOnly_andToString_whenDisplayingAllGridData_gridDataOnThePathIsDisplayedInGridString(){
+        //TODO
+
     }
 }

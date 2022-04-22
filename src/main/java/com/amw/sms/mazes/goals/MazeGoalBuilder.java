@@ -95,8 +95,7 @@ public class MazeGoalBuilder {
         final var furthestCell = this.algorithmFactory
             .getDijkstra()
             .getDistances(this.grid, cell)
-            .getMax()
-            .getKey();
+            .getFurthestCell();
         
         return this.build(furthestCell);
     }

@@ -128,7 +128,7 @@ public class Cell {
      * @param cell Northern neighboring cell. Such a cell may not 
      * exist, in which case, an empty Optional should be provided.
      */
-    void setNorth(Optional<Cell> cell){
+    public void setNorth(Optional<Cell> cell){
         this.north = cell;
     }
 
@@ -137,7 +137,7 @@ public class Cell {
      * @param cell Eastern neighboring cell. Such a cell may not 
      * exist, in which case, an empty Optional should be provided.
      */
-    void setEast(Optional<Cell> cell){
+    public void setEast(Optional<Cell> cell){
         this.east = cell;
     }
 
@@ -146,7 +146,7 @@ public class Cell {
      * @param cell Southern neighboring cell. Such a cell may not 
      * exist, in which case, an empty Optional should be provided.
      */
-    void setSouth(Optional<Cell> cell){
+    public void setSouth(Optional<Cell> cell){
         this.south = cell;
     }
 
@@ -155,7 +155,7 @@ public class Cell {
      * @param cell Western neighboring cell. Such a cell may not 
      * exist, in which case, an empty Optional should be provided.
      */
-    void setWest(Optional<Cell> cell){
+    public void setWest(Optional<Cell> cell){
         this.west = cell;
     }
 
@@ -209,50 +209,5 @@ public class Cell {
      */
     public int getRowPosition() {
         return rowPos;
-    }
-
-    @Deprecated
-    /**
-     * TODO - does it make more sense to have this outside of the implementation of Cell?
-     * Seems like questionable design adding it to Cell directly when it's to be used by the
-     * maze solving algorithms.
-     * --> Current idea: Create Algorithm interface with methods "solve" and "apply".
-     * - solve(Grid) -> Returns ordered list of cells from entrance to exit
-     * - apply(Grid) -> No return, updates the Grid cell's interal values with an appropriate value for the algorithm. So for Dijktra, with would be the distance between that node and everything else.
-     * Wait until more things are implemented before trying to refactor to this. I'm probably not considering something that'll make this design poor.
-     * 
-     * Also TODO - We have this getDistances method... but would it make more sense to have each Cell maintain it's own generic Value?
-     * Then we could set the value from an external algorithm, get the value from the Cell itself instead of a separate Distances class (solves design problem with toString)
-     * and in general makes more sense (the Cell's data belongs to the Cell instance, not external). The only problem I see with this is that this value wouldn't be generic
-     * and would be algorithm specific or have algorithm specific meanings. For instance, would an integer value always be defined as "distance from a root node"?
-     * I'm not sure how true that thought actually is. If it's optional, then isn't that fine?
-     *  
-     * Returns distances between this cell and every other cell on the grid. 
-     * Uses Dijkstra's algorithm
-     * @return Distances between this cell and every other cell on the grid.
-     */
-    public Distances getDistances(){
-        final var distances = new Distances(this);
-        final var frontier = new LinkedList<Cell>();    //Frontier will contain all remaining cells to check
-        frontier.add(this);                             //Start frontier with root
-
-        //Go through all frontier cells. 
-        //1. Index distances between root and all of the frontier cell's links.
-        //2. Add linked cells to frontier if they have not been indexed yet.
-        while(!frontier.isEmpty()){
-            var frontierCell = frontier.remove();
-
-            frontierCell.getLinks()
-                .stream()
-                .forEach((var linkedCell) -> {
-                    //Skip if already indexed (imperfect mazes)
-                    if(distances.getDistance(linkedCell) >= 0) return;
-                    
-                    distances.addCell(linkedCell, distances.getDistance(frontierCell)+1);
-                    frontier.add(linkedCell);
-                });
-        }
-
-        return distances;
     }
 }

@@ -1,12 +1,14 @@
 package com.amw.sms.mazes;
 
+import java.util.AbstractMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Map.Entry;
 
 import com.amw.sms.grid.Cell;
-import com.amw.sms.grid.Distances;
-import com.amw.sms.grid.DistancesGrid;
+import com.amw.sms.grid.Grid;
+import com.amw.sms.mazes.goals.MazeGoal;
+import com.amw.sms.util.Pair;
 
 /**
  * High-level class representing a maze. Mazes consist of a grid of cells and 
@@ -22,69 +24,60 @@ import com.amw.sms.grid.DistancesGrid;
  * @see MazeBuilder
  */
 public class Maze {
-    private final DistancesGrid grid;
-    private final Optional<Entry<Cell, Cell>> entrances;
+    private Grid grid;
+    private Pair<MazeGoal, MazeGoal> entrances;
 
-    @Deprecated
     /**
-     * Construct maze without entrances using provided grid.
+     * Construct maze using provided grid and the specified start and end.
      * @param grid Grid of cells representing maze.
+     * @param startAndEnd Pair of cells representing the entrance and exit of the maze.
      */
-    public Maze(DistancesGrid grid){ //Todo - refactor such that DistancesGrid is not required
+    public Maze(Grid grid, Pair<MazeGoal, MazeGoal> startAndEnd){
         this.grid = grid;
-        this.entrances = Optional.empty();
-    }
-
-    @Deprecated
-    /**
-     * Construct maze using provided grid and the specified entrances.
-     * @param grid Grid of cells representing maze.
-     * @param entrances Pair of cells representing the entrance and exit.
-     */
-    public Maze(DistancesGrid grid, Entry<Cell, Cell> entrances){
-        this.grid = grid;
-        this.entrances = Optional.of(entrances);
+        this.entrances = startAndEnd;
     }
 
     /**
+     * TODO - REFACTOR
      * Returns the maze's entrances, if any.
      * @return Optional containing the entrances if any.
      */
     public Optional<Entry<Cell, Cell>> getEntrances(){
-        return this.entrances;
+        return Optional.of(
+            new AbstractMap.SimpleEntry<Cell, Cell>(
+                entrances.getFirst().getCell(), 
+                entrances.getSecond().getCell()
+            )
+        );
     }
 
     /**
+     * TODO - REFACTOR
      * Return the maze's start cell, if one has been set.
      * @return Optional containing the start cell, if it exists.
      */
     public Optional<Cell> getStartCell(){
-        return this.entrances.isPresent()
-            ? Optional.of(this.entrances.get().getKey())
-            : Optional.empty();
+        return Optional.of(this.entrances.getFirst().getCell());
     }
 
     /**
+     * TODO - REFACTOR
      * Return the maze's exit cell, if one has been set.
      * @return Optional containing the exit cell, if it exists.
      */
     public Optional<Cell> getEndCell(){
-        return this.entrances.isPresent()
-        ? Optional.of(this.entrances.get().getValue())
-        : Optional.empty();
+        return Optional.of(this.entrances.getSecond().getCell());
     }
 
-    @Deprecated
     /**
      * Returns the grid used internally by the maze. This should be used only when classes need to work
      * with the maze a low level, such as for solving the maze.
-     * @return DistancesGrid used to represent the maze internally.
+     * @return Grid used to represent the maze internally.
      */
-    public DistancesGrid getGrid(){
+    public Grid getGrid(){
         return this.grid;
     }
 
-    @Deprecated
     /**
      * TODO - "display" is not very accurate.. It's more like applying a path? Or setting a path? But both of those are 
      * also strange...
@@ -94,7 +87,8 @@ public class Maze {
      * cells of the maze.
      */
     public void displayPath(List<Cell> path){
-        this.grid.setDistances(new Distances(path, this.grid.getDistances()));
+        this.grid.setPath(path);
+        this.grid.displayPathExclusively();
     }
 
     /**

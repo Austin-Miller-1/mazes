@@ -12,9 +12,11 @@ import static org.mockito.Mockito.times;
 import java.util.stream.Stream;
 
 import com.amw.sms.algorithms.AlgorithmFactory;
+import com.amw.sms.algorithms.Dijkstra;
 import com.amw.sms.algorithms.generation.MazeGenAlgorithm;
 import com.amw.sms.grid.Cell;
-import com.amw.sms.grid.DistancesGrid;
+import com.amw.sms.grid.CellDistances;
+import com.amw.sms.grid.Grid;
 import com.amw.sms.grid.GridFactory;
 import com.amw.sms.mazes.goals.MazeGoal;
 import com.amw.sms.mazes.goals.MazeGoalBuilder;
@@ -36,13 +38,19 @@ public class MazeBuilderTest {
     private GridFactory mockGridFactory;
 
     @Mock
-    private DistancesGrid mockGrid;
+    private Grid mockGrid;
+
+    @Mock
+    private CellDistances mockDistances;
 
     @Mock 
     private AlgorithmFactory mockAlgorithmFactory;
 
     @Mock private MazeGenAlgorithm mockGenAlgorithm1;
     @Mock private MazeGenAlgorithm mockGenAlgorithm2;
+    
+    @Mock
+    private Dijkstra mockDijkstra;
 
     @Mock
     private MazeGoalBuilderFactory mockGoalBuilderFactory;
@@ -66,6 +74,11 @@ public class MazeBuilderTest {
         Mockito.when(mockAlgorithmFactory.getGenerationAlgorithm())
             .thenReturn(mockGenAlgorithm1);
 
+        //Dijktra should ALWAYS be mocked out in the test
+        Mockito.lenient()
+            .when(mockAlgorithmFactory.getDijkstra())
+            .thenReturn(mockDijkstra);
+
         Mockito.when(mockGoalBuilderFactory.create(mockGrid))
             .thenReturn(mockGoalBuilder);
 
@@ -73,7 +86,7 @@ public class MazeBuilderTest {
     }
 
     private void mockGridFactory(){
-        Mockito.when(mockGridFactory.createDistancesGrid(anyInt(), anyInt()))
+        Mockito.when(mockGridFactory.createGrid(anyInt(), anyInt()))
             .thenReturn(mockGrid);
     }
 
@@ -101,7 +114,8 @@ public class MazeBuilderTest {
             Mockito.when(mockGoalBuilder.atEnd())
                 .thenReturn(mockMazeGoal2);
 
-            Mockito.when(mockMazeGoal2.getCell())
+            //Not always called internally
+            Mockito.lenient().when(mockMazeGoal2.getCell())
                 .thenReturn(mockCell2);
         }
     }
@@ -112,7 +126,7 @@ public class MazeBuilderTest {
         mockDefaultMazeGoals();
 
         //Return mockGrid only when specific size is used
-        Mockito.when(mockGridFactory.createDistancesGrid(5, 6))
+        Mockito.when(mockGridFactory.createGrid(5, 6))
             .thenReturn(mockGrid);
 
         final var maze = newMockedMazeBuilder()
@@ -261,12 +275,6 @@ public class MazeBuilderTest {
         assertEquals(mockCell3, maze.getEndCell().get());
     }
 
-    //DO AFTER DISTANCES ARE REPLACED
-    @Test
-    void testShowDistances() {
-        //TODO
-    }
-
     @Test
     void testUsingAlgorithm_whenNoAlgorithmProvided_returnsMazeUsingDefaultAlgorithmFromFactory() throws InvalidMazeException {
         //Test fixture
@@ -307,7 +315,7 @@ public class MazeBuilderTest {
         mockGridFactory();
         mockDefaultMazeGoals(false, false);
 
-        //Mock results of the two calls to goal builder
+        //Mock results of the two calls to goal buildr
         Mockito.when(mockGoalBuilder.farthestFrom(any()))
             .thenReturn(mockMazeGoal1)
             .thenReturn(mockMazeGoal2);
@@ -336,5 +344,39 @@ public class MazeBuilderTest {
         assertEquals(mockCell1, maze.getStartCell().get());
         assertTrue(maze.getEndCell().isPresent());
         assertEquals(mockCell2, maze.getEndCell().get());
+    }
+
+    @Test
+    void testShowDistances_whenNotCalled_gridDataIsNotCreatedAndSet() throws InvalidMazeException {
+        mockGridFactory();
+        mockDefaultMazeGoals();
+
+        newMockedMazeBuilder()
+            .withSize(5, 6)
+            .build();
+        
+        Mockito.verify(mockDijkstra, times(0))
+            .getDistances(any(), any());
+
+        Mockito.verify(mockGrid, times(0))
+            .setGridData(any());
+    }
+
+    @Test
+    void testShowDistances_gridDataSetToDistancesFromStartCell() throws InvalidMazeException {
+        mockGridFactory();
+        mockDefaultMazeGoals();
+
+        Mockito.when(mockDijkstra.getDistances(mockGrid, mockCell1))
+            .thenReturn(mockDistances);
+
+        newMockedMazeBuilder()
+            .withSize(5, 6)
+            .showDistances()
+            .build();
+        
+
+        Mockito.verify(mockGrid, times(1))
+            .setGridData(mockDistances);
     }
 }

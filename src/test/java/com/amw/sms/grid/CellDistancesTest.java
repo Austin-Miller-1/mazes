@@ -116,9 +116,16 @@ public class CellDistancesTest {
 
     @Test
     void testGetCellContents_andTestSetDistance_returnsCellDistanceAsString(){
-        distances.setDistance(mockCell1, 10);
-        distances.setDistance(mockCell2, 20);
-        assertEquals("10", distances.getCellContents(mockCell1));
+        distances.setDistance(mockCell1, 5);
+        distances.setDistance(mockCell2, 9);
+        assertEquals("5", distances.getCellContents(mockCell1));
+    }
+
+    @Test
+    void testGetCellContents_andTestSetDistance_returnsCellDistanceAsBase32String(){
+        distances.setDistance(mockCell1, 15);
+        distances.setDistance(mockCell2, 30);
+        assertEquals("F", distances.getCellContents(mockCell1).toUpperCase());
     }
 
     @Test

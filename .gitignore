@@ -25,3 +25,6 @@ hs_err_pid*
 target/
 
 *~lock*
+
+#VSC
+.vscode

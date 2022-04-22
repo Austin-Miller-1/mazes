@@ -14,17 +14,6 @@ public class GridFactory {
      */
     public GridFactory(){}
 
-    @Deprecated
-    /**
-     * Constructs new DistancesGrid instance
-     * @param rowCount Number of rows in grid
-     * @param colCount Number of cols in grid
-     * @return New grid instance with specific number of rows and columns
-     */
-    public DistancesGrid createDistancesGrid(int rowCount, int colCount){
-        return new DistancesGrid(rowCount, colCount);
-    }
-
     /**
      * Constructs new Grid instance
      * @param rowCount Number of rows in grid

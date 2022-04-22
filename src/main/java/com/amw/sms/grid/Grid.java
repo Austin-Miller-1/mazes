@@ -20,6 +20,12 @@ public class Grid {
     private final List<List<Cell>> grid;
     private final Random rng;
 
+    private Optional<GridData> gridData;
+    private boolean gridDataShown = true;
+
+    private Optional<List<Cell>> path;
+    private boolean limitShownDataToPath = false;
+
     /**
      * Constructs a grid with the provided number of rows and columns.
      * Initializes grid with all unlinked cells with the appropriate neighbors set. 
@@ -32,6 +38,9 @@ public class Grid {
         this.grid = this.createInitialGrid();
         this.configureCells();
         rng = new Random();
+
+        this.gridData = Optional.empty();
+        this.path = Optional.empty();
     }
 
     /**
@@ -169,14 +178,126 @@ public class Grid {
     public int getColumnCount(){
         return this.colCount;
     }
+
+    /**
+     * Sets the grid's data.
+     * @param gridData Data to associate with this grid and its cells.
+     */
+    public void setGridData(GridData gridData) {
+        this.gridData = Optional.of(gridData);
+    }
+
+    /**
+     * Clears the grid's data.
+     */
+    public void clearGridData(){
+        this.gridData = Optional.empty();
+    }
+
+    /**
+     * Get's the grid's data.
+     * @return Optional containing the data associated with the grid, if any. Returns an 
+     * empty optional if the grid data was never set or if it was cleared. 
+     */
+    public Optional<GridData> getGridData() {
+        return this.gridData;
+    }
+
+     /**
+     * Configures grid so that the associated grid-data (if any) is displayed in 
+     * its visual representations.
+     */
+    public void showGridData(){
+        this.gridDataShown = true;
+    }
+
+    /**
+     * Configures grid so that the grid-data (if any) is hidden in its visual representations.
+     */
+    public void hideGridData(){
+        this.gridDataShown = false;
+    }
+
+    /**
+     * Sets the specific path of cells to display in the grid's visual representations. 
+     * @param path
+     */
+    public void setPath(List<Cell> path){
+        this.path = Optional.of(path);
+    }
+
+    /**
+     * Returns the path of cells set in the grid to be displayed in the its visual representations. 
+     * @return Optional containing the list of cells representing set as the path. Returns empty optional if 
+     * no path is currently set.
+     */
+    public Optional<List<Cell>> getPath(){
+        return this.path;
+    }
+
+    /**
+     * Clears the path of cells to be displayed in the grid's visual representations.
+     */
+    public void clearPath(){
+        this.path = Optional.empty();
+    }
+
+    /**
+     * Restricts the data displayed within the grid's visual representations to only the cell's 
+     * on the set path, if one is set. If no path is set, no data will be displayed.
+     */
+    public void displayPathExclusively(){
+        this.limitShownDataToPath = true;
+    }
+
+    public void displayAllCells(){
+
+    }
+
+    /**
+     * Returns boolean whether the set path contains the provided cell
+     * @param cell Cell to check for.
+     * @return True if the set path contains the cell. False if no path is set or the set path
+     * does not contain the cell.
+     */
+    private boolean pathContainsCell(Cell cell){
+        return this.path.isPresent() && this.path.get().contains(cell);
+    }
+
+    /**
+     * Returns boolean whether the provided cell's data should be displayed in the 
+     * grid's visual representations.
+     * @param cell Cell to check for.
+     * @return True if the cell's data should be displayed. False otherwise. Determined by grid
+     * configuration.
+     * @see Grid#showGridData
+     * @see Grid#hideGridData
+     * @see Grid#displayPathExclusively
+     * @see Grid#displayAllCells
+     */
+    private boolean shouldDisplayCellData(Cell cell){
+        return this.gridDataShown &&
+            (!this.limitShownDataToPath || this.pathContainsCell(cell));
+    }
+
+    /**
+     * Returns string representation of a cell's associated data. Used when displaying the grids cells in its
+     * different representations. 
+     * Default implementation returns a whitespace character.
+     * @param cell Cell to get the contents of
+     * @return The contents of the cell as a string.
+     */
+    public String getCellDataDisplayString(Cell cell){
+        return this.gridData.isPresent() && this.shouldDisplayCellData(cell)
+            ? this.gridData.get().getCellContents(cell)
+            : " ";
+    }
     
     /**
      * Returns string representation of the grid.
      * @return String representation of the grid.
      */
     public String toString(){
-
-        
         //Top of the grid. The rest of the grid will be done row-by-row.
         final var output = "+" + "---+".repeat(this.colCount) + "\n";
 
@@ -209,7 +330,7 @@ public class Grid {
                 && cell.getEast().get().isLinkedTo(cell)
                     ?   " "
                     :   "|";
-            return MIDDLE_BODY.formatted(this.contentsOf(cell)) + eastChars;
+            return MIDDLE_BODY.formatted(this.getCellDataDisplayString(cell)) + eastChars;
         };
 
         //Create the string rep of a cell's bottom section
@@ -267,6 +388,7 @@ public class Grid {
      * @param cell Cell to get the contents of
      * @return The contents of the cell as a string.
      */
+    @Deprecated
     public String contentsOf(Cell cell){
         return " ";
     }
