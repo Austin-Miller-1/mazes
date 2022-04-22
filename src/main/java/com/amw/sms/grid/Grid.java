@@ -250,8 +250,12 @@ public class Grid {
         this.limitShownDataToPath = true;
     }
 
+    /**
+     * Causes all of the grid data to be displayed within its visual representations. This is 
+     * as opposed to only having data on a specific path be displayed.
+     */
     public void displayAllCells(){
-
+        this.limitShownDataToPath = false;
     }
 
     /**

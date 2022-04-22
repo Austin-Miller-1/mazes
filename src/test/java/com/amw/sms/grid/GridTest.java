@@ -361,6 +361,24 @@ public class GridTest {
     }
 
     @Test
+    void testDisplayPathExclusively_andGetCellDataDisplayString_whenAllGridDataWasBeingDisplayedBefore_gridDataOffThePathIsReplacedWithWhitespace(){
+        final var grid = new Grid(9, 10);
+        grid.setGridData(mockGridData);
+        Mockito.lenient()
+            .when(mockGridData.getCellContents(any()))
+            .thenReturn("AAA");
+        grid.setPath(samplePath);
+
+        //Display all data
+        grid.displayAllCells();
+
+        //Change to only display path data
+        grid.displayPathExclusively();
+
+        assertEquals("", grid.getCellDataDisplayString(mockCellOffPath).trim());       
+    }
+
+    @Test
     void testDisplayPathExclusively_andGetCellDataDisplayString_gridDataOnThePathIsDisplayedAsString(){
         final var grid = new Grid(9, 10);
         grid.setGridData(mockGridData);
@@ -381,6 +399,23 @@ public class GridTest {
             .thenReturn(sampleCellDataContents);
         grid.setPath(samplePath);
 
+        grid.displayAllCells();
+
+        assertEquals(sampleCellDataContents, grid.getCellDataDisplayString(mockCellOffPath));       
+    }
+
+    @Test
+    void testDisplayAllCells_andGetCellDataDisplayString_whenPathDataWasDisplayedExclusivelyBefore_gridDataOffThePathIsDisplayedAsString(){
+        final var grid = new Grid(9, 10);
+        grid.setGridData(mockGridData);
+        Mockito.when(mockGridData.getCellContents(any()))
+            .thenReturn(sampleCellDataContents);
+        grid.setPath(samplePath);
+
+        //Display path exclusively
+        grid.displayPathExclusively();
+
+        //Change to start displaying all cells
         grid.displayAllCells();
 
         assertEquals(sampleCellDataContents, grid.getCellDataDisplayString(mockCellOffPath));       
