@@ -1,3 +1,6 @@
 - MazeBuilder will ALWAYS provide an exit and entrance to the move. If that's the case, then Maze shouldn't have optionals for entrances or exits.
 - Empty GridData object instead of Optional? May be better overall. Need to consider -> will there be classes interested in knowing if the data is unset or not? And if so, should they be able to figure this out from something that isn't an otpional? 
 - Grid is becoming a bloated class containing core logic, display logic, meta-logic (i.e. GridData). How can we separate the functionality out amongst Maze (higher-level class), GridData (data class) and other new classes (e.g. GridDisplay)?
+- Grid PathBuilder class for easy construction of paths within an existing grid. Would support something like..
+	Grid.newPathFrom(0,0).to(0, 5).to(3, 5).to(3,6); Is it worth the work?
+- Dijkstra.getPathBetween method using 2 calls to getPathFromRoot and combining the lists. Unnecessary right now.

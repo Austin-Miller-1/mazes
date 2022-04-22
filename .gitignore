@@ -24,7 +24,9 @@ hs_err_pid*
 
 target/
 
-*~lock*
-
 #VSC
 .vscode
+
+#Misc temp files
+*~lock*
+*.tif
