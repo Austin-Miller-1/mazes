@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
 
+import com.amw.sms.algorithms.solving.MazeSolveAlgorithm;
 import com.amw.sms.algorithms.solving.MazeSolveAlgorithmTest;
 import com.amw.sms.grid.Cell;
 import com.amw.sms.grid.Grid;
@@ -26,6 +27,15 @@ public class DijkstraTest extends MazeSolveAlgorithmTest {
     @BeforeEach
     void beforeEach(){
         dijk = new Dijkstra();
+    }
+
+    /**
+     * Get the specific algorithm instance to test.
+     * @return Instance of MazeSolveAlgorithm subtype to test.
+     */
+    @Override
+    protected MazeSolveAlgorithm getAlgorithmUnderTest(){
+        return dijk;
     }
 
     @Test
@@ -163,7 +173,7 @@ public class DijkstraTest extends MazeSolveAlgorithmTest {
         cell1.setSouth(Optional.of(cell2));
 
         cell1.link(cell3);
-        cell1.setNorth(Optional.of(cell2));
+        cell1.setNorth(Optional.of(cell3));
 
         cell3.link(cell4);
         cell3.setNorth(Optional.of(cell4));
@@ -206,7 +216,7 @@ public class DijkstraTest extends MazeSolveAlgorithmTest {
 
     @Test
     void testGetPathFromRoot(){
-
+        //TODO?
     }
 
     /**
