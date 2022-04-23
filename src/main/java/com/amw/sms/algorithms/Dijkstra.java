@@ -21,13 +21,8 @@ public class Dijkstra extends MazeSolveAlgorithm {
 
     @Override
     public List<Cell> getSolution(final Maze maze){
-        if(maze.getEntrances().isEmpty()){
-            return new LinkedList<Cell>();
-        }
-        final var startCell = maze.getStartCell().get();
-        final var endCell = maze.getEndCell().get();
-
-        return this.getPathTo(endCell, this.getDistances(maze.getGrid(), startCell));
+        final var distancesFromStart = this.getDistances(maze.getGrid(), maze.getStartCell());
+        return this.getPathTo(maze.getEndCell(), distancesFromStart);
     }
 
     /**

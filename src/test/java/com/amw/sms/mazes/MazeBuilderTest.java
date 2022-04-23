@@ -183,8 +183,7 @@ public class MazeBuilderTest {
             .startFrom(1, 3)
             .build();
 
-        assertTrue(maze.getStartCell().isPresent());
-        assertEquals(mockCell3, maze.getStartCell().get());
+        assertEquals(mockCell3, maze.getStartCell());
     }
 
     @Test
@@ -202,8 +201,7 @@ public class MazeBuilderTest {
             .endAt(1, 3)
             .build();
 
-        assertTrue(maze.getEndCell().isPresent());
-        assertEquals(mockCell3, maze.getEndCell().get());
+        assertEquals(mockCell3, maze.getEndCell());
     }
 
     /* Non-set entrances and exits */
@@ -217,8 +215,7 @@ public class MazeBuilderTest {
             .withSize(5, 5)
             .build();
 
-        assertTrue(maze.getStartCell().isPresent());
-        assertEquals(mockCell1, maze.getStartCell().get());
+        assertEquals(mockCell1, maze.getStartCell());
     }
     
 
@@ -232,8 +229,7 @@ public class MazeBuilderTest {
             .withSize(5, 5)
             .build();
 
-        assertTrue(maze.getEndCell().isPresent());
-        assertEquals(mockCell2, maze.getEndCell().get());
+        assertEquals(mockCell2, maze.getEndCell());
     }
 
     /* Random entrances and exits */
@@ -252,8 +248,7 @@ public class MazeBuilderTest {
             .usingRandomStart()
             .build();
 
-        assertTrue(maze.getStartCell().isPresent());
-        assertEquals(mockCell3, maze.getStartCell().get());
+        assertEquals(mockCell3, maze.getStartCell());
     }
 
     @Test
@@ -271,8 +266,7 @@ public class MazeBuilderTest {
             .usingRandomEnd()
             .build();
 
-        assertTrue(maze.getEndCell().isPresent());
-        assertEquals(mockCell3, maze.getEndCell().get());
+        assertEquals(mockCell3, maze.getEndCell());
     }
 
     @Test
@@ -340,10 +334,8 @@ public class MazeBuilderTest {
         assertEquals(mockCell1, cellCaptor.getAllValues().get(1));
 
         //3. Resulting cells are used for start and finish
-        assertTrue(maze.getStartCell().isPresent());
-        assertEquals(mockCell1, maze.getStartCell().get());
-        assertTrue(maze.getEndCell().isPresent());
-        assertEquals(mockCell2, maze.getEndCell().get());
+        assertEquals(mockCell1, maze.getStartCell());
+        assertEquals(mockCell2, maze.getEndCell());
     }
 
     @Test

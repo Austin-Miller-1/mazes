@@ -1,9 +1,6 @@
 package com.amw.sms.mazes;
 
-import java.util.AbstractMap;
 import java.util.List;
-import java.util.Optional;
-import java.util.Map.Entry;
 
 import com.amw.sms.grid.Cell;
 import com.amw.sms.grid.Grid;
@@ -12,12 +9,7 @@ import com.amw.sms.util.Pair;
 
 /**
  * High-level class representing a maze. Mazes consist of a grid of cells and 
- * optionally an entrance and exit. This means that mazes can be built as solvable or
- * unsolvable. 
- * A solvable maze is one with an entrance and exit such that at least one path exists between
- * the entrance and exit.
- * An unsolvable maze is one without entrances OR one that has entrances for which no path exists between them.
- * A solvable maze can be made insolvable and vice versa by setting its entrances at runtime.
+ * an entrance and exit. 
  * 
  * Mazes should not be created directly using this class and should instead be built using the MazeBuilder class. 
  * TODO - if that's the case, then Maze should be made an innerclass and follow the builder pattern more standardly, right?
@@ -38,35 +30,19 @@ public class Maze {
     }
 
     /**
-     * TODO - REFACTOR
-     * Returns the maze's entrances, if any.
-     * @return Optional containing the entrances if any.
+     * Return the maze's starting cell.
+     * @return Starting cell of the maze.
      */
-    public Optional<Entry<Cell, Cell>> getEntrances(){
-        return Optional.of(
-            new AbstractMap.SimpleEntry<Cell, Cell>(
-                entrances.getFirst().getCell(), 
-                entrances.getSecond().getCell()
-            )
-        );
+    public Cell getStartCell(){
+        return this.entrances.getFirst().getCell();
     }
 
     /**
-     * TODO - REFACTOR
-     * Return the maze's start cell, if one has been set.
-     * @return Optional containing the start cell, if it exists.
-     */
-    public Optional<Cell> getStartCell(){
-        return Optional.of(this.entrances.getFirst().getCell());
-    }
-
-    /**
-     * TODO - REFACTOR
      * Return the maze's exit cell, if one has been set.
      * @return Optional containing the exit cell, if it exists.
      */
-    public Optional<Cell> getEndCell(){
-        return Optional.of(this.entrances.getSecond().getCell());
+    public Cell getEndCell(){
+        return this.entrances.getSecond().getCell();
     }
 
     /**
