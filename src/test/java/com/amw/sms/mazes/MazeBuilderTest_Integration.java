@@ -61,8 +61,7 @@ public class MazeBuilderTest_Integration {
             .startFrom(1, 3)
             .build();
 
-        assertTrue(maze.getStartCell().isPresent());
-        final var startCell = maze.getStartCell().get();
+        final var startCell = maze.getStartCell();
         assertEquals(1, startCell.getRowPosition());
         assertEquals(3, startCell.getColumnPosition());
     }
@@ -74,8 +73,7 @@ public class MazeBuilderTest_Integration {
             .endAt(1, 3)
             .build();
 
-        assertTrue(maze.getEndCell().isPresent());
-        final var endCell = maze.getEndCell().get();
+        final var endCell = maze.getEndCell();
         assertEquals(1, endCell.getRowPosition());
         assertEquals(3, endCell.getColumnPosition());
     }
@@ -87,8 +85,7 @@ public class MazeBuilderTest_Integration {
             .withSize(5, 5)
             .build();
 
-        assertTrue(maze.getStartCell().isPresent());
-        final var startCell = maze.getStartCell().get();
+        final var startCell = maze.getStartCell();
         assertEquals(0, startCell.getRowPosition());
         assertEquals(0, startCell.getColumnPosition());
     }
@@ -103,8 +100,7 @@ public class MazeBuilderTest_Integration {
             .withSize(rowCount, colCount)
             .build();
 
-        assertTrue(maze.getEndCell().isPresent());
-        final var endCell = maze.getEndCell().get();
+        final var endCell = maze.getEndCell();
         assertEquals(rowCount-1, endCell.getRowPosition());
         assertEquals(colCount-1, endCell.getColumnPosition());
     }
