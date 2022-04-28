@@ -26,7 +26,6 @@ public class MazeBuilder {
     private boolean useLongestPath = false;
     private boolean useRandomStart = false;
     private boolean useRandomEnd = false;
-    private boolean showDistances = false;
 
     /**
      * Constructs new MazeBuilder.
@@ -130,15 +129,6 @@ public class MazeBuilder {
     }
 
     /**
-     * TODO remove
-     * @return
-     */
-    public MazeBuilder showDistances(){
-        this.showDistances = true;
-        return this;
-    }
-
-    /**
      * Builds the Maze based on the internal state set by client using builder methods.
      * @return Fully constructed maze.
      * @throws InvalidMazeException When grid size is not set, or when the entrance or exits are invalid. 
@@ -160,9 +150,7 @@ public class MazeBuilder {
         final var end = this.getExit(grid, start.getCell());
 
         //Show it
-        if(showDistances){
-            grid.setGridData(algorithmFactory.getDijkstra().getDistances(grid, start.getCell()));
-        }
+        grid.setGridData(algorithmFactory.getDijkstra().getDistances(grid, start.getCell()));
 
         return new Maze(grid, new Pair<MazeGoal, MazeGoal>(start, end));
     }

@@ -9,7 +9,7 @@ import java.awt.Color;
  * GridData is not intended to be used on its own since it does not contain any data elements itself. As such, it is made abstract.
  */
 public abstract class GridData {
-    private final static String DEFAULT_CELL_CONTENTS_STRING = "";
+    private final static String DEFAULT_CELL_CONTENTS_STRING = " ";
     private final static Color DEFAULT_CELL_COLOR = Color.WHITE;
 
     //Associated grid

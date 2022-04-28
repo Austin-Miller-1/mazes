@@ -1,5 +1,7 @@
 package com.amw.sms;
 
+import java.util.Arrays;
+
 import com.amw.sms.algorithms.AlgorithmFactory;
 import com.amw.sms.algorithms.Dijkstra;
 import com.amw.sms.algorithms.generation.MazeGenAlgorithmType;
@@ -44,16 +46,18 @@ public class App
                 .withSize(20, 20)
                 .usingLongestPath()
                 .usingAlgorithm(algorithmFactory.getGenerationAlgorithm(MazeGenAlgorithmType.SIDEWINDER)) //TODO - should "usingAlgorithm" just take the enum? Let the builder handle the actual algorithm creation?
-                .showDistances()
                 .build();
 
             System.out.println(maze);
+            maze.getGrid()
+                .toImage("Sidewinder - Set up", 30)
+                .show();
 
             algorithmFactory.getSolvingAlgorithm()
                 .solve(maze);
             System.out.println(maze);
 
-            final var mazeImg = maze.getGrid().toImage("Sidewinder", 30);
+            final var mazeImg = maze.getGrid().toImage("Sidewinder - Solved", 30);
             mazeImg.show();
             IJ.save(mazeImg, "maze.tif");
 		};

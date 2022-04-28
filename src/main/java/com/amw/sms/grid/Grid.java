@@ -292,14 +292,27 @@ public class Grid {
     /**
      * Returns string representation of a cell's associated data. Used when displaying the grids cells in its
      * different representations. 
-     * Default implementation returns a whitespace character.
-     * @param cell Cell to get the contents of
-     * @return The contents of the cell as a string.
+     * @param cell Cell to get the contents of.
+     * @return The contents of the cell as a string. When grid data is hidden, this will return a whitespace 
+     * character.
      */
     public String getCellDataDisplayString(Cell cell){
         return this.shouldDisplayCellData(cell)
             ? this.gridData.getCellContents(cell)
             : " ";
+    }
+
+    /**
+     * Returns the color to use for the provided cell. Used when displaying the grids cells in its
+     * image representations.
+     * @param cell Cell to get the background color of.
+     * @return The color of the cell. When grid data is hidden, the default background color of the maze
+     * will be returned.
+     */
+    public Color getCellColor(Cell cell){
+        return this.shouldDisplayCellData(cell)
+            ?   this.gridData.getCellColor(cell)
+            :   Grid.IMAGE_BACKGROUND_COLOR;
     }
     
     /**
@@ -437,7 +450,7 @@ public class Grid {
             final var y1 = (cell.getRowPosition() * cellSize) + IMAGE_GRID_OFFSET;
 
             //Cell background
-            ip.setColor(this.gridData.getCellColor(cell));
+            ip.setColor(this.getCellColor(cell));
             ip.fillRect(x1, y1, cellSize, cellSize);
         });
     }
