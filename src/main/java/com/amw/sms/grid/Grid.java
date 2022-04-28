@@ -1,5 +1,6 @@
 package com.amw.sms.grid;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,11 +17,15 @@ import ij.process.ImageProcessor;
  * representations of the grid.
  */
 public class Grid {
+    final static int IMAGE_GRID_OFFSET = 30;
+    final static Color IMAGE_BACKGROUND_COLOR = Color.WHITE;
+    final static Color IMAGE_WALL_COLOR = Color.BLACK;
+
     private final int rowCount, colCount;
     private final List<List<Cell>> grid;
     private final Random rng;
 
-    private Optional<GridData> gridData;
+    private GridData gridData;
     private boolean gridDataShown = true;
 
     private Optional<List<Cell>> path;
@@ -39,7 +44,7 @@ public class Grid {
         this.configureCells();
         rng = new Random();
 
-        this.gridData = Optional.empty();
+        this.gridData = new SimpleGridData(this);
         this.path = Optional.empty();
     }
 
@@ -184,14 +189,14 @@ public class Grid {
      * @param gridData Data to associate with this grid and its cells.
      */
     public void setGridData(GridData gridData) {
-        this.gridData = Optional.of(gridData);
+        this.gridData = gridData;
     }
 
     /**
      * Clears the grid's data.
      */
     public void clearGridData(){
-        this.gridData = Optional.empty();
+        this.gridData = new SimpleGridData(this);
     }
 
     /**
@@ -199,7 +204,7 @@ public class Grid {
      * @return Optional containing the data associated with the grid, if any. Returns an 
      * empty optional if the grid data was never set or if it was cleared. 
      */
-    public Optional<GridData> getGridData() {
+    public GridData getGridData() {
         return this.gridData;
     }
 
@@ -287,14 +292,27 @@ public class Grid {
     /**
      * Returns string representation of a cell's associated data. Used when displaying the grids cells in its
      * different representations. 
-     * Default implementation returns a whitespace character.
-     * @param cell Cell to get the contents of
-     * @return The contents of the cell as a string.
+     * @param cell Cell to get the contents of.
+     * @return The contents of the cell as a string. When grid data is hidden, this will return a whitespace 
+     * character.
      */
     public String getCellDataDisplayString(Cell cell){
-        return this.gridData.isPresent() && this.shouldDisplayCellData(cell)
-            ? this.gridData.get().getCellContents(cell)
+        return this.shouldDisplayCellData(cell)
+            ? this.gridData.getCellContents(cell)
             : " ";
+    }
+
+    /**
+     * Returns the color to use for the provided cell. Used when displaying the grids cells in its
+     * image representations.
+     * @param cell Cell to get the background color of.
+     * @return The color of the cell. When grid data is hidden, the default background color of the maze
+     * will be returned.
+     */
+    public Color getCellColor(Cell cell){
+        return this.shouldDisplayCellData(cell)
+            ?   this.gridData.getCellColor(cell)
+            :   Grid.IMAGE_BACKGROUND_COLOR;
     }
     
     /**
@@ -344,7 +362,6 @@ public class Grid {
                     ?   "   "
                     :   "---";
 
-
             //Corner character logic
             final var eastCell = cell.getEast();
             final var southCell = cell.getSouth();
@@ -386,18 +403,6 @@ public class Grid {
     }
 
     /**
-     * Returns string representation of a cell's contents. Used when displaying the grids cells in its
-     * different representations. 
-     * Default implementation returns a whitespace character.
-     * @param cell Cell to get the contents of
-     * @return The contents of the cell as a string.
-     */
-    @Deprecated
-    public String contentsOf(Cell cell){
-        return " ";
-    }
-
-    /**
      * Returns an image of the grid. Cell size will be 10 pixels.
      * @param title Title to be used by the image.
      * @return Image of the grid.
@@ -415,47 +420,75 @@ public class Grid {
     public ImagePlus toImage(String title, int cellSize){
         //Number of pixels of whitespace to place on each side of the grid
         //This is to show the full grid, including it's boundaries, in the image. 
-        final var OFFSET = 30;  
-        final var BACKGROUND_COLOR = 255;   //white
-        final var WALL_COLOR = 0;           //black
-        final var LINE_WIDTH = 3;
-
-        final var imageWidth = (cellSize * this.colCount) + 2*OFFSET;
-        final var imageHeight = (cellSize * this.rowCount) + 2*OFFSET;
-        ImageProcessor ip = new ByteProcessor(imageWidth, imageHeight);
+        final var imageWidth = (cellSize * this.colCount) + 2*IMAGE_GRID_OFFSET;
+        final var imageHeight = (cellSize * this.rowCount) + 2*IMAGE_GRID_OFFSET;
+        ImageProcessor ip = new ByteProcessor(imageWidth, imageHeight).convertToRGB();
 
         //Background
-        ip.setValue(BACKGROUND_COLOR);
+        ip.setColor(IMAGE_BACKGROUND_COLOR);
         ip.fill();
 
+        //Maze
+        this.drawCells(ip, cellSize);
+        this.drawWalls(ip, cellSize);       //Walls are drawn over already-drawn cells
+        return new ImagePlus(title, ip);
+    }
+
+    /**
+     * Draws the cells to the image processor. 
+     * @param ip Image processor to draw the cells within.
+     * @param cellSize Size of the cells in pixels.
+     */
+    private void drawCells(ImageProcessor ip, int cellSize){
         //Draw maze
-        ip.setValue(WALL_COLOR);
-        ip.setLineWidth(LINE_WIDTH);
+        //1. Cells
         this.getCells()
             .stream()
             .forEach((var cell) -> {
-                //Cell coords
-                final var x1 = (cell.getColumnPosition() * cellSize) + OFFSET;
-                final var y1 = (cell.getRowPosition() * cellSize) + OFFSET;
-                final var x2 = ((cell.getColumnPosition()+1) * cellSize) + OFFSET;
-                final var y2 = ((cell.getRowPosition()+1) * cellSize + OFFSET);
+            //Cell coords
+            final var x1 = (cell.getColumnPosition() * cellSize) + IMAGE_GRID_OFFSET;
+            final var y1 = (cell.getRowPosition() * cellSize) + IMAGE_GRID_OFFSET;
 
-                //Northern & Western walls only if there are no neighbors
-                if(cell.getNorth().isEmpty())   ip.drawLine(x1, y1, x2, y1);
-                if(cell.getWest().isEmpty())    ip.drawLine(x1, y1, x1, y2);
-                
-                //Eastern wall if no neighbor or unlinked to cell
-                if(cell.getEast().isEmpty() || !cell.getEast().get().isLinkedTo(cell)){
-                    ip.drawLine(x2, y1, x2, y2);
-                }
+            //Cell background
+            ip.setColor(this.getCellColor(cell));
+            ip.fillRect(x1, y1, cellSize, cellSize);
+        });
+    }
 
-                //Southern wall if no neighbor or unlinked to cell
-                if(cell.getSouth().isEmpty() || !cell.getSouth().get().isLinkedTo(cell)){
-                    ip.drawLine(x1, y2, x2, y2);    
-                }                
-            });
+    /**
+     * Draw the walls of the maze. This includes both the outer borders of the maze and the internal walls.
+     * @param ip Image processor to draw the walls in.
+     * @param cellSize Size of the cells in pixels.
+     */
+    private void drawWalls(ImageProcessor ip, int cellSize){
+        final var LINE_WIDTH = cellSize/15;
 
-        return new ImagePlus(title, ip);
+        this.getCells()
+        .stream()
+        .forEach((var cell) -> {
+            //Cell coords
+            final var x1 = (cell.getColumnPosition() * cellSize) + IMAGE_GRID_OFFSET;
+            final var y1 = (cell.getRowPosition() * cellSize) + IMAGE_GRID_OFFSET;
+            final var x2 = ((cell.getColumnPosition()+1) * cellSize) + IMAGE_GRID_OFFSET;
+            final var y2 = ((cell.getRowPosition()+1) * cellSize + IMAGE_GRID_OFFSET);
+
+            //Northern & Western walls only if there are no neighbors
+            ip.setColor(IMAGE_WALL_COLOR);
+            ip.setLineWidth(LINE_WIDTH);
+            if(cell.getNorth().isEmpty())   ip.drawLine(x1, y1, x2, y1);
+            if(cell.getWest().isEmpty())    ip.drawLine(x1, y1, x1, y2);
+            
+            //Eastern wall if no neighbor or unlinked to cell
+            if(cell.getEast().isEmpty() || !cell.getEast().get().isLinkedTo(cell)){
+                ip.drawLine(x2, y1, x2, y2);
+            }
+
+            //Southern wall if no neighbor or unlinked to cell
+            if(cell.getSouth().isEmpty() || !cell.getSouth().get().isLinkedTo(cell)){
+                ip.drawLine(x1, y2, x2, y2);    
+            }                
+        });
+
     }
 
     /**

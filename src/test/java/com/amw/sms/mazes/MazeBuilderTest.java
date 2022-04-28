@@ -354,6 +354,8 @@ public class MazeBuilderTest {
             .setGridData(any());
     }
 
+    //Commented while showDistances has been removed. Functionality will be readded when wanted.
+    /* 
     @Test
     void testShowDistances_gridDataSetToDistancesFromStartCell() throws InvalidMazeException {
         mockGridFactory();
@@ -371,4 +373,5 @@ public class MazeBuilderTest {
         Mockito.verify(mockGrid, times(1))
             .setGridData(mockDistances);
     }
+    */
 }

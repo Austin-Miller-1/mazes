@@ -1,6 +1,43 @@
-- MazeBuilder will ALWAYS provide an exit and entrance to the move. If that's the case, then Maze shouldn't have optionals for entrances or exits.
-- Empty GridData object instead of Optional? May be better overall. Need to consider -> will there be classes interested in knowing if the data is unset or not? And if so, should they be able to figure this out from something that isn't an otpional? 
+--
+-- Redesigns --
+--
+
 - Grid is becoming a bloated class containing core logic, display logic, meta-logic (i.e. GridData). How can we separate the functionality out amongst Maze (higher-level class), GridData (data class) and other new classes (e.g. GridDisplay)?
+	1. GridRenderer classes -> GridStringRenderer, GridImageRenderer - methods
+		-> YES! Renderers would then be set from the Maze and MazeBuilder classes
+
+	2. GridData should belong to Grid. However, it should be set and manipulated from the Maze and MazeBuilder classes. Thus, only low level functions should be provided from Grid for getting and working with the GridData.
+	
+
+- Multiple grid data layers?
+	--> PathGridData (restrict data to specific path) + SimpleGridData (start, finish and other mazegoals) + CellDistances (grid distance values and colors)
+	--> GridData + GridDataLayer classes? 
+		--> YES!! GridData is a collection of any number of GridDataLayers that can stack, take priority, etc
+		--> Definitely should be done.
+
+--
+-- Utilities and Reusable functions --
+--
 - Grid PathBuilder class for easy construction of paths within an existing grid. Would support something like..
 	Grid.newPathFrom(0,0).to(0, 5).to(3, 5).to(3,6); Is it worth the work?
 - Dijkstra.getPathBetween method using 2 calls to getPathFromRoot and combining the lists. Unnecessary right now.
+
+
+--
+-- Random tests --
+--
+
+            //Random maze testing
+/*             maze.getGrid().hideGridData();
+            maze.getGrid().toImage("C", 30).show();
+            maze.getGrid().showGridData();
+            maze.getGrid().toImage("D", 30).show();
+            maze.getGrid().clearPath();
+            maze.getGrid().toImage("E", 30).show();
+            maze.getGrid().displayAllCells();
+            maze.getGrid().toImage("F", 30).show();
+            maze.getGrid().displayPathExclusively();
+            maze.getGrid().setPath(Arrays.asList(maze.getEndCell()));
+            maze.getGrid().toImage("G", 30).show();
+            maze.getGrid().clearGridData();
+            maze.getGrid().toImage("H", 30).show(); */
