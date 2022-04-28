@@ -1,9 +1,11 @@
 package com.amw.sms.grid;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 
+import java.awt.Color;
 import java.util.Arrays;
 import java.util.List;
 
@@ -13,6 +15,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import ij.ImagePlus;
 
 /**
  * Tests for Grid.
@@ -26,9 +30,19 @@ public class GridTest {
     @Mock private Cell mockCell2;
     @Mock private Cell mockCell3;
     @Mock private Cell mockCellOffPath;
+    
+    @Mock 
+    private Grid mockGrid;
+
+    @Mock 
+    private Color mockColor; 
 
     private List<Cell> samplePath;
     private String sampleCellDataContents = "A";
+
+    //Sample data for images
+    private int sampleCellSize = 30;
+    private Color sampleColor = new Color(0x123456);
 
     @BeforeEach
     void beforeEach(){
@@ -209,17 +223,21 @@ public class GridTest {
         final var grid = new Grid(9, 10);
         grid.setGridData(mockGridData);
 
-        assertTrue(grid.getGridData().isPresent());
-        assertEquals(mockGridData, grid.getGridData().get());
+        assertEquals(mockGridData, grid.getGridData());
     }
 
     @Test
     void testClearGridData_andGetGridData_removesExistingGridDataAsExpected(){
         final var grid = new Grid(9, 10);
-        grid.setGridData(mockGridData);
-        grid.clearGridData();
 
-        assertTrue(grid.getGridData().isEmpty());
+        final var sampleGridData = new SimpleGridData(grid);
+        sampleGridData.setCellContents(mockCell1, sampleCellDataContents);
+        sampleGridData.setCellColor(mockCell1, mockColor);
+        grid.setGridData(mockGridData);
+        
+        grid.clearGridData();
+        assertTrue(grid.getGridData().getCellContents(mockCell1).isBlank());
+        assertNotEquals(mockColor, grid.getGridData().getCellColor(mockCell1));
     }
 
 
@@ -229,21 +247,30 @@ public class GridTest {
         
         //Call before any data is set - shouldn't cause problems
         grid.clearGridData();
-        assertTrue(grid.getGridData().isEmpty());
         
         //Set data
-        grid.setGridData(mockGridData);
+        final var sampleGridData = new SimpleGridData(grid);
+        sampleGridData.setCellContents(mockCell1, sampleCellDataContents);
+        grid.setGridData(sampleGridData);
 
         //Double clear - second call shouldn't cause problems
         grid.clearGridData();
         grid.clearGridData();
-        assertTrue(grid.getGridData().isEmpty());
+        assertTrue(grid.getGridData().getCellContents(mockCell1).isBlank());
     }
 
     @Test
-    void testGetGridData_whenNotSet_returnsEmptyOptional(){
-        final var grid = new Grid(9, 10);
-        assertTrue(grid.getGridData().isEmpty());
+    void testGetGridData_whenNotSet_returnsEmptyGridDataInstance(){
+        final var grid = new Grid(5, 5);
+        grid.getCells()
+            .stream()
+            .forEach((var cell) -> {
+                //TODO
+                //Not the best way of checking to make sure data is empty.. For true check, would need to check getCellColor too, and any other cell elements.. 
+                //OR would need new isEmpty method OR isSet(Cell) method, and both would need to consider.. if one data element is set, but others are not, is the Cell set or not?
+                //This should be resolved once GridData is reorganized into GridData and GridDataLayer classes - future design change
+                assertTrue(grid.getGridData().getCellContents(cell).isBlank());
+            });
     }
 
     @Test
@@ -476,5 +503,170 @@ public class GridTest {
     void testDisplayPathOnly_andToString_whenDisplayingAllGridData_gridDataOnThePathIsDisplayedInGridString(){
         //TODO
 
+    }
+
+    /**
+     * Asserts that pixel in the image at the specified coordinates is of the expected color.
+     * @param expectedColor Color that the pixel is expected of being.
+     * @param image Image to check.
+     * @param x x-coordinate of the pixel.
+     * @param y y-coordinate of the pixel.
+     */
+    private void assertColorAtPixel(Color expectedColor, ImagePlus image, int x, int y){
+        final var actualCellPixel = image.getPixel(x, y);
+        assertEquals(expectedColor.getRed(), actualCellPixel[0]);     //Red
+        assertEquals(expectedColor.getGreen(), actualCellPixel[1]);   //Green
+        assertEquals(expectedColor.getBlue(), actualCellPixel[2]);    //Blue
+    }
+
+    @Test
+    void testToImage_whenOneCellMaze_returnsAnImageWithCellUsingTheExpectedBackgroundColor(){
+        final var grid = new Grid(1, 1);
+        
+        final var gridData = new SimpleGridData(grid);
+        gridData.setCellColor(grid.getFirstCell(), sampleColor);
+        grid.setGridData(gridData);
+
+        final var image = grid.toImage("maze", sampleCellSize);
+        
+        final var centerCoord = Grid.IMAGE_GRID_OFFSET + sampleCellSize/2;
+        assertColorAtPixel(sampleColor, image, centerCoord, centerCoord);
+    }
+
+    @Test
+    void testToImage_whenOneCellMaze_returnsAnImageWhereMazeHasEmptySpaceOnAllSides(){
+        final var grid = new Grid(1, 1);
+        
+        final var gridData = new SimpleGridData(grid);
+        gridData.setCellColor(grid.getFirstCell(), sampleColor);
+        grid.setGridData(gridData);
+
+        final var image = grid.toImage("maze", sampleCellSize);
+
+        final var xyCenterCoord = Grid.IMAGE_GRID_OFFSET + sampleCellSize/2;
+        assertColorAtPixel(Grid.IMAGE_BACKGROUND_COLOR, image, Grid.IMAGE_GRID_OFFSET - 5, xyCenterCoord);                  //Left (5 pixels from left wall)
+        assertColorAtPixel(Grid.IMAGE_BACKGROUND_COLOR, image, Grid.IMAGE_GRID_OFFSET + sampleCellSize + 5, xyCenterCoord); //Right (5 pixels from right wall)
+        assertColorAtPixel(Grid.IMAGE_BACKGROUND_COLOR, image, xyCenterCoord, Grid.IMAGE_GRID_OFFSET - 5);                  //Above
+        assertColorAtPixel(Grid.IMAGE_BACKGROUND_COLOR, image, xyCenterCoord, Grid.IMAGE_GRID_OFFSET + sampleCellSize + 5); //Below
+    }
+
+    @Test
+    void testToImage_whenOneCell_returnsAnImageWithTheExpectedOuterWalls(){
+        final var grid = new Grid(1, 1);
+
+        final var gridData = new SimpleGridData(grid);
+        gridData.setCellColor(grid.getFirstCell(), sampleColor);
+        grid.setGridData(gridData);
+
+        final var image = grid.toImage("maze", sampleCellSize);
+
+        final var xyCenterCoord = Grid.IMAGE_GRID_OFFSET + sampleCellSize/2;
+        assertColorAtPixel(Grid.IMAGE_WALL_COLOR, image, Grid.IMAGE_GRID_OFFSET, xyCenterCoord);                  //Left wall
+        assertColorAtPixel(Grid.IMAGE_WALL_COLOR, image, Grid.IMAGE_GRID_OFFSET + sampleCellSize, xyCenterCoord); //Right wall
+        assertColorAtPixel(Grid.IMAGE_WALL_COLOR, image, xyCenterCoord, Grid.IMAGE_GRID_OFFSET);                  //Top wall
+        assertColorAtPixel(Grid.IMAGE_WALL_COLOR, image, xyCenterCoord, Grid.IMAGE_GRID_OFFSET + sampleCellSize); //Bottom wall
+    }
+
+    @Test
+    void testToImage_whenTenByTenMaze_returnsAnImageWhereMazeHasEmptySpaceOnAllSides(){
+        final var grid = new Grid(10, 10);
+        final var mazeWidth = sampleCellSize*10;
+        final var mazeHeight = sampleCellSize*10;
+ 
+        //Color all cells.
+        final var gridData = new SimpleGridData(grid);
+        grid.getCells()
+            .stream()
+            .forEach((var cell) -> {
+                gridData.setCellColor(cell, sampleColor);
+            });
+        grid.setGridData(gridData);
+
+        final var image = grid.toImage("maze", sampleCellSize);
+
+        assertColorAtPixel(Grid.IMAGE_BACKGROUND_COLOR, image, Grid.IMAGE_GRID_OFFSET - 5, Grid.IMAGE_GRID_OFFSET + mazeHeight/2);
+        assertColorAtPixel(Grid.IMAGE_BACKGROUND_COLOR, image, Grid.IMAGE_GRID_OFFSET + mazeWidth + 5, Grid.IMAGE_GRID_OFFSET + mazeHeight/2);
+        assertColorAtPixel(Grid.IMAGE_BACKGROUND_COLOR, image, Grid.IMAGE_GRID_OFFSET + mazeWidth/2, Grid.IMAGE_GRID_OFFSET - 5);
+        assertColorAtPixel(Grid.IMAGE_BACKGROUND_COLOR, image, Grid.IMAGE_GRID_OFFSET + mazeWidth/2, Grid.IMAGE_GRID_OFFSET + mazeHeight + 5);
+    }
+
+
+    @Test
+    void testToImage_whenGridHasFourCells_returnsAnImageWithTheFourCellsPositionedAsExpected(){
+        final var grid = new Grid(2, 2);
+        final var mazeWidth = sampleCellSize*2;
+        final var mazeHeight = sampleCellSize*2;
+    
+        final var cell1Color = new Color(0x100000);
+        final var cell2Color = new Color(0x200000);
+        final var cell3Color = new Color(0x300000);
+        final var cell4Color = new Color(0x400000);
+
+        final var gridData = new SimpleGridData(grid);
+        gridData.setCellColor(grid.getCell(0, 0).get(), cell1Color);
+        gridData.setCellColor(grid.getCell(0, 1).get(), cell2Color);
+        gridData.setCellColor(grid.getCell(1, 0).get(), cell3Color);
+        gridData.setCellColor(grid.getCell(1, 1).get(), cell4Color);
+        grid.setGridData(gridData);
+
+        final var image = grid.toImage("maze", sampleCellSize);
+
+        assertColorAtPixel(cell1Color, image, Grid.IMAGE_GRID_OFFSET + mazeWidth/4, Grid.IMAGE_GRID_OFFSET + mazeHeight/4);
+        assertColorAtPixel(cell2Color, image, Grid.IMAGE_GRID_OFFSET + mazeWidth*3/4, Grid.IMAGE_GRID_OFFSET + mazeHeight/4);
+        assertColorAtPixel(cell3Color, image, Grid.IMAGE_GRID_OFFSET + mazeWidth/4, Grid.IMAGE_GRID_OFFSET + mazeHeight*3/4);
+        assertColorAtPixel(cell4Color, image, Grid.IMAGE_GRID_OFFSET + mazeWidth*3/4, Grid.IMAGE_GRID_OFFSET + mazeHeight*3/4);
+    }
+
+
+
+    @Test
+    void testToImage_whenTwoByTwoMaze_returnsAnImageWithTheExpectedOuterWalls(){
+        final var grid = new Grid(2, 2);
+        final var mazeWidth = sampleCellSize*2;
+        final var mazeHeight = sampleCellSize*2;
+
+        final var gridData = new SimpleGridData(grid);
+        gridData.setCellColor(grid.getFirstCell(), sampleColor);
+        grid.setGridData(gridData);
+
+        final var image = grid.toImage("maze", sampleCellSize);
+
+        //TODO, check for 8 walls
+        // Iterate over collection of expected coords 
+
+        final var xyCenterCoord = Grid.IMAGE_GRID_OFFSET + sampleCellSize/2;
+        assertColorAtPixel(Grid.IMAGE_WALL_COLOR, image, Grid.IMAGE_GRID_OFFSET, sampleCellSize+5);                  //Left wall
+        assertColorAtPixel(Grid.IMAGE_WALL_COLOR, image, Grid.IMAGE_GRID_OFFSET, sampleCellSize+5); //Right wall
+        assertColorAtPixel(Grid.IMAGE_WALL_COLOR, image, xyCenterCoord, Grid.IMAGE_GRID_OFFSET);                  //Top wall
+        assertColorAtPixel(Grid.IMAGE_WALL_COLOR, image, xyCenterCoord, Grid.IMAGE_GRID_OFFSET + sampleCellSize); //Bottom wall
+    }
+
+    @Test
+    void testToImage_whenGridHasFourLinkedCells_returnsAnImageWithTheExpectedWallsInPlaceWithinMaze(){
+        final var grid = new Grid(2, 2);
+
+        //Link top-left to top-right
+        grid.getCell(0, 0)
+            .get()
+            .link(grid.getCell(0, 1).get());
+
+        //Link top-left to bottom-left
+        grid.getCell(0, 0)
+            .get()
+            .link(grid.getCell(1, 0).get());
+
+        final var image = grid.toImage("maze", sampleCellSize);
+
+        //Assert no wall between top-left and bottom-left
+        assertColorAtPixel(Grid.IMAGE_BACKGROUND_COLOR, image, Grid.IMAGE_GRID_OFFSET + sampleCellSize/2, Grid.IMAGE_GRID_OFFSET + sampleCellSize);
+
+        //Assert no wall between top-left and top-right
+        assertColorAtPixel(Grid.IMAGE_BACKGROUND_COLOR, image, Grid.IMAGE_GRID_OFFSET + sampleCellSize, Grid.IMAGE_GRID_OFFSET + sampleCellSize/2);
+
+        //Assert wall between bottom-left and bottom-right
+        assertColorAtPixel(Grid.IMAGE_WALL_COLOR, image, Grid.IMAGE_GRID_OFFSET + sampleCellSize, Grid.IMAGE_GRID_OFFSET + sampleCellSize*3/2);
+
+        //Assert wall between top-right and bottom-right
+        assertColorAtPixel(Grid.IMAGE_WALL_COLOR, image, Grid.IMAGE_GRID_OFFSET + sampleCellSize*3/2, Grid.IMAGE_GRID_OFFSET + sampleCellSize);
     }
 }

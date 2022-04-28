@@ -41,7 +41,7 @@ public class App
 	public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
 		return args -> {
             final var maze = mazeBuilderFactory.create()
-                .withSize(10, 10)
+                .withSize(20, 20)
                 .usingLongestPath()
                 .usingAlgorithm(algorithmFactory.getGenerationAlgorithm(MazeGenAlgorithmType.SIDEWINDER)) //TODO - should "usingAlgorithm" just take the enum? Let the builder handle the actual algorithm creation?
                 .showDistances()

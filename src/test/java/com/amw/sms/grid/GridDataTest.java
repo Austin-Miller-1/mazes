@@ -2,6 +2,8 @@ package com.amw.sms.grid;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.awt.Color;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,12 +29,17 @@ public class GridDataTest {
     }
 
     @Test
+    public void testGetGrid_returnsProvidedGrid(){
+        assertEquals(mockGrid, gridData.getGrid());
+    }
+
+    @Test
     public void testGetCellContents_returnsEmptyString(){
         assertEquals("", gridData.getCellContents(mockCell));
     }
 
     @Test
-    public void testGetGrid_returnsProvidedGrid(){
-        assertEquals(mockGrid, gridData.getGrid());
+    public void testGetCellColor_returnsWhiteAsDefaultValue(){
+        assertEquals(Color.WHITE, gridData.getCellColor(mockCell));
     }
 }
