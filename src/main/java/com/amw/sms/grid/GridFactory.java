@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 /**
  * Factory class to abstract out the Grid construction process. 
  * Construction of Grid should only be done through the factory.
- * TODO - How would I justify this without just saying I'm doing this to allow for mocks?
  */
 @Component
 public class GridFactory {

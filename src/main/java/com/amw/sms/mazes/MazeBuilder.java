@@ -4,6 +4,8 @@ import com.amw.sms.algorithms.AlgorithmFactory;
 import com.amw.sms.algorithms.generation.MazeGenAlgorithm;
 import com.amw.sms.grid.Cell;
 import com.amw.sms.grid.Grid;
+import com.amw.sms.grid.GridAnimator;
+import com.amw.sms.grid.GridAnimatorFactory;
 import com.amw.sms.grid.GridFactory;
 import com.amw.sms.mazes.goals.MazeGoal;
 import com.amw.sms.mazes.goals.MazeGoalBuilderFactory;
@@ -16,6 +18,7 @@ public class MazeBuilder {
     private final GridFactory gridFactory;
     private final MazeGoalBuilderFactory goalBuilderFactory;
     private final AlgorithmFactory algorithmFactory;
+    private final GridAnimatorFactory gridAnimatorFactory;
 
     private int rowCount = 0, colCount = 0;
     private int startRow = 0, startColumn = 0; //TODO do we use defaults still? We shouldn't leave them uninitialized but we also will never use the default values...
@@ -33,10 +36,14 @@ public class MazeBuilder {
      * @param goalBuilderFactory Maze-goal builder factory to be used by builder.
      * @param algorithmFactory Algorithm factory to be used by builder.
      */
-    public MazeBuilder(GridFactory gridFactory, MazeGoalBuilderFactory goalBuilderFactory, AlgorithmFactory algorithmFactory){
+    public MazeBuilder(GridFactory gridFactory, 
+        MazeGoalBuilderFactory goalBuilderFactory, 
+        AlgorithmFactory algorithmFactory,
+        GridAnimatorFactory gridAnimatorFactory){
         this.gridFactory = gridFactory;
         this.goalBuilderFactory = goalBuilderFactory;
         this.algorithmFactory = algorithmFactory;
+        this.gridAnimatorFactory = gridAnimatorFactory;
         genAlgorithm = algorithmFactory.getGenerationAlgorithm();
     }
 
@@ -143,14 +150,21 @@ public class MazeBuilder {
         System.out.println(grid); //todo Temp
 
         //Build pathing
+        final var creationAnimator = this.gridAnimatorFactory.create(grid, this.genAlgorithm);
+        creationAnimator.record();
         this.genAlgorithm.apply(grid);
+        creationAnimator.saveToFile("maze_creation.gif");
 
         //Goals
         final var start = this.getEntrance(grid);
         final var end = this.getExit(grid, start.getCell());
 
         //Show it
-        grid.setGridData(algorithmFactory.getDijkstra().getDistances(grid, start.getCell()));
+        final var dijkstra = algorithmFactory.getDijkstra();
+        final var dijkAnimator = this.gridAnimatorFactory.create(grid, this.genAlgorithm);
+        dijkAnimator.record();
+        grid.setGridData(dijkstra.getDistances(grid, start.getCell()));
+        dijkAnimator.saveToFile("maze_dijkstra_distances.gif");
 
         return new Maze(grid, new Pair<MazeGoal, MazeGoal>(start, end));
     }
@@ -215,5 +229,13 @@ public class MazeBuilder {
      */
     AlgorithmFactory getAlgorithmFactory(){
         return this.algorithmFactory;
+    }
+
+    /**
+     * Get the grid-animator factory used by this MazeBuilder.
+     * @return The grid-animator factory used.
+     */
+    GridAnimatorFactory getGridAnimatorFactory(){
+        return this.gridAnimatorFactory;
     }
 }

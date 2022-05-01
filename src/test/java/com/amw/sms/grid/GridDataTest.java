@@ -34,8 +34,8 @@ public class GridDataTest {
     }
 
     @Test
-    public void testGetCellContents_returnsEmptyString(){
-        assertEquals("", gridData.getCellContents(mockCell));
+    public void testGetCellContents_returnsStringWithOneWhiteSpaceChar(){
+        assertEquals(" ", gridData.getCellContents(mockCell));
     }
 
     @Test

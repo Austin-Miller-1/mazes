@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  * Binary tree maze-generation algorithm.
  */
 @Component
-public class BinaryTree implements MazeGenAlgorithm{
+public class BinaryTree extends MazeGenAlgorithm{
     private final Random rng;
 
     public BinaryTree(){
@@ -21,9 +21,13 @@ public class BinaryTree implements MazeGenAlgorithm{
     }
 
     public final void apply(Grid grid){
+        this.started();
+
         grid.getCells()
             .stream()
             .forEach(this::visitCell);
+
+        this.finished();
     }
 
     private void visitCell(Cell cell){
@@ -47,5 +51,6 @@ public class BinaryTree implements MazeGenAlgorithm{
         neighbors
             .get(rng.nextInt(neighbors.size()))
             .link(cell);
+        this.completedStep();
     }
 }

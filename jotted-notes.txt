@@ -1,4 +1,25 @@
 --
+-- Feature Ideas --
+--
+
+- Maze animations? Save to gif? See page 51 of Maze book. Can easily make an image at every step of Dijkstra. But could we make a gif out of that? That could be really cool.
+	--> https://javadoc.io/static/net.imagej/ij/1.53j/ij/ImagePlus.html https://imagej.nih.gov/ij/developer/api/ij/ij/ImageStack.html
+	--> Make bunch of ImagePlus images --> List --> Array --> ImageStack --> New Image 
+
+- Maze Builder:
+	- New build methods
+	- endfarthestFromStart();
+	- startFarthestFromEnd();
+		--> How would start know about end unless end was determined before it? 
+			--> Need to determine start/end first depending on conditions?
+
+-  ObservableMazeAlgorithm
+	- completedStep(StepType)
+		--> StepType: { UpdatedState, UnchangedState }
+			--> Lets observers know of steps that do not result in a change of any internal state.
+
+
+--
 -- Redesigns --
 --
 
@@ -15,6 +36,10 @@
 		--> YES!! GridData is a collection of any number of GridDataLayers that can stack, take priority, etc
 		--> Definitely should be done.
 
+- Create Path class for abstraction from List<Cell> everywhere.
+
+- Proper usage of exceptions within GridAnimator... I don't understand enough about exception standards to say whether or not I should throw an exception or not, and what kind of exception that would be.
+
 --
 -- Utilities and Reusable functions --
 --
@@ -28,7 +53,7 @@
 --
 
             //Random maze testing
-/*             maze.getGrid().hideGridData();
+/*          maze.getGrid().hideGridData();
             maze.getGrid().toImage("C", 30).show();
             maze.getGrid().showGridData();
             maze.getGrid().toImage("D", 30).show();

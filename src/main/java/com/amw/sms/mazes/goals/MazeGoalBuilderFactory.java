@@ -1,7 +1,6 @@
 package com.amw.sms.mazes.goals;
 
 import com.amw.sms.algorithms.AlgorithmFactory;
-import com.amw.sms.algorithms.Dijkstra;
 import com.amw.sms.grid.Grid;
 
 import org.springframework.beans.factory.annotation.Autowired;

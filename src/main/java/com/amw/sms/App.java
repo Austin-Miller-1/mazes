@@ -1,11 +1,7 @@
 package com.amw.sms;
 
-import java.util.Arrays;
-
 import com.amw.sms.algorithms.AlgorithmFactory;
-import com.amw.sms.algorithms.Dijkstra;
 import com.amw.sms.algorithms.generation.MazeGenAlgorithmType;
-import com.amw.sms.algorithms.generation.Sidewinder;
 import com.amw.sms.mazes.InvalidMazeException;
 import com.amw.sms.mazes.MazeBuilderFactory;
 
@@ -43,7 +39,7 @@ public class App
 	public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
 		return args -> {
             final var maze = mazeBuilderFactory.create()
-                .withSize(20, 20)
+                .withSize(10, 10)
                 .usingLongestPath()
                 .usingAlgorithm(algorithmFactory.getGenerationAlgorithm(MazeGenAlgorithmType.SIDEWINDER)) //TODO - should "usingAlgorithm" just take the enum? Let the builder handle the actual algorithm creation?
                 .build();

@@ -21,20 +21,42 @@ public class Dijkstra extends MazeSolveAlgorithm {
 
     @Override
     public List<Cell> getSolution(final Maze maze){
-        final var distancesFromStart = this.getDistances(maze.getGrid(), maze.getStartCell());
+        final var distancesFromStart = this.getDistances(maze.getGrid(), maze.getStartCell(), true);
         return this.getPathTo(maze.getEndCell(), distancesFromStart);
     }
 
     /**
      * Get the distances from the provided root cell and every other cell on the grid
      * that is connected to the root by some path.
+     * @param grid Grid to use.
      * @param rootCell Cell to get distances relative to.
      * @return Distances between the root cell and every other cell. If there is no
      * path connecting the root and a cell on the grid, the cell will not have a distance
      * set.
      */
     public CellDistances getDistances(final Grid grid, final Cell rootCell){
+      return this.getDistances(grid, rootCell, false);
+    }
+
+     /**
+     * Get the distances from the provided root cell and every other cell on the grid
+     * that is connected to the root by some path.
+     * @param grid Grid to use.
+     * @param rootCell Cell to get distances relative to.
+     * @param isFullAlgorithmExecution Flag that indicates whether or not the call to this method is part of the 
+     * Dijktra algorithm's complete execution, or if it is being called separate from the algorithm. This will determine
+     * how the algorithm's execution steps are indicated to its observers. If false, the algorithm will be considered
+     * finished at the end of this method's execution. If true, the algorithm will only be considered finished when the
+     * full algorithm is complete. 
+     * @return Distances between the root cell and every other cell. If there is no
+     * path connecting the root and a cell on the grid, the cell will not have a distance
+     * set.
+     */
+    private CellDistances getDistances(final Grid grid, final Cell rootCell, final boolean isFullAlgorithmExecution){
         final var distances = new CellDistances(grid, rootCell);
+
+        this.executionState.setAlgorithmGridData(distances);
+        this.started();
 
         final var frontier = new LinkedList<Cell>();
         frontier.add(rootCell);
@@ -50,7 +72,16 @@ public class Dijkstra extends MazeSolveAlgorithm {
 
                     distances.setDistance(linkedCell, distances.getDistance(frontierCell)+1);
                     frontier.add(linkedCell);
+                    
+                    this.completedStep();
                 });
+        }
+
+        //If the method is invoked by clients on its own (i.e. not as part of the complete Dijktra algorithm)
+        //then the algorithm should be considered finished at this point. Otherwise, there are still more steps
+        //that need to be done within the algorithm.  
+        if(!isFullAlgorithmExecution){
+            this.finished();
         }
 
         return distances;

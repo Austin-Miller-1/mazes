@@ -3,6 +3,7 @@ package com.amw.sms.mazes;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.amw.sms.algorithms.AlgorithmFactory;
+import com.amw.sms.grid.GridAnimatorFactory;
 import com.amw.sms.grid.GridFactory;
 import com.amw.sms.mazes.goals.MazeGoalBuilderFactory;
 
@@ -28,6 +29,9 @@ public class MazeBuilderFactoryTest {
     @MockBean
     private AlgorithmFactory mockAlgorithmFactory;
 
+    @MockBean
+    private GridAnimatorFactory mockGridAnimatorFactory;
+
     @Autowired
     private MazeBuilderFactory mazeBuilderFactory;
 
@@ -38,5 +42,6 @@ public class MazeBuilderFactoryTest {
         assertEquals(mockGridFactory, mazeBuilder.getGridFactory());
         assertEquals(mockGoalBuilderFactory, mazeBuilder.getGoalBuilderFactory());
         assertEquals(mockAlgorithmFactory, mazeBuilder.getAlgorithmFactory());
+        assertEquals(mockGridAnimatorFactory, mazeBuilder.getGridAnimatorFactory());
     }
 }

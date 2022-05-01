@@ -30,3 +30,4 @@ target/
 #Misc temp files
 *~lock*
 *.tif
+*.gif
