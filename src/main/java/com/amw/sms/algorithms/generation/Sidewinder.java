@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
  * 
  */
 @Component
-public class Sidewinder implements MazeGenAlgorithm{
+public class Sidewinder extends MazeGenAlgorithm{
     private final Random rng;
     private final CoinFlip coinFlip;
 
@@ -39,10 +39,14 @@ public class Sidewinder implements MazeGenAlgorithm{
     }
 
     public final void apply(Grid grid){
+        this.started();
+
         grid.getRows()
         //grid.getColumns() //If we wanted sidewinder to generate a maze in west/east direction
             .stream()
             .forEach(this::visitRow);
+        
+        this.finished();
     }
 
     private void visitRow(List<Cell> row){
@@ -73,6 +77,7 @@ public class Sidewinder implements MazeGenAlgorithm{
             } else {
                 cell.link(cell.getEast().get());
             }
+            this.completedStep();
         });
     }
 

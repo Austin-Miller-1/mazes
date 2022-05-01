@@ -1,6 +1,7 @@
 package com.amw.sms.mazes;
 
 import com.amw.sms.algorithms.AlgorithmFactory;
+import com.amw.sms.grid.GridAnimatorFactory;
 import com.amw.sms.grid.GridFactory;
 import com.amw.sms.mazes.goals.MazeGoalBuilderFactory;
 
@@ -21,6 +22,9 @@ public class MazeBuilderFactory {
     @Autowired
     private AlgorithmFactory algorithmFactory;
 
+    @Autowired
+    private GridAnimatorFactory gridAnimatorFactory;
+
     /**
      * Constructs new MazeBuilderFactory
      */
@@ -31,6 +35,6 @@ public class MazeBuilderFactory {
      * @return New MazeBuilder instance.
      */
     public MazeBuilder create(){
-        return new MazeBuilder(gridFactory, goalBuilderFactory, algorithmFactory);
+        return new MazeBuilder(gridFactory, goalBuilderFactory, algorithmFactory, gridAnimatorFactory);
     }
 }

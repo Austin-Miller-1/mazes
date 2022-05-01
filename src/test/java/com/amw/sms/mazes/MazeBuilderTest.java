@@ -3,7 +3,6 @@ package com.amw.sms.mazes;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -17,6 +16,8 @@ import com.amw.sms.algorithms.generation.MazeGenAlgorithm;
 import com.amw.sms.grid.Cell;
 import com.amw.sms.grid.CellDistances;
 import com.amw.sms.grid.Grid;
+import com.amw.sms.grid.GridAnimator;
+import com.amw.sms.grid.GridAnimatorFactory;
 import com.amw.sms.grid.GridFactory;
 import com.amw.sms.mazes.goals.MazeGoal;
 import com.amw.sms.mazes.goals.MazeGoalBuilder;
@@ -66,6 +67,12 @@ public class MazeBuilderTest {
     @Mock private Cell mockCell3;
     @Mock private Cell mockCell4;
 
+    @Mock
+    private GridAnimatorFactory mockGridAnimatorFactory;
+
+    @Mock
+    private GridAnimator mockGridAnimator;
+
     /**
      * Creates MazeBuilder with dependency classes mocked out.
      * @return Mocked maze-builder.
@@ -82,7 +89,10 @@ public class MazeBuilderTest {
         Mockito.when(mockGoalBuilderFactory.create(mockGrid))
             .thenReturn(mockGoalBuilder);
 
-        return new MazeBuilder(mockGridFactory, mockGoalBuilderFactory, mockAlgorithmFactory);
+        Mockito.when(mockGridAnimatorFactory.create(any(), any()))
+            .thenReturn(mockGridAnimator);
+
+        return new MazeBuilder(mockGridFactory, mockGoalBuilderFactory, mockAlgorithmFactory, mockGridAnimatorFactory);
     }
 
     private void mockGridFactory(){
@@ -141,7 +151,7 @@ public class MazeBuilderTest {
     @MethodSource("invalidRowAndColProvider")
     void testWithSize_whenZeroRows_throwsInvalidMazeException(int rows, int columns) throws InvalidMazeException {
         final var exception = assertThrows(InvalidMazeException.class, () -> {
-            new MazeBuilder(mockGridFactory, mockGoalBuilderFactory, mockAlgorithmFactory)
+            new MazeBuilder(mockGridFactory, mockGoalBuilderFactory, mockAlgorithmFactory, mockGridAnimatorFactory)
                 .withSize(rows, columns)
                 .build();
         });
@@ -161,7 +171,7 @@ public class MazeBuilderTest {
     @Test
     void testBuild_whenNoSizeProvided_throwsInvalidMazeException() {
         final var exception = assertThrows(InvalidMazeException.class, () -> {
-            new MazeBuilder(mockGridFactory, mockGoalBuilderFactory, mockAlgorithmFactory)
+            new MazeBuilder(mockGridFactory, mockGoalBuilderFactory, mockAlgorithmFactory, mockGridAnimatorFactory)
                 .build();
         });
         assertNotNull(exception.getMessage());
@@ -337,8 +347,9 @@ public class MazeBuilderTest {
         assertEquals(mockCell1, maze.getStartCell());
         assertEquals(mockCell2, maze.getEndCell());
     }
-
-    @Test
+    
+    //Commented while showDistances has been removed. Functionality will be readded when wanted.
+    /* @Test
     void testShowDistances_whenNotCalled_gridDataIsNotCreatedAndSet() throws InvalidMazeException {
         mockGridFactory();
         mockDefaultMazeGoals();
@@ -353,7 +364,7 @@ public class MazeBuilderTest {
         Mockito.verify(mockGrid, times(0))
             .setGridData(any());
     }
-
+ */
     //Commented while showDistances has been removed. Functionality will be readded when wanted.
     /* 
     @Test

@@ -297,8 +297,20 @@ public class Grid {
      * character.
      */
     public String getCellDataDisplayString(Cell cell){
+        return this.getCellDataDisplayString(cell, this.gridData);
+    }
+
+    /**
+     * Returns string representation of a cell's associated data. Used when displaying the grids cells in its
+     * different representations. 
+     * @param cell Cell to get the contents of.
+     * @param gridData Grid data to use when determining the cell's contents.
+     * @return The contents of the cell as a string. When grid data is hidden, this will return a whitespace 
+     * character.
+     */
+    public String getCellDataDisplayString(Cell cell, GridData gridData){
         return this.shouldDisplayCellData(cell)
-            ? this.gridData.getCellContents(cell)
+            ? gridData.getCellContents(cell)
             : " ";
     }
 
@@ -306,12 +318,13 @@ public class Grid {
      * Returns the color to use for the provided cell. Used when displaying the grids cells in its
      * image representations.
      * @param cell Cell to get the background color of.
+     * @param gridData Grid data to use when determining the cell's color.
      * @return The color of the cell. When grid data is hidden, the default background color of the maze
      * will be returned.
      */
-    public Color getCellColor(Cell cell){
+    public Color getCellColor(Cell cell, GridData gridData){
         return this.shouldDisplayCellData(cell)
-            ?   this.gridData.getCellColor(cell)
+            ?   gridData.getCellColor(cell)
             :   Grid.IMAGE_BACKGROUND_COLOR;
     }
     
@@ -403,21 +416,35 @@ public class Grid {
     }
 
     /**
-     * Returns an image of the grid. Cell size will be 10 pixels.
+     * Returns an image of the grid. Cell size will be 10 pixels. If enabled, the grid's grid-data 
+     * will be included in the image.
      * @param title Title to be used by the image.
      * @return Image of the grid.
      */
     public ImagePlus toImage(String title){
-        return this.toImage(title, 10);
+        return this.toImage(title, 10, this.gridData);
     }
 
     /**
-     * Returns an image of the grid.
+     * Returns an image of the grid. If enabled, the grid's grid-data will be included in the image.
      * @param title Title to be used by the image.
      * @param cellSize The number of pixels each cell will take up.
      * @return Image of the grid.
      */
     public ImagePlus toImage(String title, int cellSize){
+        return this.toImage(title, cellSize, this.gridData);
+    }
+
+    /**
+     * Returns an image of the grid using the provided grid-data rather than the grid data that has been set for the grid. 
+     * This allows for showing different states of the grid via images without replacing its true grid-data.
+     * @param title Title to be used by the image.
+     * @param cellSize The number of pixels each cell will take up.
+     * @param gridData The grid data to display in the image. If the grid has grid-data display disabled, this parameter 
+     * will be ignored.
+     * @return Image of the grid.
+     */
+    public ImagePlus toImage(String title, int cellSize, GridData gridData){
         //Number of pixels of whitespace to place on each side of the grid
         //This is to show the full grid, including it's boundaries, in the image. 
         final var imageWidth = (cellSize * this.colCount) + 2*IMAGE_GRID_OFFSET;
@@ -429,17 +456,19 @@ public class Grid {
         ip.fill();
 
         //Maze
-        this.drawCells(ip, cellSize);
+        this.drawCells(ip, cellSize, gridData);
         this.drawWalls(ip, cellSize);       //Walls are drawn over already-drawn cells
         return new ImagePlus(title, ip);
     }
+
 
     /**
      * Draws the cells to the image processor. 
      * @param ip Image processor to draw the cells within.
      * @param cellSize Size of the cells in pixels.
+     * @param gridData Grid data to use when drawing the cells.
      */
-    private void drawCells(ImageProcessor ip, int cellSize){
+    private void drawCells(ImageProcessor ip, int cellSize, GridData gridData){
         //Draw maze
         //1. Cells
         this.getCells()
@@ -450,7 +479,7 @@ public class Grid {
             final var y1 = (cell.getRowPosition() * cellSize) + IMAGE_GRID_OFFSET;
 
             //Cell background
-            ip.setColor(this.getCellColor(cell));
+            ip.setColor(this.getCellColor(cell, gridData));
             ip.fillRect(x1, y1, cellSize, cellSize);
         });
     }
