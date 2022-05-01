@@ -31,3 +31,4 @@ target/
 *~lock*
 *.tif
 *.gif
+temp/
