@@ -161,7 +161,7 @@ public class MazeBuilder {
 
         //Show it
         final var dijkstra = algorithmFactory.getDijkstra();
-        final var dijkAnimator = this.gridAnimatorFactory.create(grid, this.genAlgorithm);
+        final var dijkAnimator = this.gridAnimatorFactory.create(grid, dijkstra);
         dijkAnimator.record();
         grid.setGridData(dijkstra.getDistances(grid, start.getCell()));
         dijkAnimator.saveToFile("maze_dijkstra_distances.gif");

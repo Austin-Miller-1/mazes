@@ -37,6 +37,7 @@ public abstract class GridData {
      * @return The contents of the cell as a string. This representation of the cell's data is specifically intended
      * to be used when displaying the grid as a string. If there is no data for the provided cell, an empty string will be returned.
      */
+    @Deprecated
     public String getCellContents(final Cell cell){
         return DEFAULT_CELL_CONTENTS_STRING;
     }
@@ -46,6 +47,7 @@ public abstract class GridData {
      * @param cell The cell whose color is to be returned.
      * @return The color of the cell. If there is no color set for the provided cell, an int representing white will be returned.
      */
+    @Deprecated
     public Color getCellColor(final Cell cell){
         return DEFAULT_CELL_COLOR;
     }

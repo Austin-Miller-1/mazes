@@ -125,6 +125,7 @@ public class CellDistances extends GridData {
      * {@link GridData} superclass.
      */
     @Override
+    @Deprecated
     public String getCellContents(Cell cell){
         return this.isDistanceSet(cell)
             ?   Integer.toString(this.distances.get(cell), 32).toUpperCase()
@@ -138,6 +139,7 @@ public class CellDistances extends GridData {
      * {@link GridData} superclass.
      */
     @Override
+    @Deprecated
     public Color getCellColor(Cell cell){
         //Unset => go to superclass
         if(!this.isDistanceSet(cell)){
