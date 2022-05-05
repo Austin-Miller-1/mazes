@@ -516,35 +516,4 @@ public class Grid {
         });
 
     }
-
-    /**
-     * IDEAS, transposition & rotation
-     */
-    /* private Grid transpose(Grid grid){
-        //Would need to also update all of the neighbors appropriately.... That's why it doesn't work as is
-        final var transposedGrid = new Grid(grid.getColumnCount(), grid.getRowCount());
-
-        for(var x = 0; x < grid.getRowCount(); x++){
-            for(var y = 0; y < grid.getColumnCount(); y++){
-                transposedGrid.setCell(grid.getCell(x, y).get(), y, x);
-            }
-        }
-
-        //Maybe like this?
-        this.getCells().forEach((final var currentCell) -> {
-            final var rowIndex = currentCell.getRowPosition();
-            final var colIndex = currentCell.getColumnPosition();
-
-            currentCell.setNorth(this.getCell(rowIndex-1, colIndex));                
-            currentCell.setSouth(this.getCell(rowIndex+1, colIndex));
-            currentCell.setWest(this.getCell(rowIndex, colIndex-1));
-            currentCell.setEast(this.getCell(rowIndex, colIndex+1));
-        });
-
-        return transposedGrid;
-    }
-
-    public void setCell(Cell cell, int row, int column){
-        this.grid.get(row).set(column, cell);
-    } */
 }
