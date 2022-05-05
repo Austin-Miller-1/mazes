@@ -14,7 +14,7 @@ import java.util.Optional;
 
 import com.amw.sms.algorithms.MazeAlgorithmExecutionState;
 import com.amw.sms.algorithms.ObservableMazeAlgorithm;
-import com.amw.sms.grid.griddata.GridData;
+import com.amw.sms.grid.data.GridData;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -147,7 +147,7 @@ public class GridAnimatorTest {
         this.stubGetExecutionState(mockExecutionState);
         this.stubToImage(sampleImage1);
 
-        Mockito.when(mockExecutionState.getAlgorithmGridData())
+        Mockito.when(mockExecutionState.getGridData())
             .thenReturn(Optional.empty());
 
         gridAnimator.record();
@@ -162,7 +162,7 @@ public class GridAnimatorTest {
         this.stubGetExecutionState(mockExecutionState);
         this.stubToImage(sampleImage1);
 
-        Mockito.when(mockExecutionState.getAlgorithmGridData())
+        Mockito.when(mockExecutionState.getGridData())
             .thenReturn(Optional.of(mockGridData2));
 
         gridAnimator.record();
@@ -209,7 +209,7 @@ public class GridAnimatorTest {
         this.stubGetExecutionState(mockExecutionState);
         this.stubToImage(sampleImage1);
 
-        Mockito.when(mockExecutionState.getAlgorithmGridData())
+        Mockito.when(mockExecutionState.getGridData())
             .thenReturn(Optional.empty());
 
         gridAnimator.record();
@@ -224,7 +224,7 @@ public class GridAnimatorTest {
         this.stubGetExecutionState(mockExecutionState);
         this.stubToImage(sampleImage1);
 
-        Mockito.when(mockExecutionState.getAlgorithmGridData())
+        Mockito.when(mockExecutionState.getGridData())
             .thenReturn(Optional.of(mockGridData2));
 
         gridAnimator.record();

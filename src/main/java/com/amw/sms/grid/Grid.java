@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.function.Function;
 
-import com.amw.sms.grid.griddata.GridData;
+import com.amw.sms.grid.data.GridData;
 
 import org.apache.commons.lang3.StringUtils;
 

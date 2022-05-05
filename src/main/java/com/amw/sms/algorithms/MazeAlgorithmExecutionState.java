@@ -1,85 +1,43 @@
 package com.amw.sms.algorithms;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
-import com.amw.sms.grid.CellGroup;
-import com.amw.sms.grid.CellPath;
-import com.amw.sms.grid.griddata.GridData;
+import com.amw.sms.grid.data.GridData;
 
 /**
  * Data object containing a maze algorithm's state during (AND ONLY DURING)
  * its execution on a maze.
  */
 public class MazeAlgorithmExecutionState {
-    private Optional<GridData> algorithmGridData;
-    private List<CellGroup> algorithmCellGroups;
-    private List<CellPath> algorithmPaths;
+    private Optional<GridData> gridData;
 
     /**
      * Constructs new, empty execution state. State values must be set via setters.
      */
     public MazeAlgorithmExecutionState(){
-        this.algorithmGridData = Optional.empty();
-        this.algorithmCellGroups = new ArrayList<CellGroup>();
-        this.algorithmPaths = new ArrayList<CellPath>();
+        this.gridData = Optional.empty();
     }
 
     /**
      * Set the grid data that the algorithm is using/building during its execution.
      * @param gridData Grid data.
      */
-    void setAlgorithmGridData(GridData gridData){
-        this.algorithmGridData = Optional.of(gridData);
+    void setGridData(GridData gridData){
+        this.gridData = Optional.of(gridData);
     }
-
-    /**
-     * Adds the cell group that the algorithm is using/building during its execution.
-     * @param cellGroup Cell group.
-     */
-    void addAlgorithmCellGroup(CellGroup cellGroup){
-        this.algorithmCellGroups.add(cellGroup);
-    }
-
-    /**
-     * Adds the cell path that the algorithm is using/building during its execution.
-     * @param cellPath Cell path.
-     */
-    void addAlgorithmPath(CellPath cellPath){
-        this.algorithmPaths.add(cellPath);
-    }
-
+    
     /**
      * Clears the set state values.
      */
     void clear(){
-        this.algorithmGridData = Optional.empty();
-        this.algorithmCellGroups = new ArrayList<CellGroup>();
-        this.algorithmPaths = new ArrayList<CellPath>();
+        this.gridData = Optional.empty();
     }
 
     /**
      * Get the grid data that the algorithm is using/building during its execution.
      * @return Optional containing the set grid-data. If unset, returns empty Optional.
      */
-    public Optional<GridData> getAlgorithmGridData(){
-        return this.algorithmGridData;
-    }
-
-    /**
-     * Returns the cell groups that the algorithm is using/building during its execution.
-     * @return List of the cells groups. If no cell group has been added, returns an empty list.
-     */
-    public List<CellGroup> getAlgorithmCellGroups(){
-        return this.algorithmCellGroups;
-    }
-
-    /**
-     * Returns the cell paths that the algorithm is using/building during its execution.
-     * @return List of the path. If no path has been added, returns an empty list.
-     */
-    public List<CellPath> getAlgorithmPaths(){
-        return this.algorithmPaths;
+    public Optional<GridData> getGridData(){
+        return this.gridData;
     }
 }

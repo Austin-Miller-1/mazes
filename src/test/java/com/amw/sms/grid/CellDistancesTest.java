@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.awt.Color;
 import java.util.Arrays;
 
-import com.amw.sms.grid.griddata.SampleGridDataImpl;
+import com.amw.sms.grid.data.SampleGridDataImpl;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

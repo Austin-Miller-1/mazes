@@ -1,4 +1,4 @@
-package com.amw.sms.grid.griddata;
+package com.amw.sms.grid.data;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -10,6 +10,7 @@ import java.util.Arrays;
 import com.amw.sms.grid.Cell;
 import com.amw.sms.grid.CellDistances;
 import com.amw.sms.grid.Grid;
+import com.amw.sms.grid.data.CellDistancesDataLayer;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

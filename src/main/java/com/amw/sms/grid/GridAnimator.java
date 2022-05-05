@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import com.amw.sms.algorithms.ObservableMazeAlgorithm;
 import com.amw.sms.algorithms.solving.OneTimeMazeAlgorithmObserver;
-import com.amw.sms.grid.griddata.GridData;
+import com.amw.sms.grid.data.GridData;
 
 import ij.ImagePlus;
 import ij.ImageStack;
@@ -109,7 +109,7 @@ public class GridAnimator extends OneTimeMazeAlgorithmObserver {
     private void recordNextFrame(){
         final var algorithmGridData = this.observedAlgorithm
             .getExecutionState()
-            .getAlgorithmGridData();
+            .getGridData();
 
         final var nextFrame = algorithmGridData.isPresent()
             ?   this.grid.toImage(ANIMATION_FRAME_TITLE, ANIMATION_GRID_CELL_SIZE, algorithmGridData.get())

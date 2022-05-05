@@ -1,4 +1,4 @@
-package com.amw.sms.grid.griddata;
+package com.amw.sms.grid.data;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

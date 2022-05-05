@@ -1,4 +1,4 @@
-package com.amw.sms.grid.griddata;
+package com.amw.sms.grid.data;
 
 import java.awt.Color;
 import java.util.Optional;

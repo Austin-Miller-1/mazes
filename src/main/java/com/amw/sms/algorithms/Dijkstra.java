@@ -7,8 +7,8 @@ import com.amw.sms.algorithms.solving.MazeSolveAlgorithm;
 import com.amw.sms.grid.Cell;
 import com.amw.sms.grid.CellDistances;
 import com.amw.sms.grid.Grid;
-import com.amw.sms.grid.griddata.CellDistancesDataLayer;
-import com.amw.sms.grid.griddata.GridData;
+import com.amw.sms.grid.data.CellDistancesDataLayer;
+import com.amw.sms.grid.data.GridData;
 import com.amw.sms.mazes.Maze;
 
 import org.springframework.stereotype.Component;
@@ -59,7 +59,7 @@ public class Dijkstra extends MazeSolveAlgorithm {
 
         final var dijkstraGridData = new GridData(grid);
         dijkstraGridData.addAtFront(new CellDistancesDataLayer(distances, "dijk-distances"));
-        this.executionState.setAlgorithmGridData(dijkstraGridData);
+        this.executionState.setGridData(dijkstraGridData);
         this.started();
 
         final var frontier = new LinkedList<Cell>();

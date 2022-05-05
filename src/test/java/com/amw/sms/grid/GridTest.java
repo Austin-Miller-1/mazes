@@ -9,8 +9,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import com.amw.sms.grid.griddata.GridData;
-import com.amw.sms.grid.griddata.SimpleGridDataLayer;
+import com.amw.sms.grid.data.GridData;
+import com.amw.sms.grid.data.SimpleGridDataLayer;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
