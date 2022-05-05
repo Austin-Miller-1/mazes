@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.amw.sms.algorithms.ObservableMazeAlgorithm;
 import com.amw.sms.algorithms.solving.OneTimeMazeAlgorithmObserver;
+import com.amw.sms.grid.griddata.GridData;
 
 import ij.ImagePlus;
 import ij.ImageStack;
@@ -22,6 +23,7 @@ public class GridAnimator extends OneTimeMazeAlgorithmObserver {
     private static final String ANIMATION_FRAME_TITLE = "GridAnimationFrame";
     private static final int ANIMATION_GRID_CELL_SIZE = 30;
     private final Grid grid;
+    private final GridData algorithmGridData;
     private List<ImagePlus> frames;
     private Optional<ImagePlus> animation;
 
@@ -34,6 +36,7 @@ public class GridAnimator extends OneTimeMazeAlgorithmObserver {
     public GridAnimator(Grid grid, ObservableMazeAlgorithm observedAlgorithm){
         super(observedAlgorithm);
         this.grid = grid;
+        this.algorithmGridData = new GridData(grid);
         this.frames = new ArrayList<ImagePlus>();
         this.animation = Optional.empty();
     }
@@ -96,7 +99,6 @@ public class GridAnimator extends OneTimeMazeAlgorithmObserver {
     public void endRecording(){
         this.algorithmFinished();
     }
-
 
     /**
      * Saves the next frame of the grid's animation. If the algorithm's execution state

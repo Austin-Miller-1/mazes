@@ -588,16 +588,4 @@ public class GridDataTest {
         assertEquals(Arrays.asList(sampleCellColor1, sampleCellColor2), gridData.getCellColors(mockCell));
         assertEquals(Arrays.asList(Optional.of(sampleLayerColor1), Optional.of(sampleLayerColor2)), gridData.getCellHighlights(mockCell));
     }
-
-
-    //Old tests - to remove
-    @Test
-    public void testGetCellContents_returnsStringWithOneWhiteSpaceChar(){
-        assertEquals(" ", gridData.getCellContentsDEP(mockCell));
-    }
-
-    @Test
-    public void testGetCellColor_returnsWhiteAsDefaultValue(){
-        assertEquals(Color.WHITE, gridData.getCellColorDEP(mockCell));
-    }
 }

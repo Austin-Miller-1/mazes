@@ -1,15 +1,16 @@
 package com.amw.sms.grid;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 
 import java.awt.Color;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import com.amw.sms.grid.griddata.GridData;
+import com.amw.sms.grid.griddata.SimpleGridDataLayer;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,6 +51,27 @@ public class GridTest {
     @BeforeEach
     void beforeEach(){
         samplePath = Arrays.asList(mockCell1, mockCell2, mockCell3);
+    }
+
+    /**
+     * Creates grid data instance where every cell is given the same contents. 
+     * Used for grid-representation tests
+     * @param grid
+     * @param contents
+     * @return
+     */
+    private GridData fullContentsGridData(Grid grid, String contents){
+        final var gridData = new GridData(grid);
+        final var dataLayer = new SimpleGridDataLayer("contents");
+
+        grid.getCells()
+            .stream()
+            .forEach((var cell) -> {
+                dataLayer.setCellContents(cell, contents);
+            });
+
+        gridData.addAtFront(dataLayer);
+        return gridData;
     }
 
     @Test
@@ -230,49 +252,12 @@ public class GridTest {
     }
 
     @Test
-    void testClearGridData_andGetGridData_removesExistingGridDataAsExpected(){
-        final var grid = new Grid(9, 10);
-
-        final var sampleGridData = new SimpleGridData(grid);
-        sampleGridData.setCellContents(mockCell1, sampleCellDataContents);
-        sampleGridData.setCellColor(mockCell1, mockColor);
-        grid.setGridData(mockGridData1);
-        
-        grid.clearGridData();
-        assertTrue(grid.getGridData().getCellContentsDEP(mockCell1).isBlank());
-        assertNotEquals(mockColor, grid.getGridData().getCellColorDEP(mockCell1));
-    }
-
-
-    @Test
-    void testClearGridData_whenNoDataExists_doesNotCauseException(){
-        final var grid = new Grid(9, 10);
-        
-        //Call before any data is set - shouldn't cause problems
-        grid.clearGridData();
-        
-        //Set data
-        final var sampleGridData = new SimpleGridData(grid);
-        sampleGridData.setCellContents(mockCell1, sampleCellDataContents);
-        grid.setGridData(sampleGridData);
-
-        //Double clear - second call shouldn't cause problems
-        grid.clearGridData();
-        grid.clearGridData();
-        assertTrue(grid.getGridData().getCellContentsDEP(mockCell1).isBlank());
-    }
-
-    @Test
     void testGetGridData_whenNotSet_returnsEmptyGridDataInstance(){
         final var grid = new Grid(5, 5);
         grid.getCells()
             .stream()
             .forEach((var cell) -> {
-                //TODO
-                //Not the best way of checking to make sure data is empty.. For true check, would need to check getCellColor too, and any other cell elements.. 
-                //OR would need new isEmpty method OR isSet(Cell) method, and both would need to consider.. if one data element is set, but others are not, is the Cell set or not?
-                //This should be resolved once GridData is reorganized into GridData and GridDataLayer classes - future design change
-                assertTrue(grid.getGridData().getCellContentsDEP(cell).isBlank());
+                assertTrue(grid.getGridData().getPrimaryCellContents(cell).isEmpty());
             });
     }
 
@@ -292,36 +277,32 @@ public class GridTest {
     void testShowGridData_andGetCellDataDisplayString_whenGridDataSet_cellDataIsDisplayed(){
         //Grid fixture
         final var grid = new Grid(9, 10);
-        grid.setGridData(mockGridData1);
-        Mockito.when(mockGridData1.getCellContentsDEP(mockCell1))
-            .thenReturn(sampleCellDataContents);
-
+        grid.setGridData(this.fullContentsGridData(grid, sampleCellDataContents));
+       
         //Test method
         grid.showGridData();
 
         //Assert
-        assertEquals(sampleCellDataContents, grid.getCellDataDisplayString(mockCell1));
+        assertEquals(sampleCellDataContents, grid.getCellDataDisplayString(grid.getFirstCell()));
     }
-
 
     @Test
     void testHideGridData_andGetCellDataDisplayString_whitespaceIsDisplayed(){
         //Grid fixture
         final var grid = new Grid(9, 10);
-        grid.setGridData(mockGridData1);
+        grid.setGridData(this.fullContentsGridData(grid, sampleCellDataContents));
 
         //Test method
         grid.hideGridData();
 
         //Assert
-        assertEquals("", grid.getCellDataDisplayString(mockCell1).trim());
+        assertEquals("", grid.getCellDataDisplayString(grid.getFirstCell()).trim());
     }
 
     @Test
     void testHideGridData_whenNoDataSet_doesNotCauseException(){
         final var grid = new Grid(9, 10);
         grid.hideGridData();
-        grid.getCellDataDisplayString(mockCell1);
     }
 
     @Test
@@ -381,8 +362,8 @@ public class GridTest {
         final var grid = new Grid(9, 10);
         grid.setGridData(mockGridData1);
         Mockito.lenient()
-            .when(mockGridData1.getCellContentsDEP(any()))
-            .thenReturn("AAA");
+            .when(mockGridData1.getPrimaryCellContents(any()))
+            .thenReturn(Optional.of("AAA"));
         grid.setPath(samplePath);
 
         grid.displayPathExclusively();
@@ -395,8 +376,8 @@ public class GridTest {
         final var grid = new Grid(9, 10);
         grid.setGridData(mockGridData1);
         Mockito.lenient()
-            .when(mockGridData1.getCellContentsDEP(any()))
-            .thenReturn("AAA");
+            .when(mockGridData1.getPrimaryCellContents(any()))
+            .thenReturn(Optional.of("AAA"));
         grid.setPath(samplePath);
 
         //Display all data
@@ -412,8 +393,8 @@ public class GridTest {
     void testDisplayPathExclusively_andGetCellDataDisplayString_gridDataOnThePathIsDisplayedAsString(){
         final var grid = new Grid(9, 10);
         grid.setGridData(mockGridData1);
-        Mockito.when(mockGridData1.getCellContentsDEP(any()))
-            .thenReturn(sampleCellDataContents);
+        Mockito.when(mockGridData1.getPrimaryCellContents(any()))
+            .thenReturn(Optional.of(sampleCellDataContents));
         grid.setPath(samplePath);
 
         grid.displayPathExclusively();
@@ -425,8 +406,8 @@ public class GridTest {
     void testDisplayAllCells_andGetCellDataDisplayString_gridDataOffThePathIsDisplayedAsString(){
         final var grid = new Grid(9, 10);
         grid.setGridData(mockGridData1);
-        Mockito.when(mockGridData1.getCellContentsDEP(any()))
-            .thenReturn(sampleCellDataContents);
+        Mockito.when(mockGridData1.getPrimaryCellContents(any()))
+            .thenReturn(Optional.of(sampleCellDataContents));
         grid.setPath(samplePath);
 
         grid.displayAllCells();
@@ -438,8 +419,8 @@ public class GridTest {
     void testDisplayAllCells_andGetCellDataDisplayString_whenPathDataWasDisplayedExclusivelyBefore_gridDataOffThePathIsDisplayedAsString(){
         final var grid = new Grid(9, 10);
         grid.setGridData(mockGridData1);
-        Mockito.when(mockGridData1.getCellContentsDEP(any()))
-            .thenReturn(sampleCellDataContents);
+        Mockito.when(mockGridData1.getPrimaryCellContents(any()))
+            .thenReturn(Optional.of(sampleCellDataContents));
         grid.setPath(samplePath);
 
         //Display path exclusively
@@ -455,8 +436,8 @@ public class GridTest {
     void testDisplayAllCells_andGetCellDataDisplayString__gridDataOnThePathIsDisplayedAsString(){
         final var grid = new Grid(9, 10);
         grid.setGridData(mockGridData1);
-        Mockito.when(mockGridData1.getCellContentsDEP(any()))
-            .thenReturn(sampleCellDataContents);
+        Mockito.when(mockGridData1.getPrimaryCellContents(any()))
+            .thenReturn(Optional.of(sampleCellDataContents));
         grid.setPath(samplePath);
 
         grid.displayAllCells();
@@ -471,12 +452,12 @@ public class GridTest {
         //Mocked grid data
         grid.setGridData(mockGridData1);
         Mockito.lenient()
-            .when(mockGridData2.getCellContentsDEP(any()))
-            .thenReturn("test");
+            .when(mockGridData2.getPrimaryCellContents(any()))
+            .thenReturn(Optional.of("test"));
 
         //Mock to be provided as parameter
-        Mockito.when(mockGridData2.getCellContentsDEP(any()))
-            .thenReturn(sampleCellDataContents);
+        Mockito.when(mockGridData2.getPrimaryCellContents(any()))
+            .thenReturn(Optional.of(sampleCellDataContents));
 
         assertEquals(sampleCellDataContents, grid.getCellDataDisplayString(mockCell1, mockGridData2));       
     }
@@ -539,13 +520,31 @@ public class GridTest {
         assertEquals(expectedColor.getBlue(), actualCellPixel[2]);    //Blue
     }
 
+    /**
+     * Creates grid data instance where every cell is given the same color. 
+     * Used for image tests.
+     * @param grid
+     * @param cellColor
+     * @return
+     */
+    private GridData coloredCellsGridData(Grid grid, Color cellColor){
+        final var gridData = new GridData(grid);
+        final var dataLayer = new SimpleGridDataLayer("colors");
+
+        grid.getCells()
+            .stream()
+            .forEach((var cell) -> {
+                dataLayer.setCellColor(cell, cellColor);
+            });
+
+        gridData.addAtFront(dataLayer);
+        return gridData;
+    }
+
     @Test
     void testToImage_whenOneCellMaze_returnsAnImageWithCellUsingTheExpectedBackgroundColor(){
         final var grid = new Grid(1, 1);
-        
-        final var gridData = new SimpleGridData(grid);
-        gridData.setCellColor(grid.getFirstCell(), sampleColor1);
-        grid.setGridData(gridData);
+        grid.setGridData(this.coloredCellsGridData(grid, sampleColor1));
 
         final var image = grid.toImage("maze", sampleCellSize);
         
@@ -556,10 +555,7 @@ public class GridTest {
     @Test
     void testToImage_whenOneCellMaze_returnsAnImageWhereMazeHasEmptySpaceOnAllSides(){
         final var grid = new Grid(1, 1);
-        
-        final var gridData = new SimpleGridData(grid);
-        gridData.setCellColor(grid.getFirstCell(), sampleColor1);
-        grid.setGridData(gridData);
+        grid.setGridData(this.coloredCellsGridData(grid, sampleColor1));
 
         final var image = grid.toImage("maze", sampleCellSize);
 
@@ -573,10 +569,7 @@ public class GridTest {
     @Test
     void testToImage_whenOneCell_returnsAnImageWithTheExpectedOuterWalls(){
         final var grid = new Grid(1, 1);
-
-        final var gridData = new SimpleGridData(grid);
-        gridData.setCellColor(grid.getFirstCell(), sampleColor1);
-        grid.setGridData(gridData);
+        grid.setGridData(this.coloredCellsGridData(grid, sampleColor1));
 
         final var image = grid.toImage("maze", sampleCellSize);
 
@@ -590,17 +583,10 @@ public class GridTest {
     @Test
     void testToImage_whenTenByTenMaze_returnsAnImageWhereMazeHasEmptySpaceOnAllSides(){
         final var grid = new Grid(10, 10);
+        grid.setGridData(this.coloredCellsGridData(grid, sampleColor1));
+
         final var mazeWidth = sampleCellSize*10;
         final var mazeHeight = sampleCellSize*10;
- 
-        //Color all cells.
-        final var gridData = new SimpleGridData(grid);
-        grid.getCells()
-            .stream()
-            .forEach((var cell) -> {
-                gridData.setCellColor(cell, sampleColor1);
-            });
-        grid.setGridData(gridData);
 
         final var image = grid.toImage("maze", sampleCellSize);
 
@@ -622,11 +608,13 @@ public class GridTest {
         final var cell3Color = new Color(0x300000);
         final var cell4Color = new Color(0x400000);
 
-        final var gridData = new SimpleGridData(grid);
-        gridData.setCellColor(grid.getCell(0, 0).get(), cell1Color);
-        gridData.setCellColor(grid.getCell(0, 1).get(), cell2Color);
-        gridData.setCellColor(grid.getCell(1, 0).get(), cell3Color);
-        gridData.setCellColor(grid.getCell(1, 1).get(), cell4Color);
+        final var gridData = new GridData(grid);
+        final var dataLayer = new SimpleGridDataLayer("colors");
+        dataLayer.setCellColor(grid.getCell(0, 0).get(), cell1Color);
+        dataLayer.setCellColor(grid.getCell(0, 1).get(), cell2Color);
+        dataLayer.setCellColor(grid.getCell(1, 0).get(), cell3Color);
+        dataLayer.setCellColor(grid.getCell(1, 1).get(), cell4Color);
+        gridData.addAtFront(dataLayer);
         grid.setGridData(gridData);
 
         final var image = grid.toImage("maze", sampleCellSize);
@@ -640,12 +628,9 @@ public class GridTest {
     @Test
     void testToImage_whenTwoByTwoMaze_returnsAnImageWithTheExpectedOuterWalls(){
         final var grid = new Grid(2, 2);
+        grid.setGridData(this.coloredCellsGridData(grid, sampleColor1));
         final var mazeWidth = sampleCellSize*2;
         final var mazeHeight = sampleCellSize*2;
-
-        final var gridData = new SimpleGridData(grid);
-        gridData.setCellColor(grid.getFirstCell(), sampleColor1);
-        grid.setGridData(gridData);
 
         final var image = grid.toImage("maze", sampleCellSize);
 
@@ -691,15 +676,10 @@ public class GridTest {
     @Test
     void testToImage_whenGivenGridData_returnsAnImageUsingProvidedGridData(){
         final var grid = new Grid(1, 1);
-        
-        //Grid data set within grid
-        final var setGridData = new SimpleGridData(grid);
-        setGridData.setCellColor(grid.getFirstCell(), sampleColor1);
-        grid.setGridData(setGridData);
+        grid.setGridData(this.coloredCellsGridData(grid, sampleColor1));        
 
-        //Grid data to be passed to grid as
-        final var passedGridData = new SimpleGridData(grid);
-        passedGridData.setCellColor(grid.getFirstCell(), sampleColor2);
+        //Grid data to be passed to grid as parameter
+        final var passedGridData = this.coloredCellsGridData(grid, sampleColor2);
 
         //Test method
         final var image = grid.toImage("maze", sampleCellSize, passedGridData);

@@ -278,25 +278,4 @@ public class GridData {
     final public Grid getGrid() {
         return this.grid;
     }
-
-    /**
-     * Get the contents of the cell to be displayed in the grid's string representation.
-     * @param cell The cell whose contents is to be returned
-     * @return The contents of the cell as a string. This representation of the cell's data is specifically intended
-     * to be used when displaying the grid as a string. If there is no data for the provided cell, an empty string will be returned.
-     */
-    @Deprecated
-    public String getCellContentsDEP(final Cell cell){
-        return DEFAULT_CELL_CONTENTS_STRING;
-    }
-
-    /**
-     * Get the color of the cell to be displayed in the grid's image representations. 
-     * @param cell The cell whose color is to be returned.
-     * @return The color of the cell. If there is no color set for the provided cell, an int representing white will be returned.
-     */
-    @Deprecated
-    public Color getCellColorDEP(final Cell cell){
-        return DEFAULT_CELL_COLOR;
-    }
 }

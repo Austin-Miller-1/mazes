@@ -22,6 +22,7 @@ public class Grid {
     final static int IMAGE_GRID_OFFSET = 30;
     final static Color IMAGE_BACKGROUND_COLOR = Color.WHITE;
     final static Color IMAGE_WALL_COLOR = Color.BLACK;
+    final static String DEFAULT_CELL_DISPLAY_STRING = " ";
 
     private final int rowCount, colCount;
     private final List<List<Cell>> grid;
@@ -46,7 +47,7 @@ public class Grid {
         this.configureCells();
         rng = new Random();
 
-        this.gridData = new SimpleGridData(this);
+        this.gridData = new GridData(this);
         this.path = Optional.empty();
     }
 
@@ -195,13 +196,6 @@ public class Grid {
     }
 
     /**
-     * Clears the grid's data.
-     */
-    public void clearGridData(){
-        this.gridData = new SimpleGridData(this);
-    }
-
-    /**
      * Get's the grid's data.
      * @return Optional containing the data associated with the grid, if any. Returns an 
      * empty optional if the grid data was never set or if it was cleared. 
@@ -312,8 +306,8 @@ public class Grid {
      */
     public String getCellDataDisplayString(Cell cell, GridData gridData){
         return this.shouldDisplayCellData(cell)
-            ? gridData.getCellContentsDEP(cell)
-            : " ";
+            ? gridData.getPrimaryCellContents(cell).orElse(Grid.DEFAULT_CELL_DISPLAY_STRING)
+            : Grid.DEFAULT_CELL_DISPLAY_STRING;
     }
 
     /**
@@ -326,7 +320,7 @@ public class Grid {
      */
     public Color getCellColor(Cell cell, GridData gridData){
         return this.shouldDisplayCellData(cell)
-            ?   gridData.getCellColorDEP(cell)
+            ?   gridData.getPrimaryCellColor(cell).orElse(Grid.IMAGE_BACKGROUND_COLOR)
             :   Grid.IMAGE_BACKGROUND_COLOR;
     }
     

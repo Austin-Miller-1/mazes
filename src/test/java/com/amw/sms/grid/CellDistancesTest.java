@@ -32,16 +32,6 @@ public class CellDistancesTest {
 
     private CellDistances distances; //Distances instance using root cell. No distances set.
 
-    //Helper method - get expected default
-    private String getExpectedDefaultCellContents(){
-        return new SampleGridDataImpl(mockGrid).getCellContentsDEP(mockCell2);
-    }
-
-    //Helper method - get expected default
-    private Color getExpectedDefaultCellColor(){
-        return new SampleGridDataImpl(mockGrid).getCellColorDEP(mockCell2);
-    }
-
     /**
      * Asserts that the first color is darker than the second color. In this method, "darker" is
      * defined as being composed of darker red, green AND blue values. If any of the three 
@@ -239,80 +229,5 @@ public class CellDistancesTest {
         distances.setDistance(mockCell2, 10);
         assertEquals(150, distances.getMaxDistance());
         assertEquals(150, distances.getMaxDistance());  //Second call is what we're checking
-    }
-
-    @Test
-    void testGetCellContents_andTestSetDistance_returnsCellDistanceAsString(){
-        distances.setDistance(mockCell1, 5);
-        distances.setDistance(mockCell2, 9);
-        assertEquals("5", distances.getCellContentsDEP(mockCell1));
-    }
-
-    @Test
-    void testGetCellContents_andTestSetDistance_returnsCellDistanceAsBase32String(){
-        distances.setDistance(mockCell1, 15);
-        distances.setDistance(mockCell2, 30);
-        assertEquals("F", distances.getCellContentsDEP(mockCell1).toUpperCase());
-    }
-
-    @Test
-    void testGetCellContents_andTestSetDistance_whenCellIsUnset_returnsDefaultValueFromGridDataParentClass(){
-        distances.setDistance(mockCell1, 10);
-        assertEquals(getExpectedDefaultCellContents(), distances.getCellContentsDEP(mockCell2));
-    }
-
-    @Test
-    void testGetCellColor_andTestSetDistance_whenTwoCellsHaveSameDistance_returnsSameNonDefaultColor(){
-        distances.setDistance(mockCell1, 1);
-        distances.setDistance(mockCell2, 2);
-        distances.setDistance(mockCell3, 2);
-        assertEquals(distances.getCellColorDEP(mockCell2), distances.getCellColorDEP(mockCell3));
-        assertNotEquals(getExpectedDefaultCellColor(), distances.getCellColorDEP(mockCell2));
-    }
-
-    @Test
-    void testGetCellColor_andTestSetDistance_whenOnlyRoot_returnsWhiteForRoot(){
-        assertEquals(Color.WHITE, distances.getCellColorDEP(mockRoot));
-    }
-
-    @Test
-    void testGetCellColor_andTestSetDistance_whenTwoCells_returnsWhiteForRoot(){
-        distances.setDistance(mockCell1, 1);
-        assertEquals(Color.WHITE, distances.getCellColorDEP(mockRoot));
-    }
-
-    @Test
-    void testGetCellColor_andTestSetDistance_whenTwoCells_returnsDarkerColorForSecondCell(){
-        distances.setDistance(mockCell1, 1);
-        assertDarkerColor(distances.getCellColorDEP(mockCell1), distances.getCellColorDEP(mockRoot));
-    }
-
-    @Test
-    void testGetCellColor_andTestSetDistance_whenFourCells_returnsWhiteForRoot(){
-        distances.setDistance(mockCell1, 1);
-        distances.setDistance(mockCell2, 2);
-        distances.setDistance(mockCell3, 3);
-        assertEquals(Color.WHITE, distances.getCellColorDEP(mockRoot));
-    }
-
-    @Test
-    void testGetCellColor_andTestSetDistance_whenFourCells_returnsDarkerColorForEveryCellFurtherAwayFromRoot(){
-        distances.setDistance(mockCell1, 1);
-        distances.setDistance(mockCell2, 2);
-        distances.setDistance(mockCell3, 3);
-
-        final var path = Arrays.asList(mockRoot, mockCell1, mockCell2, mockCell3);
-        for(int index = 1; index < path.size(); index++){
-            assertDarkerColor(
-                distances.getCellColorDEP(path.get(index)),    //Current cell 
-                distances.getCellColorDEP(path.get(index-1)    //Previous cell
-            ));
-        }            
-    }
-
-    @Test
-    void testGetCellColor_andTestSetDistance_whenCellIsUnset_returnsDefaultValueFromGridDataParentClass(){
-        distances.setDistance(mockCell1, 10);
-        assertEquals(getExpectedDefaultCellColor(), distances.getCellColorDEP(mockCell2));
     }
 }
