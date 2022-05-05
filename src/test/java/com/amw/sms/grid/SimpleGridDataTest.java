@@ -2,6 +2,8 @@ package com.amw.sms.grid;
 
 import java.awt.Color;
 
+import com.amw.sms.grid.griddata.SampleGridDataImpl;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -41,15 +43,15 @@ public class SimpleGridDataTest {
         gridData.setCellContents(mockCell1, sampleContents1);
         gridData.setCellContents(mockCell2, sampleContents2);
 
-        assertEquals(sampleContents1, gridData.getCellContents(mockCell1));
+        assertEquals(sampleContents1, gridData.getCellContentsDEP(mockCell1));
     }
 
     @Test
     void testGetCellContents_andSetCellContents_whenCellIsUnset_returnsDefaultValueFromGridDataParentClass(){
         gridData.setCellContents(mockCell1, sampleContents1);
 
-        final var expectedDefaultContents = new SampleGridDataImpl(mockGrid).getCellContents(mockCell2); 
-        assertEquals(expectedDefaultContents, gridData.getCellContents(mockCell2));
+        final var expectedDefaultContents = new SampleGridDataImpl(mockGrid).getCellContentsDEP(mockCell2); 
+        assertEquals(expectedDefaultContents, gridData.getCellContentsDEP(mockCell2));
     }
 
     @Test
@@ -57,14 +59,14 @@ public class SimpleGridDataTest {
         gridData.setCellColor(mockCell1, sampleColor1);
         gridData.setCellColor(mockCell2, sampleColor2);
 
-        assertEquals(sampleColor1, gridData.getCellColor(mockCell1));
+        assertEquals(sampleColor1, gridData.getCellColorDEP(mockCell1));
     }
 
     @Test
     void testGetCellColor_andTestSetCellColor_whenCellIsUnset_returnsDefaultValueFromGridDataParentClass(){
         gridData.setCellColor(mockCell1, sampleColor1);
 
-        final var expectedDefaultContents = new SampleGridDataImpl(mockGrid).getCellColor(mockCell2); 
-        assertEquals(expectedDefaultContents, gridData.getCellColor(mockCell2));
+        final var expectedDefaultContents = new SampleGridDataImpl(mockGrid).getCellColorDEP(mockCell2); 
+        assertEquals(expectedDefaultContents, gridData.getCellColorDEP(mockCell2));
     }
 }

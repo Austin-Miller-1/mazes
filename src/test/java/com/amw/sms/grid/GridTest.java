@@ -9,6 +9,8 @@ import java.awt.Color;
 import java.util.Arrays;
 import java.util.List;
 
+import com.amw.sms.grid.griddata.GridData;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -237,8 +239,8 @@ public class GridTest {
         grid.setGridData(mockGridData1);
         
         grid.clearGridData();
-        assertTrue(grid.getGridData().getCellContents(mockCell1).isBlank());
-        assertNotEquals(mockColor, grid.getGridData().getCellColor(mockCell1));
+        assertTrue(grid.getGridData().getCellContentsDEP(mockCell1).isBlank());
+        assertNotEquals(mockColor, grid.getGridData().getCellColorDEP(mockCell1));
     }
 
 
@@ -257,7 +259,7 @@ public class GridTest {
         //Double clear - second call shouldn't cause problems
         grid.clearGridData();
         grid.clearGridData();
-        assertTrue(grid.getGridData().getCellContents(mockCell1).isBlank());
+        assertTrue(grid.getGridData().getCellContentsDEP(mockCell1).isBlank());
     }
 
     @Test
@@ -270,7 +272,7 @@ public class GridTest {
                 //Not the best way of checking to make sure data is empty.. For true check, would need to check getCellColor too, and any other cell elements.. 
                 //OR would need new isEmpty method OR isSet(Cell) method, and both would need to consider.. if one data element is set, but others are not, is the Cell set or not?
                 //This should be resolved once GridData is reorganized into GridData and GridDataLayer classes - future design change
-                assertTrue(grid.getGridData().getCellContents(cell).isBlank());
+                assertTrue(grid.getGridData().getCellContentsDEP(cell).isBlank());
             });
     }
 
@@ -291,7 +293,7 @@ public class GridTest {
         //Grid fixture
         final var grid = new Grid(9, 10);
         grid.setGridData(mockGridData1);
-        Mockito.when(mockGridData1.getCellContents(mockCell1))
+        Mockito.when(mockGridData1.getCellContentsDEP(mockCell1))
             .thenReturn(sampleCellDataContents);
 
         //Test method
@@ -379,7 +381,7 @@ public class GridTest {
         final var grid = new Grid(9, 10);
         grid.setGridData(mockGridData1);
         Mockito.lenient()
-            .when(mockGridData1.getCellContents(any()))
+            .when(mockGridData1.getCellContentsDEP(any()))
             .thenReturn("AAA");
         grid.setPath(samplePath);
 
@@ -393,7 +395,7 @@ public class GridTest {
         final var grid = new Grid(9, 10);
         grid.setGridData(mockGridData1);
         Mockito.lenient()
-            .when(mockGridData1.getCellContents(any()))
+            .when(mockGridData1.getCellContentsDEP(any()))
             .thenReturn("AAA");
         grid.setPath(samplePath);
 
@@ -410,7 +412,7 @@ public class GridTest {
     void testDisplayPathExclusively_andGetCellDataDisplayString_gridDataOnThePathIsDisplayedAsString(){
         final var grid = new Grid(9, 10);
         grid.setGridData(mockGridData1);
-        Mockito.when(mockGridData1.getCellContents(any()))
+        Mockito.when(mockGridData1.getCellContentsDEP(any()))
             .thenReturn(sampleCellDataContents);
         grid.setPath(samplePath);
 
@@ -423,7 +425,7 @@ public class GridTest {
     void testDisplayAllCells_andGetCellDataDisplayString_gridDataOffThePathIsDisplayedAsString(){
         final var grid = new Grid(9, 10);
         grid.setGridData(mockGridData1);
-        Mockito.when(mockGridData1.getCellContents(any()))
+        Mockito.when(mockGridData1.getCellContentsDEP(any()))
             .thenReturn(sampleCellDataContents);
         grid.setPath(samplePath);
 
@@ -436,7 +438,7 @@ public class GridTest {
     void testDisplayAllCells_andGetCellDataDisplayString_whenPathDataWasDisplayedExclusivelyBefore_gridDataOffThePathIsDisplayedAsString(){
         final var grid = new Grid(9, 10);
         grid.setGridData(mockGridData1);
-        Mockito.when(mockGridData1.getCellContents(any()))
+        Mockito.when(mockGridData1.getCellContentsDEP(any()))
             .thenReturn(sampleCellDataContents);
         grid.setPath(samplePath);
 
@@ -453,7 +455,7 @@ public class GridTest {
     void testDisplayAllCells_andGetCellDataDisplayString__gridDataOnThePathIsDisplayedAsString(){
         final var grid = new Grid(9, 10);
         grid.setGridData(mockGridData1);
-        Mockito.when(mockGridData1.getCellContents(any()))
+        Mockito.when(mockGridData1.getCellContentsDEP(any()))
             .thenReturn(sampleCellDataContents);
         grid.setPath(samplePath);
 
@@ -469,11 +471,11 @@ public class GridTest {
         //Mocked grid data
         grid.setGridData(mockGridData1);
         Mockito.lenient()
-            .when(mockGridData2.getCellContents(any()))
+            .when(mockGridData2.getCellContentsDEP(any()))
             .thenReturn("test");
 
         //Mock to be provided as parameter
-        Mockito.when(mockGridData2.getCellContents(any()))
+        Mockito.when(mockGridData2.getCellContentsDEP(any()))
             .thenReturn(sampleCellDataContents);
 
         assertEquals(sampleCellDataContents, grid.getCellDataDisplayString(mockCell1, mockGridData2));       

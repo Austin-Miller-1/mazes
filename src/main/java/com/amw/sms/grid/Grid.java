@@ -7,6 +7,8 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.function.Function;
 
+import com.amw.sms.grid.griddata.GridData;
+
 import ij.ImagePlus;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
@@ -310,7 +312,7 @@ public class Grid {
      */
     public String getCellDataDisplayString(Cell cell, GridData gridData){
         return this.shouldDisplayCellData(cell)
-            ? gridData.getCellContents(cell)
+            ? gridData.getCellContentsDEP(cell)
             : " ";
     }
 
@@ -324,7 +326,7 @@ public class Grid {
      */
     public Color getCellColor(Cell cell, GridData gridData){
         return this.shouldDisplayCellData(cell)
-            ?   gridData.getCellColor(cell)
+            ?   gridData.getCellColorDEP(cell)
             :   Grid.IMAGE_BACKGROUND_COLOR;
     }
     

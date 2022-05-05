@@ -14,6 +14,7 @@ import java.util.Optional;
 
 import com.amw.sms.algorithms.MazeAlgorithmExecutionState;
 import com.amw.sms.algorithms.ObservableMazeAlgorithm;
+import com.amw.sms.grid.griddata.GridData;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

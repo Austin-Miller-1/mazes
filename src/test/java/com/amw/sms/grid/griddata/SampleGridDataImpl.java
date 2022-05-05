@@ -1,4 +1,7 @@
-package com.amw.sms.grid;
+package com.amw.sms.grid.griddata;
+
+import com.amw.sms.grid.Grid;
+import com.amw.sms.grid.griddata.GridData;
 
 /**
  * Sample extension of GridData for testing the abstract class.

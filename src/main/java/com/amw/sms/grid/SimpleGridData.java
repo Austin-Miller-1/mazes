@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.amw.sms.grid.griddata.GridData;
+
 /**
  * Simple implmentation of the GridData abstract class. Allows for direct setting
  * of cell's contents and colors. This is as opposed to other implementations whose
@@ -48,10 +50,10 @@ public class SimpleGridData extends GridData {
      * {@link GridData} superclass.
      */
     @Override
-    public String getCellContents(Cell cell){
+    public String getCellContentsDEP(Cell cell){
         return this.gridContents.containsKey(cell)
             ? this.gridContents.get(cell)
-            : super.getCellContents(cell);
+            : super.getCellContentsDEP(cell);
     }
 
     /**
@@ -60,9 +62,9 @@ public class SimpleGridData extends GridData {
      * {@link GridData} superclass.
      */
     @Override
-    public Color getCellColor(Cell cell){
+    public Color getCellColorDEP(Cell cell){
         return this.gridColors.containsKey(cell)
             ? this.gridColors.get(cell)
-            : super.getCellColor(cell);
+            : super.getCellColorDEP(cell);
     }
 }

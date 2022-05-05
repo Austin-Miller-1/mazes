@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import com.amw.sms.grid.CellGroup;
 import com.amw.sms.grid.CellPath;
-import com.amw.sms.grid.GridData;
+import com.amw.sms.grid.griddata.GridData;
 
 /**
  * Data object containing a maze algorithm's state during (AND ONLY DURING)

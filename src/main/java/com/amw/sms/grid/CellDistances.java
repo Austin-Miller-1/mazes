@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import com.amw.sms.grid.griddata.GridData;
 import com.amw.sms.util.Pair;
 
 /**
@@ -126,10 +127,10 @@ public class CellDistances extends GridData {
      */
     @Override
     @Deprecated
-    public String getCellContents(Cell cell){
+    public String getCellContentsDEP(Cell cell){
         return this.isDistanceSet(cell)
             ?   Integer.toString(this.distances.get(cell), 32).toUpperCase()
-            :   super.getCellContents(cell);
+            :   super.getCellContentsDEP(cell);
     }
 
     /**
@@ -140,10 +141,10 @@ public class CellDistances extends GridData {
      */
     @Override
     @Deprecated
-    public Color getCellColor(Cell cell){
+    public Color getCellColorDEP(Cell cell){
         //Unset => go to superclass
         if(!this.isDistanceSet(cell)){
-            return super.getCellColor(cell);
+            return super.getCellColorDEP(cell);
         }
 
         //Root-cell case

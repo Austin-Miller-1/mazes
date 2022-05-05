@@ -2,7 +2,7 @@ package com.amw.sms.algorithms;
 
 import com.amw.sms.grid.CellGroup;
 import com.amw.sms.grid.CellPath;
-import com.amw.sms.grid.GridData;
+import com.amw.sms.grid.griddata.GridData;
 
 /**
  * Sample extension of ObservableMazeAlgorithm for testing the abstract class.

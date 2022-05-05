@@ -9,7 +9,7 @@ import java.util.List;
 import com.amw.sms.grid.Cell;
 import com.amw.sms.grid.CellGroup;
 import com.amw.sms.grid.CellPath;
-import com.amw.sms.grid.GridData;
+import com.amw.sms.grid.griddata.GridData;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
