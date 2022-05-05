@@ -9,6 +9,8 @@ import java.util.function.Function;
 
 import com.amw.sms.grid.griddata.GridData;
 
+import org.apache.commons.lang3.StringUtils;
+
 import ij.ImagePlus;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
@@ -22,7 +24,7 @@ public class Grid {
     final static int IMAGE_GRID_OFFSET = 30;
     final static Color IMAGE_BACKGROUND_COLOR = Color.WHITE;
     final static Color IMAGE_WALL_COLOR = Color.BLACK;
-    final static String DEFAULT_CELL_DISPLAY_STRING = " ";
+    final static String DEFAULT_CELL_DISPLAY_STRING = "";
 
     private final int rowCount, colCount;
     private final List<List<Cell>> grid;
@@ -348,7 +350,6 @@ public class Grid {
      */
     private String rowToString(List<Cell> row){
         final var MIDDLE_START = "|";
-        final var MIDDLE_BODY = " %s ";
         final var BOTTOM_START = "+";
 
         //Each row will be 3 lines - top, middle and bottom. Since the bottom
@@ -361,7 +362,7 @@ public class Grid {
                 && cell.getEast().get().isLinkedTo(cell)
                     ?   " "
                     :   "|";
-            return MIDDLE_BODY.formatted(this.getCellDataDisplayString(cell)) + eastChars;
+            return StringUtils.center(this.getCellDataDisplayString(cell), 3) + eastChars;
         };
 
         //Create the string rep of a cell's bottom section
