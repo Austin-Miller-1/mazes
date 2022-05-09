@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.util.Optional;
 
 import com.amw.sms.grid.Cell;
-import com.amw.sms.grid.data.GridDataLayer;
 
 /**
  * Sample implementation of the GridDataLayer class for testing.

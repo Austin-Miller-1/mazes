@@ -7,7 +7,7 @@ import static org.mockito.Mockito.times;
 import java.util.Arrays;
 import java.util.List;
 
-import com.amw.sms.grid.CellGroup;
+import com.amw.sms.grid.CellList;
 import com.amw.sms.grid.CellPath;
 import com.amw.sms.grid.data.GridData;
 
@@ -34,7 +34,7 @@ public class ObservableMazeAlgorithmTest {
     private GridData mockGridData;
 
     @Mock
-    private CellGroup mockCellGroup;
+    private CellList mockCellList;
 
     @Mock
     private CellPath mockCellPath;

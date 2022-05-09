@@ -14,8 +14,10 @@ import com.amw.sms.grid.CellPath;
  * a Grid's GridData instance, which is effectively the manager of the layers.
  */
 public abstract class GridDataLayer {
+    protected final static Color DEFAULT_LAYER_COLOR = Color.BLACK;
+
     private final String name;
-    private final Color layerBaseColor;
+    private Color layerBaseColor;
     private boolean isEnabled;
     private boolean areCellContentsEnabled;
     private boolean areCellColorsEnabled;
@@ -40,7 +42,7 @@ public abstract class GridDataLayer {
      * @param name Layer name.
      */
     protected GridDataLayer(final String name){
-        this(name, Color.BLACK);
+        this(name, DEFAULT_LAYER_COLOR);
     }
 
     /**
@@ -49,6 +51,14 @@ public abstract class GridDataLayer {
      */
     public final String getName(){
         return this.name;
+    }
+
+    /**
+     * Sets the layer's main color.
+     * @param layerColor New layer color.
+     */
+    public final void setLayerColor(Color layerColor){
+        this.layerBaseColor = layerColor;
     }
 
     /**

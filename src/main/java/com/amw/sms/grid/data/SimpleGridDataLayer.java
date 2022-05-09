@@ -34,10 +34,7 @@ public class SimpleGridDataLayer extends GridDataLayer {
      * @param name Layer name.
      */
     public SimpleGridDataLayer(final String name){
-        super(name);
-
-        this.gridContents = new HashMap<Cell, String>();
-        this.gridColors = new HashMap<Cell, Color>();
+        this(name, GridDataLayer.DEFAULT_LAYER_COLOR);
     }
 
      /**

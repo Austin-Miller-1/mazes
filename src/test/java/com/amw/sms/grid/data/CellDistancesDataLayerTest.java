@@ -10,7 +10,7 @@ import java.util.Arrays;
 import com.amw.sms.grid.Cell;
 import com.amw.sms.grid.CellDistances;
 import com.amw.sms.grid.Grid;
-import com.amw.sms.grid.data.CellDistancesDataLayer;
+import com.amw.sms.testutil.ColorTestUtils;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,18 +41,22 @@ public class CellDistancesDataLayerTest {
     
     //Unmocked celldistances
     private CellDistances distances;
+    
+    //Test helpers
+    private ColorTestUtils testUtils;
 
     @BeforeEach
     void beforeEach(){
         distances = new CellDistances(mockGrid, mockRootCell);
         layer = new CellDistancesDataLayer(distances, sampleLayerName);
+
+        testUtils = new ColorTestUtils();
     }
 
     //Contents tests
     @Test
     void testDoGetCellContents__whenDistanceIsNotSet_returnsEmptyOptional() {
         assertTrue(layer.getCellContents(mockCell1).isEmpty());
-
     }
 
     @Test
@@ -62,19 +66,6 @@ public class CellDistancesDataLayerTest {
     }
 
     //Color tests
-    /**
-     * Asserts that the first color is darker than the second color. In this method, "darker" is
-     * defined as being composed of darker red, green AND blue values. If any of the three 
-     * are not darker, the assertion fails. 
-     * @param expectedDarker
-     * @param expectedBrighter
-     */
-    private void assertDarkerColor(Color expectedDarker, Color expectedBrighter){
-        assertTrue(expectedDarker.getRed() < expectedBrighter.getRed());
-        assertTrue(expectedDarker.getGreen() < expectedBrighter.getGreen());
-        assertTrue(expectedDarker.getBlue() < expectedBrighter.getBlue());
-    }
-
     @Test
     void testGetCellColor_andTestSetDistance_whenOnlyRoot_returnsWhiteForRoot(){
         assertEquals(Color.WHITE, layer.getCellColor(mockRootCell).get());
@@ -89,7 +80,7 @@ public class CellDistancesDataLayerTest {
     @Test
     void testGetCellColor_andTestSetDistance_whenTwoCells_returnsDarkerColorForSecondCell(){
         distances.setDistance(mockCell1, 1);
-        assertDarkerColor(layer.getCellColor(mockCell1).get(), layer.getCellColor(mockRootCell).get());
+        testUtils.assertDarkerColor(layer.getCellColor(mockCell1).get(), layer.getCellColor(mockRootCell).get());
     }
 
     @Test
@@ -108,7 +99,7 @@ public class CellDistancesDataLayerTest {
 
         final var path = Arrays.asList(mockRootCell, mockCell1, mockCell2, mockCell3);
         for(int index = 1; index < path.size(); index++){
-            assertDarkerColor(
+            testUtils.assertDarkerColor(
                 layer.getCellColor(path.get(index)).get(),    //Current cell 
                 layer.getCellColor(path.get(index-1)).get()    //Previous cell
             );

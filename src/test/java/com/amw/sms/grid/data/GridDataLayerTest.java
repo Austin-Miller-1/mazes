@@ -45,6 +45,13 @@ public class GridDataLayerTest {
     }
 
     @Test
+    void testSetLayerColor_andGetLayerColor_returnsSetColor(){
+        final var newColor = Color.GRAY;
+        sampleLayer.setLayerColor(newColor);
+        assertEquals(newColor, sampleLayer.getLayerColor());
+    }
+
+    @Test
     void testGridDataLayer_andGetLayerColor_whenNoColorProvided_usesBlack(){
         final var layer = new SampleGridDataLayerImpl(sampleName);
         assertEquals(Color.BLACK, layer.getLayerColor());

@@ -30,8 +30,7 @@ public class CellDistancesDataLayer extends GridDataLayer {
      * @param name Layer name.
      */
     public CellDistancesDataLayer(final CellDistances distances, final String name){
-        super(name);
-        this.distances = distances;
+        this(distances, name, GridDataLayer.DEFAULT_LAYER_COLOR);
     }
 
     /**

@@ -18,11 +18,13 @@ public class CellPathTest {
     @Mock private Cell mockCell2;
 
     @Test
-    void testGetPath_returnsPathsCellsAsList() {
+    void testGetCells_andGetName_returnsSetValues() {
         final var cells = new ArrayList<Cell>();
         cells.add(mockCell1);
         cells.add(mockCell2);
 
-        assertEquals(cells, new CellPath("path", cells).getPath());
+        final var path = new CellPath("path", cells);
+        assertEquals(cells, path.getCells());
+        assertEquals("path", path.getName());
     }
 }

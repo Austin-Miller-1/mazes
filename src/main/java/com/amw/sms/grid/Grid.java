@@ -33,9 +33,6 @@ public class Grid {
     private GridData gridData;
     private boolean gridDataShown = true;
 
-    private Optional<List<Cell>> path;
-    private boolean limitShownDataToPath = false;
-
     /**
      * Constructs a grid with the provided number of rows and columns.
      * Initializes grid with all unlinked cells with the appropriate neighbors set. 
@@ -50,7 +47,6 @@ public class Grid {
         rng = new Random();
 
         this.gridData = new GridData(this);
-        this.path = Optional.empty();
     }
 
     /**
@@ -222,56 +218,6 @@ public class Grid {
     }
 
     /**
-     * Sets the specific path of cells to display in the grid's visual representations. 
-     * @param path
-     */
-    public void setPath(List<Cell> path){
-        this.path = Optional.of(path);
-    }
-
-    /**
-     * Returns the path of cells set in the grid to be displayed in the its visual representations. 
-     * @return Optional containing the list of cells representing set as the path. Returns empty optional if 
-     * no path is currently set.
-     */
-    public Optional<List<Cell>> getPath(){
-        return this.path;
-    }
-
-    /**
-     * Clears the path of cells to be displayed in the grid's visual representations.
-     */
-    public void clearPath(){
-        this.path = Optional.empty();
-    }
-
-    /**
-     * Restricts the data displayed within the grid's visual representations to only the cell's 
-     * on the set path, if one is set. If no path is set, no data will be displayed.
-     */
-    public void displayPathExclusively(){
-        this.limitShownDataToPath = true;
-    }
-
-    /**
-     * Causes all of the grid data to be displayed within its visual representations. This is 
-     * as opposed to only having data on a specific path be displayed.
-     */
-    public void displayAllCells(){
-        this.limitShownDataToPath = false;
-    }
-
-    /**
-     * Returns boolean whether the set path contains the provided cell
-     * @param cell Cell to check for.
-     * @return True if the set path contains the cell. False if no path is set or the set path
-     * does not contain the cell.
-     */
-    private boolean pathContainsCell(Cell cell){
-        return this.path.isPresent() && this.path.get().contains(cell);
-    }
-
-    /**
      * Returns boolean whether the provided cell's data should be displayed in the 
      * grid's visual representations.
      * @param cell Cell to check for.
@@ -283,8 +229,7 @@ public class Grid {
      * @see Grid#displayAllCells
      */
     private boolean shouldDisplayCellData(Cell cell){
-        return this.gridDataShown &&
-            (!this.limitShownDataToPath || this.pathContainsCell(cell));
+        return this.gridDataShown;
     }
 
     /**

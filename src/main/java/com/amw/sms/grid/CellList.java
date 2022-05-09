@@ -1,21 +1,21 @@
 package com.amw.sms.grid;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
- * Data object representing a group of cells. Each cell group may represent different things 
+ * Data object representing a list of cells. Each cell list may represent different things 
  * depending on the client, and should be given a name that sufficiently explains its purpose.
  */
-public class CellGroup {
+public class CellList {
     private final String name;
-    final Collection<Cell> cells; //Collection of cells provided by client. Unchanged.
+    final List<Cell> cells; //List of cells provided by client
 
     /**
-     * Constructs new cell-group with the provided name.
+     * Constructs new cell-list with the provided name.
      * @param collectionName Name of the cell group.
      * @param cells Collection of the cells within the group.
      */
-    public CellGroup(String collectionName, Collection<Cell> cells){
+    public CellList(String collectionName, List<Cell> cells){
         this.name = collectionName;
         this.cells = cells;
     }
@@ -32,7 +32,7 @@ public class CellGroup {
      * Returns the group's cells as a collection.
      * @return The group's cells as a collection.
      */
-    public Collection<Cell> getCells(){
+    public List<Cell> getCells(){
         return this.cells;
     }
 }

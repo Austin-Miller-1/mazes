@@ -1,9 +1,15 @@
 package com.amw.sms.mazes;
 
+import java.awt.Color;
 import java.util.List;
+import java.util.Optional;
 
 import com.amw.sms.grid.Cell;
+import com.amw.sms.grid.CellPath;
 import com.amw.sms.grid.Grid;
+import com.amw.sms.grid.data.CellPathGridDataLayer;
+import com.amw.sms.grid.data.GridDataLayer;
+import com.amw.sms.grid.data.SimpleGridDataLayer;
 import com.amw.sms.mazes.goals.MazeGoal;
 import com.amw.sms.util.Pair;
 
@@ -16,8 +22,18 @@ import com.amw.sms.util.Pair;
  * @see MazeBuilder
  */
 public class Maze {
-    private Grid grid;
-    private Pair<MazeGoal, MazeGoal> entrances;
+    final static String ENTRANCE_DATA_LAYER_NAME = "Start and exit";
+    final static String ENTRANCE_START_CONTENTS = "S";
+    final static String ENTRANCE_EXIT_CONTENTS = "E";
+
+    final static String SOLUTION_DATA_LAYER_NAME = "Solution";
+    final static Color SOLUTION_DATA_LAYER_COLOR = Color.RED;
+
+    private final Grid grid;
+    private final Pair<MazeGoal, MazeGoal> entrances;
+    private final GridDataLayer entranceLayer;
+
+    private Optional<CellPathGridDataLayer> solutionLayer;
 
     /**
      * Construct maze using provided grid and the specified start and end.
@@ -27,6 +43,22 @@ public class Maze {
     public Maze(Grid grid, Pair<MazeGoal, MazeGoal> startAndEnd){
         this.grid = grid;
         this.entrances = startAndEnd;
+        this.solutionLayer = Optional.empty();
+
+        //Display start and finish on grid
+        this.entranceLayer = this.getEntranceLayer();
+        this.grid.getGridData().addAtTop(this.entranceLayer);
+    }
+
+    /**
+     * Constructs new grid-data layer showing the start and end of the maze.
+     * @return
+     */
+    private GridDataLayer getEntranceLayer(){
+        final var layer = new SimpleGridDataLayer(ENTRANCE_DATA_LAYER_NAME);
+        layer.setCellContents(this.entrances.getFirst().getCell(), ENTRANCE_START_CONTENTS);
+        layer.setCellContents(this.entrances.getSecond().getCell(), ENTRANCE_EXIT_CONTENTS);
+        return layer;
     }
 
     /**
@@ -54,6 +86,21 @@ public class Maze {
         return this.grid;
     }
 
+    public void applySolution(final CellPath solution){
+        final var gridData = this.grid.getGridData();
+
+        if(this.solutionLayer.isPresent()){
+            this.solutionLayer.get().setPath(solution);
+        }
+        else{
+            final var solutionLayer = new CellPathGridDataLayer(solution, SOLUTION_DATA_LAYER_NAME, SOLUTION_DATA_LAYER_COLOR);
+            solutionLayer.enableCellColors();
+            gridData.addBelow(this.entranceLayer, solutionLayer);
+            gridData.useAsMask(solutionLayer);
+            this.solutionLayer = Optional.of(solutionLayer);    
+        }
+    }
+
     /**
      * TODO - "display" is not very accurate.. It's more like applying a path? Or setting a path? But both of those are 
      * also strange...
@@ -62,9 +109,17 @@ public class Maze {
      * @param path List of cells representing a path between a start and a finish. Path should be between the start and exit
      * cells of the maze.
      */
-    public void displayPath(List<Cell> path){
-        this.grid.setPath(path);
-        this.grid.displayPathExclusively();
+    @Deprecated
+    public void displaySolution(List<Cell> path){
+        final var gridData = this.grid.getGridData();
+        final var cellPath = new CellPath("path", path);
+        final var solutionLayer = new CellPathGridDataLayer(cellPath, SOLUTION_DATA_LAYER_NAME, SOLUTION_DATA_LAYER_COLOR);
+        solutionLayer.enableCellColors();
+        gridData.addAtTop(solutionLayer);
+        gridData.useAsMask(solutionLayer);
+        
+        gridData.remove(this.entranceLayer);
+        gridData.addAtTop(this.entranceLayer);
     }
 
     /**

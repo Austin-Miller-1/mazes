@@ -10,8 +10,6 @@ import java.util.Optional;
 
 import com.amw.sms.grid.Cell;
 import com.amw.sms.grid.Grid;
-import com.amw.sms.grid.data.GridData;
-import com.amw.sms.grid.data.GridDataLayer;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,7 +49,7 @@ public class GridDataTest {
 
     @BeforeEach
     public void beforeEach(){
-        gridData = new SampleGridDataImpl(mockGrid);
+        gridData = new GridData(mockGrid);
 
         mockGetCellContents(mockLayer1, sampleContents1);
         mockGetCellColor(mockLayer1, sampleCellColor1);
@@ -155,7 +153,7 @@ public class GridDataTest {
     @Test
     public void testGetCellContents_andAddAtFront_whenOneLayer_returnsListContainingLayerValue(){
         mockIsLayerEnabled(mockLayer1, true);
-        gridData.addAtFront(mockLayer1);
+        gridData.addAtTop(mockLayer1);
 
         final var contents = gridData.getCellContents(mockCell);
         assertEquals(1, contents.size());
@@ -165,7 +163,7 @@ public class GridDataTest {
     @Test
     public void testGetPrimaryCellContents_andAddAtFront_whenOneLayer_returnsLayerValue(){
         mockIsLayerEnabled(mockLayer1, true);
-        gridData.addAtFront(mockLayer1);
+        gridData.addAtTop(mockLayer1);
 
         assertEquals(sampleContents1, gridData.getPrimaryCellContents(mockCell));
     }
@@ -176,9 +174,9 @@ public class GridDataTest {
         mockIsLayerEnabled(mockLayer2, true);
         mockIsLayerEnabled(mockLayer3, true);
 
-        gridData.addAtFront(mockLayer3);
-        gridData.addAtFront(mockLayer2);
-        gridData.addAtFront(mockLayer1);
+        gridData.addAtTop(mockLayer3);
+        gridData.addAtTop(mockLayer2);
+        gridData.addAtTop(mockLayer1);
         final var expectedValues = Arrays.asList(sampleContents1, sampleContents2, sampleContents3);
 
         assertEquals(expectedValues, gridData.getCellContents(mockCell));
@@ -190,9 +188,9 @@ public class GridDataTest {
         mockIsLayerEnabled(mockLayer2, true);
         mockIsLayerEnabled(mockLayer3, true);
 
-        gridData.addAtFront(mockLayer3);
-        gridData.addAtFront(mockLayer2);
-        gridData.addAtFront(mockLayer1);
+        gridData.addAtTop(mockLayer3);
+        gridData.addAtTop(mockLayer2);
+        gridData.addAtTop(mockLayer1);
 
         assertEquals(sampleContents1, gridData.getPrimaryCellContents(mockCell));
     }
@@ -200,7 +198,7 @@ public class GridDataTest {
     @Test
     public void testGetCellContents_andAddAtFront_whenLayerIsDisabled_doesNotReturnItsValueInTheList(){
         mockIsLayerEnabled(mockLayer1, false);
-        gridData.addAtFront(mockLayer1);
+        gridData.addAtTop(mockLayer1);
 
         assertTrue(gridData.getCellContents(mockCell).isEmpty());
     }
@@ -208,7 +206,7 @@ public class GridDataTest {
     @Test
     public void testGetPrimaryCellContents_andAddAtFront_whenLayerIsDisabled_doesNotReturnItsValue(){
         mockIsLayerEnabled(mockLayer1, false);
-        gridData.addAtFront(mockLayer1);
+        gridData.addAtTop(mockLayer1);
 
         assertTrue(gridData.getPrimaryCellContents(mockCell).isEmpty());
     }
@@ -218,8 +216,8 @@ public class GridDataTest {
         mockIsLayerEnabled(mockLayer1, false); //Disabled top layer
         mockIsLayerEnabled(mockLayer2, true);
 
-        gridData.addAtFront(mockLayer2);
-        gridData.addAtFront(mockLayer1);
+        gridData.addAtTop(mockLayer2);
+        gridData.addAtTop(mockLayer1);
 
         assertEquals(sampleContents2, gridData.getPrimaryCellContents(mockCell));
     }
@@ -229,8 +227,8 @@ public class GridDataTest {
         mockIsLayerEnabled(mockLayerEmpty, true);
         mockIsLayerEnabled(mockLayer2, true);
 
-        gridData.addAtFront(mockLayer2);
-        gridData.addAtFront(mockLayerEmpty);
+        gridData.addAtTop(mockLayer2);
+        gridData.addAtTop(mockLayerEmpty);
 
         assertEquals(sampleContents2, gridData.getPrimaryCellContents(mockCell));
     }
@@ -249,7 +247,7 @@ public class GridDataTest {
     @Test
     public void testGetCellColors_andAddAtFront_whenOneLayer_returnsListContainingLayerValue(){
         mockIsLayerEnabled(mockLayer1, true);
-        gridData.addAtFront(mockLayer1);
+        gridData.addAtTop(mockLayer1);
 
         final var colors = gridData.getCellColors(mockCell);
         assertEquals(1, colors.size());
@@ -259,7 +257,7 @@ public class GridDataTest {
     @Test
     public void testGetPrimaryCellColor_andAddAtFront_whenOneLayer_returnsLayerValue(){
         mockIsLayerEnabled(mockLayer1, true);
-        gridData.addAtFront(mockLayer1);
+        gridData.addAtTop(mockLayer1);
 
         assertEquals(sampleCellColor1, gridData.getPrimaryCellColor(mockCell));
     }
@@ -270,9 +268,9 @@ public class GridDataTest {
         mockIsLayerEnabled(mockLayer2, true);
         mockIsLayerEnabled(mockLayer3, true);
 
-        gridData.addAtFront(mockLayer3);
-        gridData.addAtFront(mockLayer2);
-        gridData.addAtFront(mockLayer1);
+        gridData.addAtTop(mockLayer3);
+        gridData.addAtTop(mockLayer2);
+        gridData.addAtTop(mockLayer1);
         final var expectedValues = Arrays.asList(sampleCellColor1, sampleCellColor2, sampleCellColor3);
 
         assertEquals(expectedValues, gridData.getCellColors(mockCell));
@@ -284,9 +282,9 @@ public class GridDataTest {
         mockIsLayerEnabled(mockLayer2, true);
         mockIsLayerEnabled(mockLayer3, true);
 
-        gridData.addAtFront(mockLayer3);
-        gridData.addAtFront(mockLayer2);
-        gridData.addAtFront(mockLayer1);
+        gridData.addAtTop(mockLayer3);
+        gridData.addAtTop(mockLayer2);
+        gridData.addAtTop(mockLayer1);
 
         assertEquals(sampleCellColor1, gridData.getPrimaryCellColor(mockCell));
     }
@@ -294,7 +292,7 @@ public class GridDataTest {
     @Test
     public void testGetCellColors_andAddAtFront_whenLayerIsDisabled_doesNotReturnItsValueInTheList(){
         mockIsLayerEnabled(mockLayer1, false);
-        gridData.addAtFront(mockLayer1);
+        gridData.addAtTop(mockLayer1);
 
         assertTrue(gridData.getCellColors(mockCell).isEmpty());
     }
@@ -302,7 +300,7 @@ public class GridDataTest {
     @Test
     public void testGetPrimaryCellColor_andAddAtFront_whenLayerIsDisabled_doesNotReturnItsValue(){
         mockIsLayerEnabled(mockLayer1, false);
-        gridData.addAtFront(mockLayer1);
+        gridData.addAtTop(mockLayer1);
 
         assertTrue(gridData.getPrimaryCellColor(mockCell).isEmpty());
     }
@@ -312,8 +310,8 @@ public class GridDataTest {
         mockIsLayerEnabled(mockLayer1, false); //Disabled top layer
         mockIsLayerEnabled(mockLayer2, true);
 
-        gridData.addAtFront(mockLayer2);
-        gridData.addAtFront(mockLayer1);
+        gridData.addAtTop(mockLayer2);
+        gridData.addAtTop(mockLayer1);
 
         assertEquals(sampleCellColor2, gridData.getPrimaryCellColor(mockCell));
     }
@@ -323,8 +321,8 @@ public class GridDataTest {
         mockIsLayerEnabled(mockLayerEmpty, true);
         mockIsLayerEnabled(mockLayer2, true);
 
-        gridData.addAtFront(mockLayer2);
-        gridData.addAtFront(mockLayerEmpty);
+        gridData.addAtTop(mockLayer2);
+        gridData.addAtTop(mockLayerEmpty);
 
         assertEquals(sampleCellColor2, gridData.getPrimaryCellColor(mockCell));
     }
@@ -344,7 +342,7 @@ public class GridDataTest {
     public void testGetCellHighlights_andAddAtFront_whenOneLayer_andLayerHasCellHighlighted_returnsListContainingLayerColor(){
         mockIsLayerEnabled(mockLayer1, true);
         mockIsCellHighlighted(mockLayer1, true);
-        gridData.addAtFront(mockLayer1);
+        gridData.addAtTop(mockLayer1);
 
         final var highlightColors = gridData.getCellHighlights(mockCell);
         assertEquals(1, highlightColors.size());
@@ -355,7 +353,7 @@ public class GridDataTest {
     public void testGetPrimaryCellHighlight_andAddAtFront_whenOneLayer_andLayerHasCellHighlighted_returnsLayerColor(){
         mockIsLayerEnabled(mockLayer1, true);
         mockIsCellHighlighted(mockLayer1, true);
-        gridData.addAtFront(mockLayer1);
+        gridData.addAtTop(mockLayer1);
 
         assertEquals(Optional.of(sampleLayerColor1), gridData.getPrimaryCellHighlight(mockCell));
     }
@@ -364,7 +362,7 @@ public class GridDataTest {
     public void testGetCellHighlights_andAddAtFront_whenOneLayer_andLayerDoesNotHaveCellHighlighted_returnsListContainingEmptyOptional(){
         mockIsLayerEnabled(mockLayer1, true);
         mockIsCellHighlighted(mockLayer1, false);
-        gridData.addAtFront(mockLayer1);
+        gridData.addAtTop(mockLayer1);
 
         final var highlightColors = gridData.getCellHighlights(mockCell);
         assertEquals(1, highlightColors.size());
@@ -375,7 +373,7 @@ public class GridDataTest {
     public void testGetPrimaryCellHighlight_andAddAtFront_whenOneLayer_andLayerDoesNotHaveCellHighlighted_returnsEmptyOptional(){
         mockIsLayerEnabled(mockLayer1, true);
         mockIsCellHighlighted(mockLayer1, false);
-        gridData.addAtFront(mockLayer1);
+        gridData.addAtTop(mockLayer1);
 
         assertTrue(gridData.getPrimaryCellHighlight(mockCell).isEmpty());
     }
@@ -390,9 +388,9 @@ public class GridDataTest {
         mockIsCellHighlighted(mockLayer2, true);
         mockIsCellHighlighted(mockLayer3, true);
 
-        gridData.addAtFront(mockLayer3);
-        gridData.addAtFront(mockLayer2);
-        gridData.addAtFront(mockLayer1);
+        gridData.addAtTop(mockLayer3);
+        gridData.addAtTop(mockLayer2);
+        gridData.addAtTop(mockLayer1);
         final var expectedValues = Arrays.asList(Optional.of(sampleLayerColor1), Optional.of(sampleLayerColor2), Optional.of(sampleLayerColor3));
 
         assertEquals(expectedValues, gridData.getCellHighlights(mockCell));
@@ -408,9 +406,9 @@ public class GridDataTest {
         mockIsCellHighlighted(mockLayer2, true);
         mockIsCellHighlighted(mockLayer3, true);
 
-        gridData.addAtFront(mockLayer3);
-        gridData.addAtFront(mockLayer2);
-        gridData.addAtFront(mockLayer1);
+        gridData.addAtTop(mockLayer3);
+        gridData.addAtTop(mockLayer2);
+        gridData.addAtTop(mockLayer1);
 
         assertEquals(Optional.of(sampleLayerColor1), gridData.getPrimaryCellHighlight(mockCell));
     }
@@ -418,7 +416,7 @@ public class GridDataTest {
     @Test
     public void testGetCellHighlights_andAddAtFront_whenLayerIsDisabled_doesNotReturnItsLayerColorInTheList(){
         mockIsLayerEnabled(mockLayer1, false);
-        gridData.addAtFront(mockLayer1);
+        gridData.addAtTop(mockLayer1);
 
         assertTrue(gridData.getCellHighlights(mockCell).isEmpty());
     }
@@ -427,7 +425,7 @@ public class GridDataTest {
     public void testGetPrimaryCellHighlight_andAddAtFront_whenLayerIsDisabled_andLayerHasCellHighlighted_doesNotReturnItsLayerColor(){
         mockIsLayerEnabled(mockLayer1, false);
         mockIsCellHighlighted(mockLayer1, true);
-        gridData.addAtFront(mockLayer1);
+        gridData.addAtTop(mockLayer1);
 
         assertTrue(gridData.getPrimaryCellHighlight(mockCell).isEmpty());
     }
@@ -439,8 +437,8 @@ public class GridDataTest {
         mockIsCellHighlighted(mockLayer1, true);
         mockIsCellHighlighted(mockLayer2, true);
 
-        gridData.addAtFront(mockLayer2);
-        gridData.addAtFront(mockLayer1);
+        gridData.addAtTop(mockLayer2);
+        gridData.addAtTop(mockLayer1);
 
         assertEquals(Optional.of(sampleLayerColor2), gridData.getPrimaryCellHighlight(mockCell));
     }
@@ -453,39 +451,39 @@ public class GridDataTest {
         mockIsCellHighlighted(mockLayer1, false);
         mockIsCellHighlighted(mockLayer2, true);
 
-        gridData.addAtFront(mockLayer2);
-        gridData.addAtFront(mockLayer1);
+        gridData.addAtTop(mockLayer2);
+        gridData.addAtTop(mockLayer1);
 
         assertEquals(Optional.of(sampleLayerColor2), gridData.getPrimaryCellHighlight(mockCell));
     }
 
     //remove() tests
     @Test
-    public void testRemove_andAddToFront_andGetCellContents_whenLayerIsRemoved_itsDataIsNoLongerReturned(){
+    public void testRemove_andAddAtFront_andGetCellContents_whenLayerIsRemoved_itsDataIsNoLongerReturned(){
         mockIsLayerEnabled(mockLayer1, true);
 
-        gridData.addAtFront(mockLayer1);
+        gridData.addAtTop(mockLayer1);
         gridData.remove(mockLayer1);
 
         assertTrue(gridData.getCellContents(mockCell).isEmpty());
     }
 
     @Test
-    public void testRemove_andAddToFront_andGetCellColors_whenLayerIsRemoved_itsDataIsNoLongerReturned(){
+    public void testRemove_andAddAtFront_andGetCellColors_whenLayerIsRemoved_itsDataIsNoLongerReturned(){
         mockIsLayerEnabled(mockLayer1, true);
 
-        gridData.addAtFront(mockLayer1);
+        gridData.addAtTop(mockLayer1);
         gridData.remove(mockLayer1);
 
         assertTrue(gridData.getCellColors(mockCell).isEmpty());
     }
 
     @Test
-    public void testRemove_andAddToFront_andGetCellHighlights_whenLayerIsRemoved_itsDataIsNoLongerReturned(){
+    public void testRemove_andAddAtFront_andGetCellHighlights_whenLayerIsRemoved_itsDataIsNoLongerReturned(){
         mockIsLayerEnabled(mockLayer1, true);
         mockIsCellHighlighted(mockLayer1, true);
 
-        gridData.addAtFront(mockLayer1);
+        gridData.addAtTop(mockLayer1);
         gridData.remove(mockLayer1);
 
         assertTrue(gridData.getCellHighlights(mockCell).isEmpty());
@@ -497,8 +495,8 @@ public class GridDataTest {
         mockIsLayerEnabled(mockLayer1, true);
         mockIsLayerEnabled(mockLayer2, true);
 
-        gridData.addAtBack(mockLayer1);
-        gridData.addAtBack(mockLayer2);
+        gridData.addAtBottom(mockLayer1);
+        gridData.addAtBottom(mockLayer2);
 
         final var expectedValues = Arrays.asList(sampleContents1, sampleContents2);
         assertEquals(expectedValues, gridData.getCellContents(mockCell));
@@ -509,8 +507,8 @@ public class GridDataTest {
         mockIsLayerEnabled(mockLayer1, true);
         mockIsLayerEnabled(mockLayer2, true);
 
-        gridData.addAtBack(mockLayer1);
-        gridData.addAtBack(mockLayer2);
+        gridData.addAtBottom(mockLayer1);
+        gridData.addAtBottom(mockLayer2);
 
         final var expectedValues = Arrays.asList(sampleCellColor1, sampleCellColor2);
         assertEquals(expectedValues, gridData.getCellColors(mockCell));
@@ -523,16 +521,93 @@ public class GridDataTest {
         mockIsCellHighlighted(mockLayer1, true);
         mockIsCellHighlighted(mockLayer2, true);
 
-        gridData.addAtBack(mockLayer1);
-        gridData.addAtBack(mockLayer2);
+        gridData.addAtBottom(mockLayer1);
+        gridData.addAtBottom(mockLayer2);
 
         final var expectedValues = Arrays.asList(Optional.of(sampleLayerColor1), Optional.of(sampleLayerColor2));
         assertEquals(expectedValues, gridData.getCellHighlights(mockCell));
     }
 
+    //After above & below tests
+    @Test
+    public void testAddAbove_andAddAtFront_andGetCellContents_whenExistingLayerIsOnlyOneInGridData_returnsDataFromLayersInExpectedOrder(){
+        mockIsLayerEnabled(mockLayer1, true);
+        mockIsLayerEnabled(mockLayer2, true);
+
+        gridData.addAtTop(mockLayer1);
+        gridData.addAbove(mockLayer1, mockLayer2);
+
+        final var expectedValues = Arrays.asList(sampleContents2, sampleContents1);
+        assertEquals(expectedValues, gridData.getCellContents(mockCell));
+    }
+
+    @Test
+    public void testAddAbove_andAddAtFront_andGetCellContents_whenExistingLayerIsLastOneInGridData_returnsDataFromLayersInExpectedOrder(){
+        mockIsLayerEnabled(mockLayer1, true);
+        mockIsLayerEnabled(mockLayer2, true);
+        mockIsLayerEnabled(mockLayer3, true);
+
+        gridData.addAtTop(mockLayer1);
+        gridData.addAtTop(mockLayer2);
+        gridData.addAbove(mockLayer1, mockLayer3);
+
+        final var expectedValues = Arrays.asList(sampleContents2, sampleContents3, sampleContents1);
+        assertEquals(expectedValues, gridData.getCellContents(mockCell));
+    }
+
+    @Test
+    public void testAddAbove_andAddAtFront_andGetCellContents_whenProvidedLayerNotInGridData_addsLayerToTop_andReturnsDataFromLayersInExpectedOrder(){
+        mockIsLayerEnabled(mockLayer1, true);
+        mockIsLayerEnabled(mockLayer2, true);
+
+        gridData.addAtTop(mockLayer1);
+        gridData.addAbove(mockLayer3, mockLayer2);
+
+        final var expectedValues = Arrays.asList(sampleContents2, sampleContents1);
+        assertEquals(expectedValues, gridData.getCellContents(mockCell));
+    }
+
+    @Test
+    public void testAddBelow_andAddAtFront_andGetCellContents_whenExistingLayerIsOnlyOneInGridData_returnsDataFromLayersInExpectedOrder(){
+        mockIsLayerEnabled(mockLayer1, true);
+        mockIsLayerEnabled(mockLayer2, true);
+
+        gridData.addAtTop(mockLayer1);
+        gridData.addBelow(mockLayer1, mockLayer2);
+
+        final var expectedValues = Arrays.asList(sampleContents1, sampleContents2);
+        assertEquals(expectedValues, gridData.getCellContents(mockCell));
+    }
+
+    @Test
+    public void testAddBelow_andAddAtFront_andGetCellContents_whenExistingLayerIsFirstOneInGridData_returnsDataFromLayersInExpectedOrder(){
+        mockIsLayerEnabled(mockLayer1, true);
+        mockIsLayerEnabled(mockLayer2, true);
+        mockIsLayerEnabled(mockLayer3, true);
+
+        gridData.addAtTop(mockLayer1);
+        gridData.addAtTop(mockLayer2);
+        gridData.addBelow(mockLayer2, mockLayer3);
+
+        final var expectedValues = Arrays.asList(sampleContents2, sampleContents3, sampleContents1);
+        assertEquals(expectedValues, gridData.getCellContents(mockCell));
+    }
+
+    @Test
+    public void testAddBelow_andAddAtFront_andGetCellContents_whenProvidedLayerNotInGridData_addsLayerToTop_andReturnsDataFromLayersInExpectedOrder(){
+        mockIsLayerEnabled(mockLayer1, true);
+        mockIsLayerEnabled(mockLayer2, true);
+
+        gridData.addAtTop(mockLayer1);
+        gridData.addBelow(mockLayer3, mockLayer2);
+
+        final var expectedValues = Arrays.asList(sampleContents2, sampleContents1);
+        assertEquals(expectedValues, gridData.getCellContents(mockCell));
+    }
+
     //Mask tests
     @Test
-    public void testUseAsMask_andAddToFront_andGettters_whenMaskLayerIsSet_andMaskHasCell_allLayersValuesAreReturned(){
+    public void testUseAsMask_andAddAtFront_andGettters_whenMaskLayerIsSet_andMaskHasCell_allLayersValuesAreReturned(){
         mockIsLayerEnabled(mockLayer1, true);
         mockIsLayerEnabled(mockLayer2, true);
         mockIsCellHighlighted(mockLayer1, true);
@@ -540,8 +615,8 @@ public class GridDataTest {
 
         mockIsCellSet(mockLayer2, true); //Cell is in mask layer
 
-        gridData.addAtBack(mockLayer1);
-        gridData.addAtBack(mockLayer2);
+        gridData.addAtBottom(mockLayer1);
+        gridData.addAtBottom(mockLayer2);
 
         //Method under test
         gridData.useAsMask(mockLayer2);
@@ -552,15 +627,15 @@ public class GridDataTest {
     }
 
     @Test
-    public void testUseAsMask_andAddToFront_andGetCellContents_whenMaskLayerIsSet_andMaskDoesNotHaveCell_noCellContentsAreReturned(){
+    public void testUseAsMask_andAddAtFront_andGetCellContents_whenMaskLayerIsSet_andMaskDoesNotHaveCell_noCellContentsAreReturned(){
         mockIsLayerEnabled(mockLayer1, true);
         mockIsLayerEnabled(mockLayer2, true);
         mockIsCellHighlighted(mockLayer1, true);
         mockIsCellHighlighted(mockLayer2, true);
         mockIsCellSet(mockLayer2, false); //Cell is not in mask layer
 
-        gridData.addAtBack(mockLayer1);
-        gridData.addAtBack(mockLayer2);
+        gridData.addAtBottom(mockLayer1);
+        gridData.addAtBottom(mockLayer2);
 
         //Method under test
         gridData.useAsMask(mockLayer2);
@@ -572,15 +647,15 @@ public class GridDataTest {
     }
 
     @Test
-    public void testRemoveMask_andUseAsMask_andAddToFront_andGetCellContents_whenMaskLayerIsSetAndThenRemoved_andMaskDoesNotHaveCell_allLayersCellContentsAreReturned(){
+    public void testRemoveMask_andUseAsMask_andAddAtFront_andGetCellContents_whenMaskLayerIsSetAndThenRemoved_andMaskDoesNotHaveCell_allLayersCellContentsAreReturned(){
         mockIsLayerEnabled(mockLayer1, true);
         mockIsLayerEnabled(mockLayer2, true);
         mockIsCellHighlighted(mockLayer1, true);
         mockIsCellHighlighted(mockLayer2, true);
         mockIsCellSet(mockLayer2, false); //Cell is not in mask layer
 
-        gridData.addAtBack(mockLayer1);
-        gridData.addAtBack(mockLayer2);
+        gridData.addAtBottom(mockLayer1);
+        gridData.addAtBottom(mockLayer2);
 
         //Method under test
         gridData.useAsMask(mockLayer2);
@@ -589,5 +664,59 @@ public class GridDataTest {
         assertEquals(Arrays.asList(sampleContents1, sampleContents2), gridData.getCellContents(mockCell));
         assertEquals(Arrays.asList(sampleCellColor1, sampleCellColor2), gridData.getCellColors(mockCell));
         assertEquals(Arrays.asList(Optional.of(sampleLayerColor1), Optional.of(sampleLayerColor2)), gridData.getCellHighlights(mockCell));
+    }
+
+    //Get layer tests
+    @Test
+    public void testGetActiveLayer_andAddAtFront_forEachIndex_returnsExpectedLayer(){
+        mockIsLayerEnabled(mockLayer1, true);
+        mockIsLayerEnabled(mockLayer2, true);
+        mockIsLayerEnabled(mockLayer3, true);
+        gridData.addAtTop(mockLayer3);
+        gridData.addAtTop(mockLayer2);
+        gridData.addAtTop(mockLayer1);
+
+       assertEquals(mockLayer1, gridData.getActiveLayer(0).get());
+       assertEquals(mockLayer2, gridData.getActiveLayer(1).get());
+       assertEquals(mockLayer3, gridData.getActiveLayer(2).get());
+    }
+
+
+    @Test
+    public void testGetActiveLayer_andAddAtFront_whenLayerIsDisabled_returnsOnlyEnabledLayers(){
+        mockIsLayerEnabled(mockLayer1, true);
+        mockIsLayerEnabled(mockLayer2, false);
+        mockIsLayerEnabled(mockLayer3, true);
+        gridData.addAtTop(mockLayer3);
+        gridData.addAtTop(mockLayer2);
+        gridData.addAtTop(mockLayer1);
+
+       assertEquals(mockLayer1, gridData.getActiveLayer(0).get());
+       assertEquals(mockLayer3, gridData.getActiveLayer(1).get());
+    }
+
+    @Test
+    public void testGetActiveLayer_whenNoLayers_returnsEmptyOptional(){
+        assertTrue(gridData.getActiveLayer(0).isEmpty());
+    }
+
+    @Test
+    public void testGetActiveLayer_whenNoEnabledLayers_returnsEmptyOptional(){
+        mockIsLayerEnabled(mockLayer1, false);
+        gridData.addAtTop(mockLayer1);
+
+        assertTrue(gridData.getActiveLayer(0).isEmpty());        
+    }
+
+    @Test
+    public void testGetActiveLayer_andAddAtFront_whenNoAccessingNonexistantLayer_returnsEmptyOptional(){
+        mockIsLayerEnabled(mockLayer1, true);
+        mockIsLayerEnabled(mockLayer2, true);
+        mockIsLayerEnabled(mockLayer3, true);
+        gridData.addAtTop(mockLayer3);
+        gridData.addAtTop(mockLayer2);
+        gridData.addAtTop(mockLayer1);
+
+        assertTrue(gridData.getActiveLayer(3).isEmpty());
     }
 }

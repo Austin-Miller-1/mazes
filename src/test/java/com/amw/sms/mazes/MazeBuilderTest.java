@@ -19,6 +19,7 @@ import com.amw.sms.grid.Grid;
 import com.amw.sms.grid.GridAnimator;
 import com.amw.sms.grid.GridAnimatorFactory;
 import com.amw.sms.grid.GridFactory;
+import com.amw.sms.grid.data.GridData;
 import com.amw.sms.mazes.goals.MazeGoal;
 import com.amw.sms.mazes.goals.MazeGoalBuilder;
 import com.amw.sms.mazes.goals.MazeGoalBuilderFactory;
@@ -40,6 +41,9 @@ public class MazeBuilderTest {
 
     @Mock
     private Grid mockGrid;
+
+    @Mock
+    private GridData mockGridData;
 
     @Mock
     private CellDistances mockDistances;
@@ -98,6 +102,10 @@ public class MazeBuilderTest {
     private void mockGridFactory(){
         Mockito.when(mockGridFactory.createGrid(anyInt(), anyInt()))
             .thenReturn(mockGrid);
+
+        Mockito.lenient()
+            .when(mockGrid.getGridData())
+            .thenReturn(mockGridData);
     }
 
     private void mockDefaultMazeGoals(){
@@ -138,6 +146,9 @@ public class MazeBuilderTest {
         //Return mockGrid only when specific size is used
         Mockito.when(mockGridFactory.createGrid(5, 6))
             .thenReturn(mockGrid);
+
+        Mockito.when(mockGrid.getGridData())
+            .thenReturn(mockGridData);
 
         final var maze = newMockedMazeBuilder()
             .withSize(5, 6)

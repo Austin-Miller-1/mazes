@@ -58,7 +58,7 @@ public class Dijkstra extends MazeSolveAlgorithm {
         final var distances = new CellDistances(grid, rootCell);
 
         final var dijkstraGridData = new GridData(grid);
-        dijkstraGridData.addAtFront(new CellDistancesDataLayer(distances, "dijk-distances"));
+        dijkstraGridData.addAtTop(new CellDistancesDataLayer(distances, "dijk-distances"));
         this.executionState.setGridData(dijkstraGridData);
         this.started();
 

@@ -168,9 +168,8 @@ public class MazeBuilder {
 
         final var gridData = new GridData(grid);
         final var dijktraLayer = new CellDistancesDataLayer(dijkstra.getDistances(grid, start.getCell()), "dijktra"); 
-        gridData.addAtFront(dijktraLayer);
+        gridData.addAtTop(dijktraLayer);
         grid.setGridData(gridData);
-        //grid.setGridData(dijkstra.getDistances(grid, start.getCell()));
         dijkAnimator.saveToFile("maze_dijkstra_distances.gif");
 
         return new Maze(grid, new Pair<MazeGoal, MazeGoal>(start, end));

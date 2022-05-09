@@ -2,13 +2,7 @@ package com.amw.sms.grid;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.awt.Color;
-import java.util.Arrays;
-
-import com.amw.sms.grid.data.SampleGridDataImpl;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,19 +25,6 @@ public class CellDistancesTest {
     @Mock private Cell mockRoot;
 
     private CellDistances distances; //Distances instance using root cell. No distances set.
-
-    /**
-     * Asserts that the first color is darker than the second color. In this method, "darker" is
-     * defined as being composed of darker red, green AND blue values. If any of the three 
-     * are not darker, the assertion fails. 
-     * @param expectedDarker
-     * @param expectedBrighter
-     */
-    private void assertDarkerColor(Color expectedDarker, Color expectedBrighter){
-        assertTrue(expectedDarker.getRed() < expectedBrighter.getRed());
-        assertTrue(expectedDarker.getGreen() < expectedBrighter.getGreen());
-        assertTrue(expectedDarker.getBlue() < expectedBrighter.getBlue());
-    }
 
     @BeforeEach
     void beforeEach(){

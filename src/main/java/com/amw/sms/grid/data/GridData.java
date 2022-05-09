@@ -16,9 +16,6 @@ import com.amw.sms.grid.Grid;
  * disabled, etc. via this class.
  */
 public class GridData {
-    private final static String DEFAULT_CELL_CONTENTS_STRING = " ";
-    private final static Color DEFAULT_CELL_COLOR = Color.WHITE;
-
     private final List<GridDataLayer> dataLayers;
     private Optional<GridDataLayer> dataMaskLayer;
 
@@ -36,27 +33,85 @@ public class GridData {
     }
     
     /**
-     * Adds provided layer to the front of the layer-stack. Being at the front of the layer-stack
+     * Adds provided layer to the top of the layer-stack. Being at the top of the layer-stack
      * means that this layer's values (if they exist) are taken as the highest-priority. That is,
      * if multiple layers have a value and only one is requested, the front layer's will be used.
      * @param layer Layer to add.
-     * @see GridData#addAtBack(GridDataLayer)
+     * @see GridData#addAtBottom(GridDataLayer)
      */
-    public void addAtFront(GridDataLayer layer){
+    public void addAtTop(final GridDataLayer layer){
         this.dataLayers.add(0, layer);
     }
 
     /**
-     * Adds provided layer to the back of the layer-stack. Being at the back of the layer-stack
+     * Adds provided layer to the bottom of the layer-stack. Being at the bottom of the layer-stack
      * means that this layer's values (if they exist) are taken as the lowest-priority. That is,
      * if multiple layers have a value, and only one is requested, all of the other layers will
-     * be checked prior to the back layer. Therefore, the back layer's value will only be used
+     * be checked prior to the back layer. Therefore, the bottom layer's value will only be used
      * if no other layer has such a value.
      * @param layer Layer to add.
-     * @see GridData#addAtFront(GridDataLayer)
+     * @see GridData#addAtTop(GridDataLayer)
      */
-    public void addAtBack(GridDataLayer layer){
+    public void addAtBottom(final GridDataLayer layer){
         this.dataLayers.add(layer);
+    }
+
+    /**
+     * Adds layer to the layer-stack above the existing layer. If the "existing-layer" does not exist within the
+     * stack, the new layer is added to the top of the stack.
+     * @param existingLayer Layer expected to be in the layer-stack already. While expected to be in the layer-stack,
+     * the new layer is added even if it is not.
+     * @param newLayer Layer to add.
+     */
+    public void addAbove(final GridDataLayer existingLayer, final GridDataLayer newLayer){
+        this.addRelativeTo(existingLayer, newLayer, false);
+    }
+
+    /**
+     * Adds layer to the layer-stack below the existing layer. If the "existing-layer" does not exist within the
+     * stack, the new layer is added to the top of the stack.
+     * @param existingLayer Layer expected to be in the layer-stack already. While expected to be in the layer-stack,
+     * the new layer is added even if it is not.
+     * @param newLayer Layer to add.
+     */
+    public void addBelow(final GridDataLayer existingLayer, final GridDataLayer newLayer){
+        this.addRelativeTo(existingLayer, newLayer, true);
+    }
+
+    /**
+     * Adds layer to the layer-stack relative to an existing layer. If the "existing-layer" does not exist within the
+     * stack, the new layer is added to the top of the stack.
+     * @param existingLayer Layer expected to be in the layer-stack already. While expected to be in the layer-stack,
+     * the new layer is added even if it is not.
+     * @param newLayer Layer to add.
+     * @param addAbove True/false whether to add the new layer above or below the existing layer.
+     */
+    private void addRelativeTo(final GridDataLayer existingLayer, final GridDataLayer newLayer, boolean addAbove){
+        if(this.dataLayers.contains(existingLayer)){
+            final var newLayerIndex = this.dataLayers.indexOf(existingLayer) + (addAbove ? 1 : 0);
+            this.dataLayers.add(newLayerIndex, newLayer);
+        }else{
+            this.addAtTop(newLayer);
+        }
+    }
+
+    /**
+     * Returns the active layer (if any) at the provided position within the layer stack. 
+     * An active layer is defined as a layer that is currently enabled. Disabled layers are not checked.
+     * Layer number is not the index within the layer stack, but rather the index of the layer if the stack
+     * excluded disabled layers. As an example: if there are 3 layers, A, B and C, and B is disabled, 
+     * providing 0 will return A and providing 1 will return C.
+     * 
+     * //TODO what is the appropriate way of handling bad layerNumber (i.e. > layer stack size, < 0)
+     * //Can we recover from such an error? Should we handle it nicely?
+     * @param layerNumber Number of the layer to return. 
+     * @return The layer at the provided position within the active-layer stack. If no such layer exists, 
+     * an empty optional is returned.
+     */
+    public Optional<GridDataLayer> getActiveLayer(int layerNumber){
+        return this.getEnabledLayers()
+            .skip(layerNumber)
+            .findFirst();
     }
 
     /**
@@ -64,7 +119,7 @@ public class GridData {
      * already, this method has no effect.
      * @param layer Layer to remove.
      */
-    public void remove(GridDataLayer layer){
+    public void remove(final GridDataLayer layer){
         this.dataLayers.remove(layer);
     }
 
@@ -78,7 +133,7 @@ public class GridData {
      * @param layer Layer to use as a mask.
      * @see GridData#removeMask()
      */
-    public void useAsMask(GridDataLayer layer){
+    public void useAsMask(final GridDataLayer layer){
         this.dataMaskLayer = Optional.of(layer);
     }
 
@@ -108,7 +163,7 @@ public class GridData {
      * @param stream Stream of values to get the primary value from.
      * @return Primary value.
      */
-    private <T> Optional<T> primaryValueOf(Stream<Optional<T>> stream){
+    private <T> Optional<T> primaryValueOf(final Stream<Optional<T>> stream){
         return stream
             .filter(Optional::isPresent)
             .findFirst()
@@ -122,7 +177,7 @@ public class GridData {
      * @param cell Cell to check for.
      * @return True if the cell is within the data-layer mask OR if no such mask has been set.
      */
-    private boolean isCellActive(Cell cell){
+    private boolean isCellActive(final Cell cell){
         return this.dataMaskLayer.isEmpty()
         || this.dataMaskLayer.get().isCellSet(cell);
     }
@@ -135,7 +190,7 @@ public class GridData {
      * @param mapper Mapping function to apply to the cell.
      * @return The return value of the mapper applied to the cell if the cell is active. Otherwise, returns an empty optional.
      */
-    private <T> Optional<T> toFunctionIfActiveCell(Cell cell, Function<Cell, Optional<T>> mapper){
+    private <T> Optional<T> toFunctionIfActiveCell(final Cell cell, final Function<Cell, Optional<T>> mapper){
         return this.isCellActive(cell) 
             ? mapper.apply(cell)
             : Optional.empty();
@@ -149,7 +204,7 @@ public class GridData {
      * @return Stream of optionals containing each layers' cell contents, if any. The order of the values in the stream 
      * will match the order of the active layers (e.g. the first value will be from the top layer).
      */
-    private Stream<Optional<String>> cellContentsStreamFor(Cell cell){
+    private Stream<Optional<String>> cellContentsStreamFor(final Cell cell){
         return this.getEnabledLayers()
             .map(layer -> this.toFunctionIfActiveCell(cell, layer::getCellContents));
     }
@@ -166,7 +221,7 @@ public class GridData {
      * @return List of optionals containing each layers' cell contents, if any. The order of the values in the list 
      * will match the order of the active layers (e.g. the first value will be from the top layer).
      */
-    public List<Optional<String>> getCellContents(Cell cell){
+    public List<Optional<String>> getCellContents(final Cell cell){
         return this.cellContentsStreamFor(cell).toList();
     }
 
@@ -180,7 +235,7 @@ public class GridData {
      * @param cell Cell
      * @return Primary cell-contents, if any. Empty optional if no active layer has a value.
      */
-    public Optional<String> getPrimaryCellContents(Cell cell){
+    public Optional<String> getPrimaryCellContents(final Cell cell){
         return this.primaryValueOf(this.cellContentsStreamFor(cell));
     }
 
@@ -195,7 +250,7 @@ public class GridData {
      * @return Stream of optionals containing each layers' cell color, if any. The order of the values in the stream 
      * will match the order of the active layers (e.g. the first value will be from the top layer).
      */
-    private Stream<Optional<Color>> cellColorsStreamFor(Cell cell){
+    private Stream<Optional<Color>> cellColorsStreamFor(final Cell cell){
         return this.getEnabledLayers()
             .map(layer -> this.toFunctionIfActiveCell(cell, layer::getCellColor));
     }
@@ -210,7 +265,7 @@ public class GridData {
      * @return List of optionals containing each layers' cell color, if any. The order of the values in the list 
      * will match the order of the active layers (e.g. the first value will be from the top layer).
      */
-    public List<Optional<Color>> getCellColors(Cell cell){
+    public List<Optional<Color>> getCellColors(final Cell cell){
         return this.cellColorsStreamFor(cell).toList();
     }
 
@@ -222,7 +277,7 @@ public class GridData {
      * @param cell Cell
      * @return Primary cell-color, if any. Empty optional if no active layer has a value.
      */
-    public Optional<Color> getPrimaryCellColor(Cell cell){
+    public Optional<Color> getPrimaryCellColor(final Cell cell){
         return this.primaryValueOf(this.cellColorsStreamFor(cell));
     }
 
@@ -237,7 +292,7 @@ public class GridData {
      * @return Stream of optionals containing each layers' cell-highlight color, if any. The order of the values in the stream 
      * will match the order of the active layers (e.g. the first value will be from the top layer).
      */
-    private Stream<Optional<Color>> cellHighlightsStreamFor(Cell cell){
+    private Stream<Optional<Color>> cellHighlightsStreamFor(final Cell cell){
         return this.getEnabledLayers()
             .map(layer -> {
                 return this.isCellActive(cell) && layer.isCellHighlighted(cell)
@@ -256,7 +311,7 @@ public class GridData {
      * @return List of optionals containing each layers' cell highlight-color, if any. The order of the values in the list 
      * will match the order of the active layers (e.g. the first value will be from the top layer).
      */
-    public List<Optional<Color>> getCellHighlights(Cell cell){
+    public List<Optional<Color>> getCellHighlights(final Cell cell){
         return this.cellHighlightsStreamFor(cell).toList();
     }
 
@@ -267,7 +322,7 @@ public class GridData {
      * @param cell Cell
      * @return Primary cell-highlight color, if any. Empty optional if no active layer has a value.
      */
-    public Optional<Color> getPrimaryCellHighlight(Cell cell){
+    public Optional<Color> getPrimaryCellHighlight(final Cell cell){
         return this.primaryValueOf(this.cellHighlightsStreamFor(cell));
     }
 
