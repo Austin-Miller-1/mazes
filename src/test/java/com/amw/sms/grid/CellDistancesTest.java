@@ -2,11 +2,7 @@ package com.amw.sms.grid;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.awt.Color;
-import java.util.Arrays;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,29 +25,6 @@ public class CellDistancesTest {
     @Mock private Cell mockRoot;
 
     private CellDistances distances; //Distances instance using root cell. No distances set.
-
-    //Helper method - get expected default
-    private String getExpectedDefaultCellContents(){
-        return new SampleGridDataImpl(mockGrid).getCellContents(mockCell2);
-    }
-
-    //Helper method - get expected default
-    private Color getExpectedDefaultCellColor(){
-        return new SampleGridDataImpl(mockGrid).getCellColor(mockCell2);
-    }
-
-    /**
-     * Asserts that the first color is darker than the second color. In this method, "darker" is
-     * defined as being composed of darker red, green AND blue values. If any of the three 
-     * are not darker, the assertion fails. 
-     * @param expectedDarker
-     * @param expectedBrighter
-     */
-    private void assertDarkerColor(Color expectedDarker, Color expectedBrighter){
-        assertTrue(expectedDarker.getRed() < expectedBrighter.getRed());
-        assertTrue(expectedDarker.getGreen() < expectedBrighter.getGreen());
-        assertTrue(expectedDarker.getBlue() < expectedBrighter.getBlue());
-    }
 
     @BeforeEach
     void beforeEach(){
@@ -237,80 +210,5 @@ public class CellDistancesTest {
         distances.setDistance(mockCell2, 10);
         assertEquals(150, distances.getMaxDistance());
         assertEquals(150, distances.getMaxDistance());  //Second call is what we're checking
-    }
-
-    @Test
-    void testGetCellContents_andTestSetDistance_returnsCellDistanceAsString(){
-        distances.setDistance(mockCell1, 5);
-        distances.setDistance(mockCell2, 9);
-        assertEquals("5", distances.getCellContents(mockCell1));
-    }
-
-    @Test
-    void testGetCellContents_andTestSetDistance_returnsCellDistanceAsBase32String(){
-        distances.setDistance(mockCell1, 15);
-        distances.setDistance(mockCell2, 30);
-        assertEquals("F", distances.getCellContents(mockCell1).toUpperCase());
-    }
-
-    @Test
-    void testGetCellContents_andTestSetDistance_whenCellIsUnset_returnsDefaultValueFromGridDataParentClass(){
-        distances.setDistance(mockCell1, 10);
-        assertEquals(getExpectedDefaultCellContents(), distances.getCellContents(mockCell2));
-    }
-
-    @Test
-    void testGetCellColor_andTestSetDistance_whenTwoCellsHaveSameDistance_returnsSameNonDefaultColor(){
-        distances.setDistance(mockCell1, 1);
-        distances.setDistance(mockCell2, 2);
-        distances.setDistance(mockCell3, 2);
-        assertEquals(distances.getCellColor(mockCell2), distances.getCellColor(mockCell3));
-        assertNotEquals(getExpectedDefaultCellColor(), distances.getCellColor(mockCell2));
-    }
-
-    @Test
-    void testGetCellColor_andTestSetDistance_whenOnlyRoot_returnsWhiteForRoot(){
-        assertEquals(Color.WHITE, distances.getCellColor(mockRoot));
-    }
-
-    @Test
-    void testGetCellColor_andTestSetDistance_whenTwoCells_returnsWhiteForRoot(){
-        distances.setDistance(mockCell1, 1);
-        assertEquals(Color.WHITE, distances.getCellColor(mockRoot));
-    }
-
-    @Test
-    void testGetCellColor_andTestSetDistance_whenTwoCells_returnsDarkerColorForSecondCell(){
-        distances.setDistance(mockCell1, 1);
-        assertDarkerColor(distances.getCellColor(mockCell1), distances.getCellColor(mockRoot));
-    }
-
-    @Test
-    void testGetCellColor_andTestSetDistance_whenFourCells_returnsWhiteForRoot(){
-        distances.setDistance(mockCell1, 1);
-        distances.setDistance(mockCell2, 2);
-        distances.setDistance(mockCell3, 3);
-        assertEquals(Color.WHITE, distances.getCellColor(mockRoot));
-    }
-
-    @Test
-    void testGetCellColor_andTestSetDistance_whenFourCells_returnsDarkerColorForEveryCellFurtherAwayFromRoot(){
-        distances.setDistance(mockCell1, 1);
-        distances.setDistance(mockCell2, 2);
-        distances.setDistance(mockCell3, 3);
-
-        final var path = Arrays.asList(mockRoot, mockCell1, mockCell2, mockCell3);
-        for(int index = 1; index < path.size(); index++){
-            assertDarkerColor(
-                distances.getCellColor(path.get(index)),    //Current cell 
-                distances.getCellColor(path.get(index-1)    //Previous cell
-            ));
-        }            
-    }
-
-    @Test
-    void testGetCellColor_andTestSetDistance_whenCellIsUnset_returnsDefaultValueFromGridDataParentClass(){
-        distances.setDistance(mockCell1, 10);
-        assertEquals(getExpectedDefaultCellColor(), distances.getCellColor(mockCell2));
     }
 }

@@ -80,29 +80,4 @@ public class Sidewinder extends MazeGenAlgorithm{
             this.completedStep();
         });
     }
-
-    private void visitColumn(List<Cell> column){
-        final var currentRun = new ArrayList<Cell>();
-
-        column.forEach((var cell) -> {
-            currentRun.add(cell);
-            final var atSouthBound = cell.getSouth().isEmpty();
-            final var atWestBound = cell.getWest().isEmpty();
-            
-            if(atSouthBound && atWestBound){
-                return;
-            }
-
-            final var shouldCloseRun = atSouthBound 
-                || (!atWestBound && coinFlip.isHeads());
-
-            if(shouldCloseRun){
-                final var cellFromRun = currentRun.get(rng.nextInt(currentRun.size()));
-                cellFromRun.link(cellFromRun.getWest().get());
-                currentRun.clear();
-            } else {
-                cell.link(cell.getNorth().get());
-            }
-        });
-    }
 }

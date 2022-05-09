@@ -7,6 +7,8 @@ import com.amw.sms.grid.Grid;
 import com.amw.sms.grid.GridAnimator;
 import com.amw.sms.grid.GridAnimatorFactory;
 import com.amw.sms.grid.GridFactory;
+import com.amw.sms.grid.data.CellDistancesDataLayer;
+import com.amw.sms.grid.data.GridData;
 import com.amw.sms.mazes.goals.MazeGoal;
 import com.amw.sms.mazes.goals.MazeGoalBuilderFactory;
 import com.amw.sms.util.Pair;
@@ -161,9 +163,13 @@ public class MazeBuilder {
 
         //Show it
         final var dijkstra = algorithmFactory.getDijkstra();
-        final var dijkAnimator = this.gridAnimatorFactory.create(grid, this.genAlgorithm);
+        final var dijkAnimator = this.gridAnimatorFactory.create(grid, dijkstra);
         dijkAnimator.record();
-        grid.setGridData(dijkstra.getDistances(grid, start.getCell()));
+
+        final var gridData = new GridData(grid);
+        final var dijktraLayer = new CellDistancesDataLayer(dijkstra.getDistances(grid, start.getCell()), "dijktra"); 
+        gridData.addAtTop(dijktraLayer);
+        grid.setGridData(gridData);
         dijkAnimator.saveToFile("maze_dijkstra_distances.gif");
 
         return new Maze(grid, new Pair<MazeGoal, MazeGoal>(start, end));

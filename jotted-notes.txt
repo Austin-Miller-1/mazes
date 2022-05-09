@@ -18,6 +18,13 @@
 		--> StepType: { UpdatedState, UnchangedState }
 			--> Lets observers know of steps that do not result in a change of any internal state.
 
+- GridData implementing GridDataLayer interface
+	--> Would be cool as it would allow multiple layers to pass as a single layer, but it's usefulness would be questionable:
+		1. It doesn't really seem like any code would need it right now. Everything works as is with using multiple layers in a single
+		grid data instance, instead of multiple grid data instances referencing each other.
+		2. GridData implementing GridDataLayer would mean that only one value can be retrieved for the GridData instance layer. Even if it has several layers with multiple values for a cell, only ONE can be returned. This is a severly worse option than having each layer's value be returned separately. If a new method would need to be introducted (e.g. getSublayers() ), then the GridDataLayer's generic design breaks. It'll now have logic specifically for the GridData class.
+
+- Solution verification?
 
 --
 -- Redesigns --

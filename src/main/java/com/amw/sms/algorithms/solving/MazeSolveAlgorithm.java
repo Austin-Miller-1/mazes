@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.amw.sms.algorithms.ObservableMazeAlgorithm;
 import com.amw.sms.grid.Cell;
+import com.amw.sms.grid.CellPath;
 import com.amw.sms.mazes.Maze;
 
 /**
@@ -18,6 +19,7 @@ public abstract class MazeSolveAlgorithm extends ObservableMazeAlgorithm {
      * will start with the with start-entrance cell and ends with the end-entrance (the exit) cell. 
      * If the maze has no entrances, an empty list is returned. 
      * If there exists no path between the two cells, then an empty list is returned.
+     * TODO - replace with method that returns CellPath
      */
     public abstract List<Cell> getSolution(Maze maze);
 
@@ -27,6 +29,6 @@ public abstract class MazeSolveAlgorithm extends ObservableMazeAlgorithm {
      * @param maze Maze to solve.
      */
     public void solve(Maze maze){
-        maze.displayPath(this.getSolution(maze));
+        maze.applySolution(new CellPath("solution", this.getSolution(maze)));
     }
 }

@@ -7,6 +7,10 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.function.Function;
 
+import com.amw.sms.grid.data.GridData;
+
+import org.apache.commons.lang3.StringUtils;
+
 import ij.ImagePlus;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
@@ -20,6 +24,7 @@ public class Grid {
     final static int IMAGE_GRID_OFFSET = 30;
     final static Color IMAGE_BACKGROUND_COLOR = Color.WHITE;
     final static Color IMAGE_WALL_COLOR = Color.BLACK;
+    final static String DEFAULT_CELL_DISPLAY_STRING = "";
 
     private final int rowCount, colCount;
     private final List<List<Cell>> grid;
@@ -27,9 +32,6 @@ public class Grid {
 
     private GridData gridData;
     private boolean gridDataShown = true;
-
-    private Optional<List<Cell>> path;
-    private boolean limitShownDataToPath = false;
 
     /**
      * Constructs a grid with the provided number of rows and columns.
@@ -44,8 +46,7 @@ public class Grid {
         this.configureCells();
         rng = new Random();
 
-        this.gridData = new SimpleGridData(this);
-        this.path = Optional.empty();
+        this.gridData = new GridData(this);
     }
 
     /**
@@ -193,13 +194,6 @@ public class Grid {
     }
 
     /**
-     * Clears the grid's data.
-     */
-    public void clearGridData(){
-        this.gridData = new SimpleGridData(this);
-    }
-
-    /**
      * Get's the grid's data.
      * @return Optional containing the data associated with the grid, if any. Returns an 
      * empty optional if the grid data was never set or if it was cleared. 
@@ -224,56 +218,6 @@ public class Grid {
     }
 
     /**
-     * Sets the specific path of cells to display in the grid's visual representations. 
-     * @param path
-     */
-    public void setPath(List<Cell> path){
-        this.path = Optional.of(path);
-    }
-
-    /**
-     * Returns the path of cells set in the grid to be displayed in the its visual representations. 
-     * @return Optional containing the list of cells representing set as the path. Returns empty optional if 
-     * no path is currently set.
-     */
-    public Optional<List<Cell>> getPath(){
-        return this.path;
-    }
-
-    /**
-     * Clears the path of cells to be displayed in the grid's visual representations.
-     */
-    public void clearPath(){
-        this.path = Optional.empty();
-    }
-
-    /**
-     * Restricts the data displayed within the grid's visual representations to only the cell's 
-     * on the set path, if one is set. If no path is set, no data will be displayed.
-     */
-    public void displayPathExclusively(){
-        this.limitShownDataToPath = true;
-    }
-
-    /**
-     * Causes all of the grid data to be displayed within its visual representations. This is 
-     * as opposed to only having data on a specific path be displayed.
-     */
-    public void displayAllCells(){
-        this.limitShownDataToPath = false;
-    }
-
-    /**
-     * Returns boolean whether the set path contains the provided cell
-     * @param cell Cell to check for.
-     * @return True if the set path contains the cell. False if no path is set or the set path
-     * does not contain the cell.
-     */
-    private boolean pathContainsCell(Cell cell){
-        return this.path.isPresent() && this.path.get().contains(cell);
-    }
-
-    /**
      * Returns boolean whether the provided cell's data should be displayed in the 
      * grid's visual representations.
      * @param cell Cell to check for.
@@ -285,8 +229,7 @@ public class Grid {
      * @see Grid#displayAllCells
      */
     private boolean shouldDisplayCellData(Cell cell){
-        return this.gridDataShown &&
-            (!this.limitShownDataToPath || this.pathContainsCell(cell));
+        return this.gridDataShown;
     }
 
     /**
@@ -310,8 +253,8 @@ public class Grid {
      */
     public String getCellDataDisplayString(Cell cell, GridData gridData){
         return this.shouldDisplayCellData(cell)
-            ? gridData.getCellContents(cell)
-            : " ";
+            ? gridData.getPrimaryCellContents(cell).orElse(Grid.DEFAULT_CELL_DISPLAY_STRING)
+            : Grid.DEFAULT_CELL_DISPLAY_STRING;
     }
 
     /**
@@ -324,7 +267,7 @@ public class Grid {
      */
     public Color getCellColor(Cell cell, GridData gridData){
         return this.shouldDisplayCellData(cell)
-            ?   gridData.getCellColor(cell)
+            ?   gridData.getPrimaryCellColor(cell).orElse(Grid.IMAGE_BACKGROUND_COLOR)
             :   Grid.IMAGE_BACKGROUND_COLOR;
     }
     
@@ -352,7 +295,6 @@ public class Grid {
      */
     private String rowToString(List<Cell> row){
         final var MIDDLE_START = "|";
-        final var MIDDLE_BODY = " %s ";
         final var BOTTOM_START = "+";
 
         //Each row will be 3 lines - top, middle and bottom. Since the bottom
@@ -365,7 +307,7 @@ public class Grid {
                 && cell.getEast().get().isLinkedTo(cell)
                     ?   " "
                     :   "|";
-            return MIDDLE_BODY.formatted(this.getCellDataDisplayString(cell)) + eastChars;
+            return StringUtils.center(this.getCellDataDisplayString(cell), 3) + eastChars;
         };
 
         //Create the string rep of a cell's bottom section
@@ -519,35 +461,4 @@ public class Grid {
         });
 
     }
-
-    /**
-     * IDEAS, transposition & rotation
-     */
-    /* private Grid transpose(Grid grid){
-        //Would need to also update all of the neighbors appropriately.... That's why it doesn't work as is
-        final var transposedGrid = new Grid(grid.getColumnCount(), grid.getRowCount());
-
-        for(var x = 0; x < grid.getRowCount(); x++){
-            for(var y = 0; y < grid.getColumnCount(); y++){
-                transposedGrid.setCell(grid.getCell(x, y).get(), y, x);
-            }
-        }
-
-        //Maybe like this?
-        this.getCells().forEach((final var currentCell) -> {
-            final var rowIndex = currentCell.getRowPosition();
-            final var colIndex = currentCell.getColumnPosition();
-
-            currentCell.setNorth(this.getCell(rowIndex-1, colIndex));                
-            currentCell.setSouth(this.getCell(rowIndex+1, colIndex));
-            currentCell.setWest(this.getCell(rowIndex, colIndex-1));
-            currentCell.setEast(this.getCell(rowIndex, colIndex+1));
-        });
-
-        return transposedGrid;
-    }
-
-    public void setCell(Cell cell, int row, int column){
-        this.grid.get(row).set(column, cell);
-    } */
 }

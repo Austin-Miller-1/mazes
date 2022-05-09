@@ -7,9 +7,9 @@ import static org.mockito.Mockito.times;
 import java.util.Arrays;
 import java.util.List;
 
-import com.amw.sms.grid.CellGroup;
+import com.amw.sms.grid.CellList;
 import com.amw.sms.grid.CellPath;
-import com.amw.sms.grid.GridData;
+import com.amw.sms.grid.data.GridData;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,7 +34,7 @@ public class ObservableMazeAlgorithmTest {
     private GridData mockGridData;
 
     @Mock
-    private CellGroup mockCellGroup;
+    private CellList mockCellList;
 
     @Mock
     private CellPath mockCellPath;
@@ -106,23 +106,21 @@ public class ObservableMazeAlgorithmTest {
 
     @Test
     void testFinished_andGetExecutionState_executionStateIsClearedOnFinish(){
-        sampleObservableAlgorithm.setDataInExecutionState(mockGridData, mockCellGroup, mockCellPath);
+        sampleObservableAlgorithm.setDataInExecutionState(mockGridData);
+
 
         sampleObservableAlgorithm.finished();
 
         final var actualExecutionState = sampleObservableAlgorithm.getExecutionState();
-        assertTrue(actualExecutionState.getAlgorithmGridData().isEmpty());
-        assertTrue(actualExecutionState.getAlgorithmCellGroups().isEmpty());
-        assertTrue(actualExecutionState.getAlgorithmPaths().isEmpty());
+        assertTrue(actualExecutionState.getGridData().isEmpty());
     }
 
     @Test
     void testGetExecutionState_returnsAlgorithmExecutionState(){
-        sampleObservableAlgorithm.setDataInExecutionState(mockGridData, mockCellGroup, mockCellPath);
+        sampleObservableAlgorithm.setDataInExecutionState(mockGridData);
+
         
         final var actualExecutionState = sampleObservableAlgorithm.getExecutionState();
-        assertEquals(mockGridData, actualExecutionState.getAlgorithmGridData().get());
-        assertEquals(mockCellGroup, actualExecutionState.getAlgorithmCellGroups().get(0));
-        assertEquals(mockCellPath, actualExecutionState.getAlgorithmPaths().get(0));
+        assertEquals(mockGridData, actualExecutionState.getGridData().get());
     }
 }

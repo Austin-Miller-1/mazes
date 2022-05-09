@@ -1,6 +1,5 @@
 package com.amw.sms.grid;
 
-import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -13,7 +12,7 @@ import com.amw.sms.util.Pair;
  * A step between any two cells may have different weights (e.g. Cell A and B may be connected but could have a distance of 10).
  * Distances may not be set for specific cells, such as those that do not have a path connecting them to the root cell.
  */
-public class CellDistances extends GridData {
+public class CellDistances {
     private final Cell rootCell;
     private final Map<Cell, Integer> distances;
 
@@ -27,7 +26,6 @@ public class CellDistances extends GridData {
      * @param rootCell Root cell that these distances are all relative to.
      */
     public CellDistances(Grid grid, Cell rootCell){
-        super(grid);
         this.rootCell = rootCell;
         this.distances = new HashMap<Cell, Integer>();
         this.distances.put(rootCell, 0);
@@ -117,46 +115,5 @@ public class CellDistances extends GridData {
      */
     public Cell getRootCell() {
         return this.rootCell;
-    }
-
-    /**
-     * {@inheritDoc}
-     * If distance is unset, the cell's contents will be determined by the 
-     * {@link GridData} superclass.
-     */
-    @Override
-    public String getCellContents(Cell cell){
-        return this.isDistanceSet(cell)
-            ?   Integer.toString(this.distances.get(cell), 32).toUpperCase()
-            :   super.getCellContents(cell);
-    }
-
-    /**
-     * {@inheritDoc}
-     * Color will be determined by the distance of the cell from the root cell. As cells get further away from root,
-     *  the color will become darker and darker. If distances is unset, the cell's color will be determined by the 
-     * {@link GridData} superclass.
-     */
-    @Override
-    public Color getCellColor(Cell cell){
-        //Unset => go to superclass
-        if(!this.isDistanceSet(cell)){
-            return super.getCellColor(cell);
-        }
-
-        //Root-cell case
-        if(cell.equals(this.rootCell)){
-            return Color.WHITE; 
-        }
-
-        //Color intensity will be fractional based on the max distance. This will
-        //allow for the colors to transition nicely across the cells.
-        final var distance = this.getDistance(cell);
-        final var maxDistance = this.getMaxDistance();
-        final var intensity = (float) (maxDistance-distance) / maxDistance;
-        final var darkValue = Math.round(255*intensity);            //Secondary colors of the cell (creates a shade of primary)
-        final var brightValue = 128 + Math.round(127*intensity);    //Primary color of the cell
-
-        return new Color(darkValue, brightValue, darkValue);
     }
 }
