@@ -62,7 +62,7 @@ public class Dijkstra extends MazeSolveAlgorithm {
         this.executionState.setGridData(dijkstraGridData);
         this.started();
 
-        final var frontier = new LinkedList<Cell>();
+        final var frontier = new LinkedList<Cell>(); //TODO why is a linked list used?
         frontier.add(rootCell);
 
         while(!frontier.isEmpty()){
@@ -71,7 +71,7 @@ public class Dijkstra extends MazeSolveAlgorithm {
             frontierCell.getLinks()
                 .stream()
                 .forEach((var linkedCell) -> {
-                    //Already visited cells should not be visited again (only happens in imperfect mazes)
+                    //Already visited cells should not be visited again
                     if(distances.isDistanceSet(linkedCell)){return;}
 
                     distances.setDistance(linkedCell, distances.getDistance(frontierCell)+1);
@@ -81,7 +81,7 @@ public class Dijkstra extends MazeSolveAlgorithm {
                 });
         }
 
-        //If the method is invoked by clients on its own (i.e. not as part of the complete Dijktra algorithm)
+        //If this method is invoked by clients on its own (i.e. not as part of the complete Dijktra algorithm)
         //then the algorithm should be considered finished at this point. Otherwise, there are still more steps
         //that need to be done within the algorithm.  
         if(!isFullAlgorithmExecution){

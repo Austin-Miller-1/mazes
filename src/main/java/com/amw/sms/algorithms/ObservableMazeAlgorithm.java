@@ -22,7 +22,7 @@ public abstract class ObservableMazeAlgorithm {
      * Attaches observer to be notified when algorithm runs.
      * @param observer Observer to be notified.
      */
-    public void attach(MazeAlgorithmObserver observer){
+    public final void attach(MazeAlgorithmObserver observer){
         this.observers.add(observer);
     }
 
@@ -31,7 +31,7 @@ public abstract class ObservableMazeAlgorithm {
      * @param observer Observer to be detached and no longer notified. If the observer is not already attached,
      * nothing happens.
      */
-    public void detach(MazeAlgorithmObserver observer){
+    public final void detach(MazeAlgorithmObserver observer){
         this.observers.remove(observer);
     }
 
@@ -39,7 +39,7 @@ public abstract class ObservableMazeAlgorithm {
      * Method to invoke on start of the algorithm. 
      * Notifies all observers that the algorithm has started.
      */
-    protected void started(){
+    protected final void started(){
         this.observers.forEach(MazeAlgorithmObserver::algorithmStarted);
     }
 
@@ -50,7 +50,7 @@ public abstract class ObservableMazeAlgorithm {
      * or the data of the object that the algorithmn is working on. Any step that causes no state change is not notified.
      * If such a notification is necessary, this method must be updated to provide such information to the observers.
      */
-    protected void completedStep(){
+    protected final void completedStep(){
         this.observers.forEach(MazeAlgorithmObserver::algorithmCompletedStep);
     }
 
@@ -59,7 +59,7 @@ public abstract class ObservableMazeAlgorithm {
      * Notifies all observers that the algorithm has finished.
      * Also clears any execution-state that was being maintained.
      */
-    protected void finished(){
+    protected final void finished(){
         this.observers.forEach(MazeAlgorithmObserver::algorithmFinished);
         this.executionState.clear();
     }
@@ -69,7 +69,7 @@ public abstract class ObservableMazeAlgorithm {
      * State must be managed by algorithm subclass to offer any value. 
      * @return The execution state.
      */
-    public MazeAlgorithmExecutionState getExecutionState(){
+    public final MazeAlgorithmExecutionState getExecutionState(){
         return this.executionState;
     }
 }
