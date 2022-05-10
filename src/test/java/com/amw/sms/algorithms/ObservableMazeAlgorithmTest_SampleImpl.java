@@ -7,8 +7,6 @@ import static org.mockito.Mockito.times;
 import java.util.Arrays;
 import java.util.List;
 
-import com.amw.sms.grid.CellList;
-import com.amw.sms.grid.CellPath;
 import com.amw.sms.grid.data.GridData;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
  * Tests for ObservableMazeAlgorithm.
  */
 @ExtendWith(MockitoExtension.class)
-public class ObservableMazeAlgorithmTest {
+public class ObservableMazeAlgorithmTest_SampleImpl {
     private SampleObservableMazeAlgorithmImpl sampleObservableAlgorithm;
 
     @Mock private MazeAlgorithmObserver mockObserver1;
@@ -32,12 +30,6 @@ public class ObservableMazeAlgorithmTest {
 
     @Mock
     private GridData mockGridData;
-
-    @Mock
-    private CellList mockCellList;
-
-    @Mock
-    private CellPath mockCellPath;
 
     @BeforeEach
     public void beforeEach(){

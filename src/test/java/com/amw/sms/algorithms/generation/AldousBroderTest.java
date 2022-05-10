@@ -1,15 +1,14 @@
 package com.amw.sms.algorithms.generation;
 
 /**
- * Tests for Sidewinder.
+ * Tests for AldousBroder.
  */
-public class SidewinderTest extends MazeGenAlgorithmTest {
-    
+public class AldousBroderTest extends MazeGenAlgorithmTest{
     /**
      * {@inheritDoc}
      */
     @Override
     MazeGenAlgorithm getGenAlgorithmUnderTest() {
-        return new Sidewinder();
+        return new AldousBroder();
     }
 }

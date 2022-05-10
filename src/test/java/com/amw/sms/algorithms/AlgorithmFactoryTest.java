@@ -7,6 +7,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import java.util.stream.Stream;
 
+import com.amw.sms.algorithms.generation.AldousBroder;
 import com.amw.sms.algorithms.generation.BinaryTree;
 import com.amw.sms.algorithms.generation.MazeGenAlgorithmType;
 import com.amw.sms.algorithms.generation.Sidewinder;
@@ -32,6 +33,9 @@ public class AlgorithmFactoryTest {
 
     @MockBean
     private Sidewinder mockSidewinder;
+
+    @MockBean
+    private AldousBroder mockAldousBroder;
 
     @MockBean
     private Dijkstra mockDijkstra;
@@ -63,7 +67,8 @@ public class AlgorithmFactoryTest {
     static Stream<Arguments> enumToExpectedAlgorithm(){
         return Stream.of(
             arguments(MazeGenAlgorithmType.BINARY_TREE, BinaryTree.class),
-            arguments(MazeGenAlgorithmType.SIDEWINDER, Sidewinder.class)
+            arguments(MazeGenAlgorithmType.SIDEWINDER, Sidewinder.class),
+            arguments(MazeGenAlgorithmType.ALDOUS_BRODER, AldousBroder.class)
         );
     }
 

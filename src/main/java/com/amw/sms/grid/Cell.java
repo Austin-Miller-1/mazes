@@ -1,9 +1,10 @@
 package com.amw.sms.grid;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 
 /**
@@ -16,6 +17,7 @@ import java.util.Set;
 public class Cell {
     private final int rowPos, colPos;
     private final Set<Cell> links;
+    private final Random rng;
     private Optional<Cell> north, east, south, west;
 
     /**
@@ -27,6 +29,7 @@ public class Cell {
         this.rowPos = row;
         this.colPos = column;
         this.links = new HashSet<Cell>();
+        this.rng = new Random();
 
         //Neighbors
         north = Optional.empty();
@@ -105,12 +108,12 @@ public class Cell {
     }
 
     /**
-     * Get Collection of all of the neighboring cells.
-     * @return Collection of neighboring cells. Includes cells North, East, South and West to the cell,
+     * Get list of all of the neighboring cells.
+     * @return List of neighboring cells. Includes cells North, East, South and West to the cell,
      * given that they exist. Non-existant cells are not included. For instance, if there is no Northern cell,
-     * no value will represent this in the Iterator.
+     * no value will represent this in the list.
      */
-    public Collection<Cell> getNeighbors(){
+    public List<Cell> getNeighbors(){
         final var neighbors = new ArrayList<Cell>();
 
         //TODO - can I make a generic forEach method that can be used to shorten this? Maybe good/cool idea would be to create DirectionalCollection with direction enum maybe
@@ -123,9 +126,21 @@ public class Cell {
     }
 
     /**
+     * Returns one of the cell's neighboring cells at random.
+     * @return One of the cell's neighbors. If the cell has no neighbors, returns an empty optional.
+     */
+    public Optional<Cell> getRandomNeighbor(){
+        final var neighbors = this.getNeighbors();
+        return neighbors.isEmpty()
+            ? Optional.empty()
+            : Optional.of(neighbors.get(rng.nextInt(neighbors.size())));
+    }
+
+    /**
      * Set's northern neighbor.
      * @param cell Northern neighboring cell. Such a cell may not 
      * exist, in which case, an empty Optional should be provided.
+     * TODO - Don't accept optionals, only Cells.
      */
     public void setNorth(Optional<Cell> cell){
         this.north = cell;
@@ -135,6 +150,7 @@ public class Cell {
      * Set's eastern neighbor.
      * @param cell Eastern neighboring cell. Such a cell may not 
      * exist, in which case, an empty Optional should be provided.
+     * TODO - Don't accept optionals, only Cells.
      */
     public void setEast(Optional<Cell> cell){
         this.east = cell;
@@ -144,6 +160,7 @@ public class Cell {
      * Set's southern neighbor.
      * @param cell Southern neighboring cell. Such a cell may not 
      * exist, in which case, an empty Optional should be provided.
+     * TODO - Don't accept optionals, only Cells.
      */
     public void setSouth(Optional<Cell> cell){
         this.south = cell;
@@ -153,6 +170,7 @@ public class Cell {
      * Set's western neighbor.
      * @param cell Western neighboring cell. Such a cell may not 
      * exist, in which case, an empty Optional should be provided.
+     * TODO - Don't accept optionals, only Cells.
      */
     public void setWest(Optional<Cell> cell){
         this.west = cell;

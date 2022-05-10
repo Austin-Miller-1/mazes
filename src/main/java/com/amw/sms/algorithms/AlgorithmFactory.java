@@ -1,5 +1,6 @@
 package com.amw.sms.algorithms;
 
+import com.amw.sms.algorithms.generation.AldousBroder;
 import com.amw.sms.algorithms.generation.BinaryTree;
 import com.amw.sms.algorithms.generation.MazeGenAlgorithm;
 import com.amw.sms.algorithms.generation.MazeGenAlgorithmType;
@@ -21,6 +22,9 @@ public class AlgorithmFactory {
     private Sidewinder sidewinder;
 
     @Autowired
+    private AldousBroder aldousBroder;
+
+    @Autowired
     private Dijkstra dijk;
 
     /**
@@ -40,6 +44,7 @@ public class AlgorithmFactory {
         return switch(type){
             case BINARY_TREE -> binaryTree;
             case SIDEWINDER -> sidewinder;
+            case ALDOUS_BRODER -> aldousBroder;
             default -> sidewinder;  //TODO - should throw exception as invalid type is provided...
         };
     }

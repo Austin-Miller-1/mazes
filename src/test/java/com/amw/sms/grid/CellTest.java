@@ -6,18 +6,31 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
  * Test Cell class.
  */
 public class CellTest {
+    //Objects under test
+    private Cell cell1;
+    private Cell cell2; 
+    private Cell cell3; 
+    private Cell cell4; 
+    private Cell cell5; 
+
+    @BeforeEach
+    void beforeEach(){
+        this.cell1 = new Cell(1, 1);
+        this.cell2 = new Cell(2, 2);
+        this.cell3 = new Cell(3, 3);
+        this.cell4 = new Cell(3, 3);
+        this.cell5 = new Cell(3, 3);
+    }
+
     @Test
     void testLink_andTestIsLinkedTo_linkedCellsAreConsideredLinked() {
-        //Test fixture
-        final var cell1 = new Cell(1, 1);
-        final var cell2 = new Cell(2, 2);
-
         //Method
         cell1.link(cell2);
 
@@ -29,8 +42,6 @@ public class CellTest {
     @Test
     void testUnlink_andTestIsLinkedTo_usingLink_unlinkedCellsAreNotConsideredLinked() {
         //Test fixture
-        final var cell1 = new Cell(1, 1);
-        final var cell2 = new Cell(2, 2);
         cell1.link(cell2);
 
         //Method
@@ -44,8 +55,6 @@ public class CellTest {
     @Test
     void testUnlink_andTestIsLinkedTo_usingLink_unlinkedCellsAreNotConsideredLinked_bidirectionalCheck() {
         //Test fixture
-        final var cell1 = new Cell(1, 1);
-        final var cell2 = new Cell(2, 2);
         cell1.link(cell2);
 
         //Method - unlink using cell2 specifically
@@ -57,10 +66,8 @@ public class CellTest {
     }
 
     @Test
-    void testUnlink_andTestGetLinks_usingLink_unlinkedCellsAreNotInLinkCollection() {
+    void testUnlink_andTestGetLinks_usingLink_unlinkedCellsAreNotInLinkSet() {
         //Test fixture
-        final var cell1 = new Cell(1, 1);
-        final var cell2 = new Cell(2, 2);
         cell1.link(cell2);
 
         //Method - unlink using cell2 specifically
@@ -73,91 +80,94 @@ public class CellTest {
     @Test
     void testGetLinks_usingLink_setOfAllLinkedCellsIsReturned() {
         //Test fixture
-        final var cell = new Cell(1, 1);
-        final var linkedCell1 = new Cell(2, 2);
-        final var linkedCell2 = new Cell(3, 3);
-        final var unlinkedCell = new Cell(4, 4);
-        cell.link(linkedCell1);
-        cell.link(linkedCell2);
+        cell1.link(cell2);
+        cell1.link(cell3);
 
         //Method
-        final var links = cell.getLinks();
+        final var links = cell1.getLinks();
 
         //Assert
         assertEquals(2, links.size());
-        assertTrue(links.contains(linkedCell1));
-        assertTrue(links.contains(linkedCell2));
-        assertFalse(links.contains(unlinkedCell));
+        assertTrue(links.contains(cell2));
+        assertTrue(links.contains(cell3));
+        assertFalse(links.contains(cell4)); //Unlinked cell
     }
 
     @Test
-    void testGetNeighbors_andTestSetters_collectionContainsAllNeighbors() {
+    void testGetNeighbors_andTestSetters_listContainsAllNeighbors() {
         //Test fixture
-        final var cell = new Cell(1, 1);
-        final var northCell = new Cell(2, 2);
-        final var eastCell = new Cell(3, 3);
-        final var southCell = new Cell(4, 4);
-        final var westCell = new Cell(5, 5);
-
-        cell.setNorth(Optional.of(northCell));
-        cell.setEast(Optional.of(eastCell));
-        cell.setSouth(Optional.of(southCell));
-        cell.setWest(Optional.of(westCell));
+        cell1.setNorth(Optional.of(cell2)); 
+        cell1.setEast(Optional.of(cell3)); 
+        cell1.setSouth(Optional.of(cell4)); 
+        cell1.setWest(Optional.of(cell5)); 
         
-        //Method
-        final var neighbors = cell.getNeighbors();
+        //Method under test
+        final var neighbors = cell1.getNeighbors();
 
         //Assert
         assertEquals(4, neighbors.size());
-        assertTrue(neighbors.contains(northCell));
-        assertTrue(neighbors.contains(eastCell));
-        assertTrue(neighbors.contains(southCell));
-        assertTrue(neighbors.contains(westCell));
+        assertTrue(neighbors.contains(cell2));
+        assertTrue(neighbors.contains(cell3));
+        assertTrue(neighbors.contains(cell4));
+        assertTrue(neighbors.contains(cell5));
     }
 
     @Test
-    void testGetNeighbors_andTestSetters_whenNeighborsAreUnset_collectionIsEmpty() {
-        //Test fixture
-        final var cell = new Cell(1, 1);
-
+    void testGetNeighbors_andTestSetters_whenNeighborsAreUnset_listIsEmpty() {
         //Method
-        final var neighbors = cell.getNeighbors();
+        final var neighbors = cell1.getNeighbors();
 
         //Assert
         assertTrue(neighbors.isEmpty());
     }
 
     @Test
-    void testGetNeighbors_andTestSetters_whenOneNeighborIsUnset_collectionContainsAllActualNeighbors() {
+    void testGetNeighbors_andTestSetters_whenOneNeighborIsUnset_listContainsAllActualNeighbors() {
         //Test fixture
-        final var cell = new Cell(1, 1);
-        final var northCell = new Cell(2, 2);
-        final var westCell = new Cell(5, 5);
-
-        cell.setNorth(Optional.of(northCell));
-        cell.setWest(Optional.of(westCell));
+        cell1.setNorth(Optional.of(cell2));
+        cell1.setWest(Optional.of(cell3));
         
         //Method
-        final var neighbors = cell.getNeighbors();
+        final var neighbors = cell1.getNeighbors();
 
         //Assert
         assertEquals(2, neighbors.size());
-        assertTrue(neighbors.contains(northCell));
-        assertTrue(neighbors.contains(westCell));
+        assertTrue(neighbors.contains(cell2));
+        assertTrue(neighbors.contains(cell3));
     }
 
     @Test
-    void testGetNeighbors_andTestSetters_whenNeighborsAreEmpty_collectionDoesNotContainThem() {
+    void testGetNeighbors_andTestSetters_whenNeighborsAreEmpty_listDoesNotContainThem() {
         //Test fixture
-        final var cell = new Cell(1, 1);
-
-        cell.setNorth(Optional.ofNullable(null));
-        cell.setEast(Optional.ofNullable(null));
-        cell.setSouth(Optional.ofNullable(null));
-        cell.setWest(Optional.ofNullable(null));
+        cell1.setNorth(Optional.ofNullable(null));
+        cell1.setEast(Optional.ofNullable(null));
+        cell1.setSouth(Optional.ofNullable(null));
+        cell1.setWest(Optional.ofNullable(null));
         
         //Method & Assert
-        assertEquals(0, cell.getNeighbors().size());
+        assertEquals(0, cell1.getNeighbors().size());
+    }
+
+    @Test
+    void testGetRandomNeighbor_whenNoNeighbors_returnsEmptyOptional(){
+        assertTrue(cell1.getRandomNeighbor().isEmpty());
+    }
+
+    @Test
+    void testGetRandomNeighbor_andSetWest_whenOneNeighbor_returnsThatNeighbor(){
+        cell1.setWest(Optional.of(cell2)); 
+
+        assertEquals(cell2, cell1.getRandomNeighbor().get());
+    }
+
+    @Test
+    void testGetRandomNeighbor_andSetters_andGetNeighbors_whenAllNeighborsSet_returnsOneOfThem(){
+        cell1.setNorth(Optional.of(cell2)); 
+        cell1.setEast(Optional.of(cell3)); 
+        cell1.setSouth(Optional.of(cell4)); 
+        cell1.setWest(Optional.of(cell5)); 
+
+        assertTrue(cell1.getNeighbors().contains(cell1.getRandomNeighbor().get()));
     }
 
     @Test

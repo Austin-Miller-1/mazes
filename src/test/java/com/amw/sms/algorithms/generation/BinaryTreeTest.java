@@ -4,8 +4,12 @@ package com.amw.sms.algorithms.generation;
  * Tests for BinaryTree.
  */
 public class BinaryTreeTest extends MazeGenAlgorithmTest {
+    
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    MazeGenAlgorithm getAlgorithmUnderTest() {
+    MazeGenAlgorithm getGenAlgorithmUnderTest() {
         return new BinaryTree();
     }
 }
