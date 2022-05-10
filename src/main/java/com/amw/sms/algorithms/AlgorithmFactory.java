@@ -5,6 +5,7 @@ import com.amw.sms.algorithms.generation.BinaryTree;
 import com.amw.sms.algorithms.generation.MazeGenAlgorithm;
 import com.amw.sms.algorithms.generation.MazeGenAlgorithmType;
 import com.amw.sms.algorithms.generation.Sidewinder;
+import com.amw.sms.algorithms.generation.WilsonsAlgorithm;
 import com.amw.sms.algorithms.solving.MazeSolveAlgorithm;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class AlgorithmFactory {
 
     @Autowired
     private AldousBroder aldousBroder;
+
+    @Autowired
+    private WilsonsAlgorithm wilsonsAlgorithm;
 
     @Autowired
     private Dijkstra dijk;
@@ -45,7 +49,7 @@ public class AlgorithmFactory {
             case BINARY_TREE -> binaryTree;
             case SIDEWINDER -> sidewinder;
             case ALDOUS_BRODER -> aldousBroder;
-            default -> sidewinder;  //TODO - should throw exception as invalid type is provided...
+            case WILSONS_ALGORITHM -> wilsonsAlgorithm;
         };
     }
 

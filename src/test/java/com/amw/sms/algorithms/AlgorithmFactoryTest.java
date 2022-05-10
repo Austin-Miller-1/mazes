@@ -11,6 +11,7 @@ import com.amw.sms.algorithms.generation.AldousBroder;
 import com.amw.sms.algorithms.generation.BinaryTree;
 import com.amw.sms.algorithms.generation.MazeGenAlgorithmType;
 import com.amw.sms.algorithms.generation.Sidewinder;
+import com.amw.sms.algorithms.generation.WilsonsAlgorithm;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,6 +37,9 @@ public class AlgorithmFactoryTest {
 
     @MockBean
     private AldousBroder mockAldousBroder;
+
+    @MockBean
+    private WilsonsAlgorithm mockWilsonsAlgorithm;
 
     @MockBean
     private Dijkstra mockDijkstra;
@@ -68,7 +72,9 @@ public class AlgorithmFactoryTest {
         return Stream.of(
             arguments(MazeGenAlgorithmType.BINARY_TREE, BinaryTree.class),
             arguments(MazeGenAlgorithmType.SIDEWINDER, Sidewinder.class),
-            arguments(MazeGenAlgorithmType.ALDOUS_BRODER, AldousBroder.class)
+            arguments(MazeGenAlgorithmType.ALDOUS_BRODER, AldousBroder.class),
+            arguments(MazeGenAlgorithmType.WILSONS_ALGORITHM, WilsonsAlgorithm.class)
+
         );
     }
 

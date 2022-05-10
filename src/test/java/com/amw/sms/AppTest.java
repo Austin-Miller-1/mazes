@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 /**
- * Unit test for simple App.
+ * Unit test for App.
  */
 public class AppTest 
 {
@@ -14,5 +14,4 @@ public class AppTest
     void testApp(){
         assertTrue(true);
     }
-
 }

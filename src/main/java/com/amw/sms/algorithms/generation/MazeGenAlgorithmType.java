@@ -6,5 +6,6 @@ package com.amw.sms.algorithms.generation;
 public enum MazeGenAlgorithmType {
     BINARY_TREE,
     SIDEWINDER,
-    ALDOUS_BRODER
+    ALDOUS_BRODER,
+    WILSONS_ALGORITHM
 }

@@ -38,10 +38,10 @@ public class App
     @Bean
 	public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
 		return args -> {
-            final var generationAlgorithm = MazeGenAlgorithmType.ALDOUS_BRODER;
+            final var generationAlgorithm = MazeGenAlgorithmType.WILSONS_ALGORITHM;
 
             final var maze = mazeBuilderFactory.create()
-                .withSize(10, 10)
+                .withSize(20, 20)
                 .usingLongestPath()
                 .usingAlgorithm(algorithmFactory.getGenerationAlgorithm(generationAlgorithm)) //TODO - should "usingAlgorithm" just take the enum? Let the builder handle the actual algorithm creation?
                 .build();
